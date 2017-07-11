@@ -2,7 +2,7 @@
   "name": "vingt",
   "version": "0.0.1",
   "description": "A website for the wine tasting shop of family Warners",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
