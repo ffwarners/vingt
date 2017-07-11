@@ -1,0 +1,28 @@
+{
+  "name": "vingt",
+  "version": "0.0.1",
+  "description": "A website for the wine tasting shop of family Warners",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ffwarners/vingt.git"
+  },
+  "authors": [
+    {
+      "name": "Felix Warners",
+      "email": "ffwarners@gmail.com"
+    },
+    {
+      "name": "Steven Lambregts",
+      "email": "stevenlambregts@gmail.com"
+    }
+    ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ffwarners/vingt/issues"
+  },
+  "homepage": "https://github.com/ffwarners/vingt"
+}
