@@ -1,7 +1,3 @@
-/**
- * Created by Steven on 11-7-2017.
- */
-
 var config = {};
 
 config.PORT = 3000;

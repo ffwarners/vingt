@@ -1,7 +1,3 @@
-/**
- * Created by Steven on 11-7-2017.
- */
-
 var mysql = require('mysql');
 var config = require('./config');
 

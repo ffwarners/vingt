@@ -19,10 +19,16 @@
       "name": "Steven Lambregts",
       "email": "stevenlambregts@gmail.com"
     }
-    ],
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ffwarners/vingt/issues"
   },
-  "homepage": "https://github.com/ffwarners/vingt"
+  "homepage": "https://github.com/ffwarners/vingt",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "ip": "^1.1.5",
+    "mysql": "^2.13.0"
+  }
 }

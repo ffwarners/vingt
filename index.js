@@ -1,10 +1,5 @@
-/**
- * Created by Steven on 11-7-2017.
- */
-
 // External modules
 var express = require('express');
-var session = require('express-session');
 var bodyParser = require('body-parser');
 
 // Our own modules
