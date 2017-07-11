@@ -6,7 +6,7 @@ var config = require('./config');
 // connect to mysql
 var connection;
 
-module.exports = function (app, passport, Connection) {
+module.exports = function (app, Connection) {
     connection = Connection;
 
     router.get('/cookies', function (req, res) {
@@ -14,15 +14,23 @@ module.exports = function (app, passport, Connection) {
         console.log(req.cookies);
         console.log("++ signed cookies ++");
         console.log(req.signedCookies);
-        res.render('404');
-        res.end();
-    });
-    router.get('/session', function (req, res) {
-        console.log("++ session ++");
-        console.log(req.session);
-        res.render('404');
+        res.render('home');
         res.end();
     });
 
+    router.get('/session', function (req, res) {
+        console.log("++ session ++");
+        console.log(req.session);
+        res.render('home');
+        res.end();
+    });
+
+    router.get('/', home);
+
     app.use(router);
 };
+
+function home(req, res) {
+    console.log("TEST");
+    res.render('home');
+}
