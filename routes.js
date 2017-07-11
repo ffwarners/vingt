@@ -14,14 +14,14 @@ module.exports = function (app, Connection) {
         console.log(req.cookies);
         console.log("++ signed cookies ++");
         console.log(req.signedCookies);
-        res.render('home');
+        res.render('404');
         res.end();
     });
 
     router.get('/session', function (req, res) {
         console.log("++ session ++");
         console.log(req.session);
-        res.render('home');
+        res.render('404');
         res.end();
     });
 
@@ -31,6 +31,5 @@ module.exports = function (app, Connection) {
 };
 
 function home(req, res) {
-    console.log("TEST");
-    res.render('home');
+    res.sendFile(__dirname + '/views/home.html');
 }
