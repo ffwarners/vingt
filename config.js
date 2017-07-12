@@ -10,6 +10,24 @@ config.dbData = {
     database: 'wines'
 };
 
+config.sessionOptions = {
+    secret: 'hellowhatdoesthismean',
+    resave: true,
+    saveUninitialized: true
+};
+
+config.loginOptions = {
+    successRedirect : '/start',
+    failureRedirect : '/login',
+    failureFlash : true
+};
+
+config.strategyOptions = {
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true
+};
+
 config.delimiter = '+----------+';
 
 module.exports = config;

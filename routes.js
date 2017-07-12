@@ -1,4 +1,5 @@
 var router = require('express').Router();
+var url = require('url');
 
 var dbHandler = require('./databaseHandler');
 var config = require('./config');
@@ -6,7 +7,7 @@ var config = require('./config');
 // connect to mysql
 var connection;
 
-module.exports = function (app, Connection) {
+module.exports = function (app, passport, Connection) {
     connection = Connection;
 
     router.get('/cookies', function (req, res) {
@@ -25,6 +26,11 @@ module.exports = function (app, Connection) {
         res.end();
     });
 
+    router.get('/login', getLogin);
+    router.post('/login', passport.authenticate('local-login', config.loginOptions), postLogin);
+
+    router.get('/logout', logout);
+
     router.get('/', home);
     router.get('/about-us.html', aboutUs);
     router.get('/blog.html', blog);
@@ -33,8 +39,34 @@ module.exports = function (app, Connection) {
     router.get('/portfolio.html', portfolio);
     router.get('/services.html', service);
 
+    router.get('/start', isLoggedIn, showStart);
+
     app.use(router);
 };
+
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        req.flash('loginMessage', 'You have to be logged in');
+        res.redirect('/login');
+    }
+}
+
+function getLogin(req, res) {
+    res.render('login', {message: req.flash('loginMessage')});
+}
+function postLogin(req, res) {
+    if (req.body.remember) {
+        req.session.cookie.maxAge = 1000 * 60 * 3;
+    } else {
+        req.session.cookie.expires = false;
+    }
+}
+function logout(req, res) {
+    req.logout();
+    res.redirect('/login');
+}
 
 function home(req, res) {
     res.sendFile(__dirname + '/views/home.html');
@@ -58,4 +90,10 @@ function portfolio(req, res) {
 
 function service(req, res) {
     res.sendFile(__dirname + '/views/services.html');
+}
+
+function showStart(req, res) {
+    dbHandler.getUser(req.user.id, function(rows) {
+        res.render('ingelogd', {user: rows[0].name})
+    });
 }

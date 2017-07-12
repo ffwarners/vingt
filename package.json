@@ -26,10 +26,16 @@
   },
   "homepage": "https://github.com/ffwarners/vingt",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
+    "connect-flash": "^0.1.1",
     "ejs": "^2.5.6",
     "express": "^4.15.3",
+    "express-session": "^1.15.3",
     "ip": "^1.1.5",
-    "mysql": "^2.13.0"
+    "mysql": "^2.13.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "validator": "^8.0.0"
   }
 }

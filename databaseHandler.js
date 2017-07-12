@@ -11,6 +11,14 @@ module.exports.connect = function () {
     return connection;
 };
 
+module.exports.getUser = function (id, succes) {
+    console.log('user is requested');
+
+    var sqlquery = 'SELECT * FROM users where id = ' + id +';';
+
+    query(sqlquery, succes);
+};
+
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {
         if (err) {
