@@ -108,6 +108,7 @@ CREATE TABLE `wines` (
   `name` varchar(45) DEFAULT NULL,
   `grapes` varchar(45) DEFAULT NULL,
   `trocken` enum('Y','N') DEFAULT NULL,
+  `size` float NOT NULL DEFAULT '0.75',
   `purchase_price` float DEFAULT NULL,
   PRIMARY KEY (`wine_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
@@ -119,7 +120,7 @@ CREATE TABLE `wines` (
 
 LOCK TABLES `wines` WRITE;
 /*!40000 ALTER TABLE `wines` DISABLE KEYS */;
-INSERT INTO `wines` VALUES (1,2015,'Reinhold Haart','Piesporter Goldtröpfchen','Kabinett',NULL,'Riesling','N',NULL),(2,2016,'Keller',NULL,'','von der Fels','Riesling','Y',NULL);
+INSERT INTO `wines` VALUES (1,2015,'Reinhold Haart','Piesporter Goldtröpfchen','Kabinett',NULL,'Riesling','N',0.75,NULL),(2,2016,'Keller',NULL,'','von der Fels','Riesling','Y',0.75,NULL);
 /*!40000 ALTER TABLE `wines` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -132,4 +133,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-13 12:36:39
+-- Dump completed on 2017-07-13 13:14:39
