@@ -33,14 +33,14 @@ module.exports = function (app, passport, Connection) {
 
     router.get('/', home);
     router.get('/kaart', kaart);
-    router.get('/blog.html', blog);
     router.get('/contact-us.html', contact);
     router.get('/index.html', home);
     router.get('/portfolio.html', portfolio);
     router.get('/services.html', service);
 
     router.get('/start', isLoggedIn, showStart);
-
+    router.get('/adaptKaart', isLoggedIn, adaptKaart);
+    router.get('/editWine?', isLoggedIn, editWineRoute);
     app.use(router);
 };
 
@@ -79,7 +79,37 @@ function kaart(req, res) {
         });
     });
 }
+function adaptKaart(req, res) {
+    dbHandler.getWineColumns(function (columns) {
+        dbHandler.getWines(function (rows) {
+            res.render('adoptKaart', {wines: rows, columns: columns});
+        });
+    });
+}
 
+function editWineRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.id !== undefined) {
+
+        var update = "UPDATE wines SET " + query.changed + " = '" + query.newvalue + "' where wine_id=" + query.id;
+
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to update wines');
+            } else {
+                console.log("wines successfully updated");
+                connection.query("SELECT * FROM wines WHERE id =?;", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no id defined");
+    }
+}
 function blog(req, res) {
     res.sendFile(__dirname + '/views/blog.html');
 }
