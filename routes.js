@@ -32,7 +32,7 @@ module.exports = function (app, passport, Connection) {
     router.get('/logout', logout);
 
     router.get('/', home);
-    router.get('/about-us.html', aboutUs);
+    router.get('/kaart', kaart);
     router.get('/blog.html', blog);
     router.get('/contact-us.html', contact);
     router.get('/index.html', home);
@@ -72,8 +72,12 @@ function home(req, res) {
     res.sendFile(__dirname + '/views/home.html');
 }
 
-function aboutUs(req, res) {
-    res.sendFile(__dirname + '/views/about-us.html');
+function kaart(req, res) {
+    dbHandler.getWineColumns(function (columns) {
+        dbHandler.getWines(function (rows) {
+            res.render('kaart', {wines: rows, columns: columns});
+        });
+    });
 }
 
 function blog(req, res) {
@@ -93,7 +97,7 @@ function service(req, res) {
 }
 
 function showStart(req, res) {
-    dbHandler.getUser(req.user.id, function(rows) {
+    dbHandler.getUser(req.user.id, function (rows) {
         res.render('ingelogd', {user: rows[0].name})
     });
 }

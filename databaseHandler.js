@@ -19,6 +19,24 @@ module.exports.getUser = function (id, succes) {
     query(sqlquery, succes);
 };
 
+module.exports.getWines = function (succes) {
+    console.log('Wines are requested');
+
+    var sqlquery = 'SELECT * FROM wines;';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getWineColumns = function (succes) {
+    console.log('WineColumns are requested');
+
+    var sqlquery = 'SHOW COLUMNS FROM wines';
+
+    query(sqlquery, succes);
+};
+
+
+
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {
         if (err) {
