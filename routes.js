@@ -41,6 +41,7 @@ module.exports = function (app, passport, Connection) {
     router.get('/start', isLoggedIn, showStart);
     router.get('/adaptKaart', isLoggedIn, adaptKaart);
     router.get('/editWine?', isLoggedIn, editWineRoute);
+    router.get('/editWineColumn?', isLoggedIn, editWineColumnRoute);
     app.use(router);
 };
 
@@ -110,6 +111,34 @@ function editWineRoute(req, res) {
         res.end("Error: no id defined");
     }
 }
+
+function editWineColumnRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.old !== undefined) {
+        var type = "text";
+        if (query.old === parseInt(query.old, 10)) {
+            type = "int";
+        }
+        var update = "ALTER TABLE wines CHANGE " + query.old + " " + query.newvalue + " " + type;
+        console.log(update);
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to update columns');
+            } else {
+                console.log("wines successfully updated");
+                connection.query("SELECT * FROM wines", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no old defined");
+    }
+}
+
 function blog(req, res) {
     res.sendFile(__dirname + '/views/blog.html');
 }

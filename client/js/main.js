@@ -84,10 +84,27 @@ function editWine(item) {
     });
 }
 
+function editWineColumn(item) {
+    $.ajax({
+        url: "/editWineColumn?old=" + item.id + "&newvalue=" + item.innerHTML,
+        async: false,
+        success: function (result) {
+        }
+    });
+}
+
 var contents = $('.editable').html();
 $('.editable').blur(function() {
     if (contents!=$(this).html()){
         editWine(this);
         contents = $(this).html();
+    }
+});
+
+var contentsColumn = $('.editableColumn').html();
+$('.editableColumn').blur(function() {
+    if (contentsColumn!=$(this).html()){
+        editWineColumn(this);
+        contentsColumn = $(this).html();
     }
 });

@@ -65,8 +65,11 @@
                         <thead>
                         <tr>
                             <% columns.forEach(function(column) { %>
-                            <td><%= column.Field %> <i class="fa fa-pencil" aria-hidden="true"></i></td>
-                            <% }); %>
+                            <% if (column.Field != "wine_id") {%>
+                            <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                class="pointer"><div id="<%= column.Field%>" class="editableColumn" contenteditable><%= column.Field %></div>
+                            </td>
+                            <% }}); %>
                             <td> +</td>
                             <td></td>
                         </tr>
@@ -76,11 +79,12 @@
                         <tr>
                             <% columns.forEach(function(column) { %>
                             <% var field = column.Field; %>
+                            <% if (column.Field != "wine_id") {%>
                             <td id="<%= field %>" data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
                                 class="pointer">
                                 <div id="<%= wine.wine_id %>" class="editable" contenteditable><%= wine[field] %></div>
                             </td>
-                            <% }); %>
+                            <% }}); %>
                             <td></td>
                             <td> x</td>
                         </tr>
