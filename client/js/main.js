@@ -143,12 +143,24 @@ function deleteColumn(classname, current) {
     }
 }
 
+function deleteWine(id) {
+    $.ajax({
+        url: "/deleteWine?id=" + id,
+        async: false,
+        success: function (result) {
+            document.getElementById('wine' + id).remove();
+        }
+    });
+}
+
 function newWine() {
+    var idNew;
+    var table = document.getElementById("wineTable");
     $.ajax({
         url: "/newWine?",
         async: false,
-        success: function (result) {
-            var table = document.getElementById("wineTable");
+        success: function (id) {
+            idNew = id;
             var clone = table.rows[table.rows.length - 2].cloneNode(true);
             clone.cells[0].firstChild.data =
                 clone.cells[0].firstChild.data.replace(/(\d+):/, function (str, g1) {
@@ -156,7 +168,14 @@ function newWine() {
                 });
             table.tBodies[0].insertBefore(clone, table.rows[table.rows.length - 1]);
             var hidden = document.getElementsByClassName("hidden");
+            console.log(hidden[0].lastElementChild);
+            hidden[0].lastElementChild.onclick = function() {
+                deleteWine(idNew);
+            };
+            hidden[0].setAttribute("id", "wine"+idNew);
             hidden[0].className = "";
+
+            table.lastElementChild.setAttribute("id", idNew);
         }
     });
 }

@@ -90,7 +90,7 @@
                         </thead>
                         <tbody>
                         <% wines.forEach(function(wine) { %>
-                        <tr>
+                        <tr id="wine<%=wine.wine_id%>">
                             <% columns.forEach(function(column) { %>
                             <% var field = column.Field; %>
                             <% if (column.Field != "wine_id") { %>
@@ -100,7 +100,7 @@
                             </td>
                             <% }}); %>
                             <td class="beneathAdd"></td>
-                            <td> x</td>
+                            <td onclick="deleteWine(<%= wine.wine_id%>)"> x</td>
                         </tr>
                         <% }); %>
                         <tr class="hidden">
@@ -113,7 +113,7 @@
                             </td>
                             <% }}); %>
                             <td class="beneathAdd"></td>
-                            <td> x</td>
+                            <td class="toDelete"> x</td>
                         </tr>
                         <tr>
                             <td class="addWine" onclick="newWine()" colspan="<%=columns.length-1%>"> + </td>

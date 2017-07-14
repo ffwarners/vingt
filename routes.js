@@ -45,6 +45,7 @@ module.exports = function (app, passport, Connection) {
     router.get('/addNewColumnWine?', isLoggedIn, addNewColumn);
     router.get('/deleteWineColumn?', isLoggedIn, deleteWineColumn);
     router.get('/newWine?', isLoggedIn, newWineRoute);
+    router.get('/deleteWine?', isLoggedIn, deleteWineRoute);
     app.use(router);
 };
 
@@ -196,14 +197,36 @@ function newWineRoute(req, res) {
     connection.query(update, function (err, rows) {
         if (err) {
             console.error('Error while performing query: ' + err.message);
-            res.end('Failed to delete columns');
+            res.end('Failed to add new wine');
         } else {
-            console.log("column succesfully deleted");
-            connection.query("SELECT * FROM wines", [query.id], function (err, result) {
-                res.json(result);
-            });
+            console.log(rows.insertId);
+            console.log("new wine successfully added");
+            res.json(rows.insertId);
         }
     });
+}
+
+function deleteWineRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.id !== undefined) {
+        var update = "DELETE FROM wines WHERE wine_id = " + query.id;
+        console.log(update);
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to delete wine');
+            } else {
+                console.log("wine successfully deleted");
+                connection.query("SELECT * FROM wines", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no id defined");
+    }
 }
 
 function blog(req, res) {
