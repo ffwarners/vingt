@@ -76,6 +76,9 @@ jQuery(function ($) {
 });
 
 function editWine(item) {
+    if (!item.id) {
+       item.id = item.parentNode.parentNode.children[0].children[0].id;
+    }
     $.ajax({
         url: "/editWine?id=" + item.id + "&changed=" + item.parentNode.id + "&newvalue=" + item.innerHTML,
         async: false,
@@ -93,18 +96,71 @@ function editWineColumn(item) {
     });
 }
 
+function addColumn() {
+    var columnName = document.getElementById("newColumnName").innerHTML;
+    $.ajax({
+        url: "/addNewColumnWine?name=" + columnName,
+        async: false,
+        success: function (result) {
+            $('<td data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div id="' + columnName + '" class="editableColumn" contenteditable>' + columnName +
+                '</div></td>').insertBefore('td.add');
+            $('<td id="' + columnName + '" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div id="" class="editable" contenteditable></div></td>').insertBefore('.beneathAdd');
+            $('<td onclick="deleteColumn(' + "'" + columnName + "'" + ', this)"><span class="glyphicon">&#xe020;</span></td>').insertBefore('.aboveAdd');
+            $('[data-toggle="tooltip"]').tooltip({
+                container: 'body'
+            });
+            contents = $('.editable').html();
+            $('.editable').blur(function () {
+                if (contents != $(this).html()) {
+                    editWine(this);
+                    contents = $(this).html();
+                }
+            });
+
+            contentsColumn = $('.editableColumn').html();
+            $('.editableColumn').blur(function () {
+                if (contentsColumn != $(this).html()) {
+                    editWineColumn(this);
+                    contentsColumn = $(this).html();
+                }
+            });
+            document.getElementById("newColumnName").innerHTML = "Nieuwe kolom";
+        }
+    });
+}
+
+function deleteColumn(classname, current) {
+    if (confirm("Weet je het zeker?")) {
+        $.ajax({
+            url: "/deleteWineColumn?delete=" + classname,
+            async: false,
+            success: function (result) {
+                var list = document.getElementsByClassName(classname);
+                while (list.length > 0) list[0].remove();
+                current.remove();
+            }
+        });
+    }
+}
+
 var contents = $('.editable').html();
-$('.editable').blur(function() {
-    if (contents!=$(this).html()){
+$('.editable').blur(function () {
+    if (contents != $(this).html()) {
         editWine(this);
         contents = $(this).html();
     }
 });
 
 var contentsColumn = $('.editableColumn').html();
-$('.editableColumn').blur(function() {
-    if (contentsColumn!=$(this).html()){
+$('.editableColumn').blur(function () {
+    if (contentsColumn != $(this).html()) {
         editWineColumn(this);
         contentsColumn = $(this).html();
     }
+});
+
+$(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip({
+        container: 'body'
+    });
 });

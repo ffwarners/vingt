@@ -61,17 +61,27 @@
                 <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
                     incididunt ut <br> et dolore magna aliqua. Ut enim ad minim veniam</p>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table id="wineTable" class="table table-bordered table-hover">
                         <thead>
                         <tr>
                             <% columns.forEach(function(column) { %>
-                            <% if (column.Field != "wine_id") {%>
+                            <% if (column.Field != "wine_id") { %>
+                            <td onclick="deleteColumn('<%= column.Field %>', this)"><span class="glyphicon">&#xe020;</span></td>
+                            <% }}); %>
+                            <td class="aboveAdd"></td>
+                        </tr>
+                        <tr>
+                            <% columns.forEach(function(column) { %>
+                            <% if (column.Field != "wine_id") { %>
                             <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
-                                class="pointer"><div id="<%= column.Field%>" class="editableColumn" contenteditable><%= column.Field %></div>
+                                class="pointer <%= column.Field %>">
+                                <div id="<%= column.Field %>" class="editableColumn"
+                                     contenteditable><%= column.Field %></div>
                             </td>
                             <% }}); %>
-                            <td> +</td>
-                            <td></td>
+                            <td id="newColumnName" data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                class="add pointer" contenteditable>Nieuwe kolom</td>
+                            <td><button onclick="addColumn()">+</button></td>
                         </tr>
                         </thead>
                         <tbody>
@@ -79,13 +89,13 @@
                         <tr>
                             <% columns.forEach(function(column) { %>
                             <% var field = column.Field; %>
-                            <% if (column.Field != "wine_id") {%>
+                            <% if (column.Field != "wine_id") { %>
                             <td id="<%= field %>" data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
-                                class="pointer">
+                                class="pointer <%= field %>">
                                 <div id="<%= wine.wine_id %>" class="editable" contenteditable><%= wine[field] %></div>
                             </td>
                             <% }}); %>
-                            <td></td>
+                            <td class="beneathAdd"></td>
                             <td> x</td>
                         </tr>
                         <% }); %>
@@ -401,17 +411,9 @@
 <!-- Script for the $JSON -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
 
 <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-
-<script>
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip({
-            container: 'body'
-        });
-    });
-</script>
 
 </body>
 </html>

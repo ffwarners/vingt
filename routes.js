@@ -42,6 +42,8 @@ module.exports = function (app, passport, Connection) {
     router.get('/adaptKaart', isLoggedIn, adaptKaart);
     router.get('/editWine?', isLoggedIn, editWineRoute);
     router.get('/editWineColumn?', isLoggedIn, editWineColumnRoute);
+    router.get('/addNewColumnWine?', isLoggedIn, addNewColumn);
+    router.get('/deleteWineColumn?', isLoggedIn, deleteWineColumn);
     app.use(router);
 };
 
@@ -94,7 +96,7 @@ function editWineRoute(req, res) {
 
     if (query.id !== undefined) {
 
-        var update = "UPDATE wines SET " + query.changed + " = '" + query.newvalue + "' where wine_id=" + query.id;
+        var update = "UPDATE wines SET `" + query.changed + "` = '" + query.newvalue + "' where wine_id=" + query.id;
 
         connection.query(update, function (err, rows) {
             if (err) {
@@ -117,11 +119,11 @@ function editWineColumnRoute(req, res) {
     var query = urlData.query;
 
     if (query.old !== undefined) {
-        var type = "text";
+        var type = "TEXT";
         if (query.old === parseInt(query.old, 10)) {
-            type = "int";
+            type = "INT";
         }
-        var update = "ALTER TABLE wines CHANGE " + query.old + " " + query.newvalue + " " + type;
+        var update = "ALTER TABLE wines CHANGE `" + query.old + "` `" + query.newvalue + "` " + type;
         console.log(update);
         connection.query(update, function (err, rows) {
             if (err) {
@@ -138,6 +140,54 @@ function editWineColumnRoute(req, res) {
         res.end("Error: no old defined");
     }
 }
+
+function addNewColumn(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.name !== undefined) {
+        var update = "ALTER TABLE wines ADD `" + query.name + "` TEXT";
+        console.log(update);
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to update columns');
+            } else {
+                console.log("wines successfully updated");
+                connection.query("SELECT * FROM wines", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no new name defined");
+    }
+}
+
+function deleteWineColumn(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.delete !== undefined) {
+        var update = "ALTER TABLE wines DROP COLUMN `" + query.delete + "`";
+        console.log(update);
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to delete columns');
+            } else {
+                console.log("column succesfully deleted");
+                connection.query("SELECT * FROM wines", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no deletion defined");
+    }
+}
+
+
 
 function blog(req, res) {
     res.sendFile(__dirname + '/views/blog.html');
