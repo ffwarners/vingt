@@ -1849,5 +1849,9 @@ ul.sidebar-gallery {
     cursor: pointer;
 }
 
+.hidden {
+    visibility: hidden;
+}
+
 
 

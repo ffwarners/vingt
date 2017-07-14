@@ -77,7 +77,7 @@ jQuery(function ($) {
 
 function editWine(item) {
     if (!item.id) {
-       item.id = item.parentNode.parentNode.children[0].children[0].id;
+        item.id = item.parentNode.parentNode.children[0].children[0].id;
     }
     $.ajax({
         url: "/editWine?id=" + item.id + "&changed=" + item.parentNode.id + "&newvalue=" + item.innerHTML,
@@ -141,6 +141,24 @@ function deleteColumn(classname, current) {
             }
         });
     }
+}
+
+function newWine() {
+    $.ajax({
+        url: "/newWine?",
+        async: false,
+        success: function (result) {
+            var table = document.getElementById("wineTable");
+            var clone = table.rows[table.rows.length - 2].cloneNode(true);
+            clone.cells[0].firstChild.data =
+                clone.cells[0].firstChild.data.replace(/(\d+):/, function (str, g1) {
+                    return (+g1 + 1) + ':';
+                });
+            table.tBodies[0].insertBefore(clone, table.rows[table.rows.length - 1]);
+            var hidden = document.getElementsByClassName("hidden");
+            hidden[0].className = "";
+        }
+    });
 }
 
 var contents = $('.editable').html();

@@ -44,6 +44,7 @@ module.exports = function (app, passport, Connection) {
     router.get('/editWineColumn?', isLoggedIn, editWineColumnRoute);
     router.get('/addNewColumnWine?', isLoggedIn, addNewColumn);
     router.get('/deleteWineColumn?', isLoggedIn, deleteWineColumn);
+    router.get('/newWine?', isLoggedIn, newWineRoute);
     app.use(router);
 };
 
@@ -187,7 +188,23 @@ function deleteWineColumn(req, res) {
     }
 }
 
+function newWineRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
 
+    var update = "INSERT INTO wines () VALUES()";
+    connection.query(update, function (err, rows) {
+        if (err) {
+            console.error('Error while performing query: ' + err.message);
+            res.end('Failed to delete columns');
+        } else {
+            console.log("column succesfully deleted");
+            connection.query("SELECT * FROM wines", [query.id], function (err, result) {
+                res.json(result);
+            });
+        }
+    });
+}
 
 function blog(req, res) {
     res.sendFile(__dirname + '/views/blog.html');

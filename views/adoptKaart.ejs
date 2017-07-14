@@ -66,22 +66,26 @@
                         <tr>
                             <% columns.forEach(function(column) { %>
                             <% if (column.Field != "wine_id") { %>
-                            <td onclick="deleteColumn('<%= column.Field %>', this)"><span class="glyphicon">&#xe020;</span></td>
+                            <td onclick="deleteColumn('<%= column.Field %>', this)"><span
+                                        class="glyphicon">&#xe020;</span></td>
                             <% }}); %>
                             <td class="aboveAdd"></td>
                         </tr>
                         <tr>
                             <% columns.forEach(function(column) { %>
                             <% if (column.Field != "wine_id") { %>
-                            <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                            <td style="font-weight: bold;" data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
                                 class="pointer <%= column.Field %>">
                                 <div id="<%= column.Field %>" class="editableColumn"
                                      contenteditable><%= column.Field %></div>
                             </td>
                             <% }}); %>
                             <td id="newColumnName" data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
-                                class="add pointer" contenteditable>Nieuwe kolom</td>
-                            <td><button onclick="addColumn()">+</button></td>
+                                class="add pointer" contenteditable>Nieuwe kolom
+                            </td>
+                            <td>
+                                <button onclick="addColumn()">+</button>
+                            </td>
                         </tr>
                         </thead>
                         <tbody>
@@ -99,6 +103,21 @@
                             <td> x</td>
                         </tr>
                         <% }); %>
+                        <tr class="hidden">
+                            <% columns.forEach(function(column) { %>
+                            <% var field = column.Field; %>
+                            <% if (column.Field != "wine_id") { %>
+                            <td id="<%= field %>" data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                class="pointer <%= field %>">
+                                <div class="editable" contenteditable></div>
+                            </td>
+                            <% }}); %>
+                            <td class="beneathAdd"></td>
+                            <td> x</td>
+                        </tr>
+                        <tr>
+                            <td class="addWine" onclick="newWine()" colspan="<%=columns.length-1%>"> + </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

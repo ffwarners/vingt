@@ -62,17 +62,19 @@
                         <thead>
                         <tr>
                             <% columns.forEach(function(column) { %>
-                            <td><%= column.Field %></td>
-                            <% }); %>
+                            <% if (column.Field != "wine_id") { %>
+                            <td style="font-weight: bold;"><%= column.Field %></td>
+                            <% }}); %>
                         </tr>
                         </thead>
                         <tbody>
                         <% wines.forEach(function(wine) { %>
                         <tr>
                             <% columns.forEach(function(column) { %>
+                            <% if (column.Field != "wine_id") { %>
                             <% var field = column.Field; %>
                             <td><%= wine[field] %></td>
-                            <% }); %>
+                            <% }}); %>
                         </tr>
                         <% }); %>
                         </tbody>
