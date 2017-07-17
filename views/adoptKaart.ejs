@@ -74,7 +74,8 @@
                         <tr>
                             <% columns.forEach(function(column) { %>
                             <% if (column.Field != "wine_id") { %>
-                            <td style="font-weight: bold;" data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                            <td style="font-weight: bold;" data-toggle="tooltip" data-placement="bottom"
+                                title="Bewerk..."
                                 class="pointer <%= column.Field %>">
                                 <div id="<%= column.Field %>" class="editableColumn"
                                      contenteditable><%= column.Field %></div>
@@ -90,17 +91,17 @@
                         </thead>
                         <tbody>
                         <% wines.forEach(function(wine) { %>
-                        <tr id="wine<%=wine.wine_id%>">
+                        <tr id="wine<%= wine.wine_id %>">
                             <% columns.forEach(function(column) { %>
                             <% var field = column.Field; %>
                             <% if (column.Field != "wine_id") { %>
                             <td id="<%= field %>" data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
                                 class="pointer <%= field %>">
-                                <div id="<%= wine.wine_id %>" class="editable" contenteditable><%= wine[field] %></div>
+                                <div class="editable" onchange="editWine(this)" contenteditable><%= wine[field] %></div>
                             </td>
                             <% }}); %>
                             <td class="beneathAdd"></td>
-                            <td onclick="deleteWine(<%= wine.wine_id%>)"> x</td>
+                            <td onclick="deleteWine(<%= wine.wine_id %>)"> x</td>
                         </tr>
                         <% }); %>
                         <tr class="hidden">
@@ -116,7 +117,7 @@
                             <td class="toDelete"> x</td>
                         </tr>
                         <tr>
-                            <td class="addWine" onclick="newWine()" colspan="<%=columns.length-1%>"> + </td>
+                            <td class="addWine" onclick="newWine()" colspan="<%= columns.length-1 %>"> +</td>
                         </tr>
                         </tbody>
                     </table>
@@ -419,6 +420,7 @@
     </div>
 </footer><!--/#footer-->
 
+
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="js/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -429,10 +431,13 @@
 
 <!-- Script for the $JSON -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+
 
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
 
 <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
 
 </body>
 </html>

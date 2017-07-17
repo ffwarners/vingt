@@ -76,24 +76,42 @@ jQuery(function ($) {
 });
 
 function editWine(item) {
-    if (!item.id) {
-        item.id = item.parentNode.parentNode.children[0].children[0].id;
-    }
+    var id = item.parentNode.parentNode.id.substring(4);
     $.ajax({
-        url: "/editWine?id=" + item.id + "&changed=" + item.parentNode.id + "&newvalue=" + item.innerHTML,
+        url: "/editWine?id=" + id + "&changed=" + item.parentNode.id + "&newvalue=" + item.innerHTML,
         async: false,
-        success: function (result) {
+        complete: function () {
+            $(item).css('backgroundColor', 'green');
+            $(item).animate({
+                'opacity': '0.5'
+            }, 1000, function () {
+                $(item).css({
+                    'backgroundColor': '#fff',
+                    'opacity': '1'
+                });
+            });
         }
     });
+    editable();
 }
 
 function editWineColumn(item) {
     $.ajax({
         url: "/editWineColumn?old=" + item.id + "&newvalue=" + item.innerHTML,
         async: false,
-        success: function (result) {
+        complete: function () {
+            $(item).css('backgroundColor', 'green');
+            $(item).animate({
+                'opacity': '0.5'
+            }, 1000, function () {
+                $(item).css({
+                    'backgroundColor': '#fff',
+                    'opacity': '1'
+                });
+            });
         }
     });
+    editable();
 }
 
 function addColumn() {
@@ -101,32 +119,21 @@ function addColumn() {
     $.ajax({
         url: "/addNewColumnWine?name=" + columnName,
         async: false,
-        success: function (result) {
-            $('<td data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div id="' + columnName + '" class="editableColumn" contenteditable>' + columnName +
+        success: function () {
+            $('<td style="font-weight: bold;" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div class="editableColumn" contenteditable>' + columnName +
                 '</div></td>').insertBefore('td.add');
-            $('<td id="' + columnName + '" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div id="" class="editable" contenteditable></div></td>').insertBefore('.beneathAdd');
-            $('<td onclick="deleteColumn(' + "'" + columnName + "'" + ', this)"><span class="glyphicon">&#xe020;</span></td>').insertBefore('.aboveAdd');
+            $('<td id="' + columnName + '" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div class="editable" contenteditable></div></td>').insertBefore('.beneathAdd');
+            $('<td onclick="deleteColumn(' + "'" + columnName + "'" + ', this"><span class="glyphicon">&#xe020;</span></td>').insertBefore('.aboveAdd');
             $('[data-toggle="tooltip"]').tooltip({
                 container: 'body'
             });
-            contents = $('.editable').html();
-            $('.editable').blur(function () {
-                if (contents != $(this).html()) {
-                    editWine(this);
-                    contents = $(this).html();
-                }
-            });
-
-            contentsColumn = $('.editableColumn').html();
-            $('.editableColumn').blur(function () {
-                if (contentsColumn != $(this).html()) {
-                    editWineColumn(this);
-                    contentsColumn = $(this).html();
-                }
-            });
             document.getElementById("newColumnName").innerHTML = "Nieuwe kolom";
+            var colspan = document.getElementsByClassName("addWine")[0].getAttribute("colspan");
+            colspan++;
+            document.getElementsByClassName("addWine")[0].setAttribute("colspan", colspan);
         }
     });
+    editable();
 }
 
 function deleteColumn(classname, current) {
@@ -134,23 +141,30 @@ function deleteColumn(classname, current) {
         $.ajax({
             url: "/deleteWineColumn?delete=" + classname,
             async: false,
-            success: function (result) {
+            success: function () {
                 var list = document.getElementsByClassName(classname);
                 while (list.length > 0) list[0].remove();
                 current.remove();
+                var colspan = document.getElementsByClassName("addWine")[0].getAttribute("colspan");
+                colspan--;
+                document.getElementsByClassName("addWine")[0].setAttribute("colspan", colspan);
             }
         });
     }
+    editable();
 }
 
 function deleteWine(id) {
-    $.ajax({
-        url: "/deleteWine?id=" + id,
-        async: false,
-        success: function (result) {
-            document.getElementById('wine' + id).remove();
-        }
-    });
+    if (confirm("Weet je het zeker?")) {
+        $.ajax({
+            url: "/deleteWine?id=" + id,
+            async: false,
+            success: function (result) {
+                document.getElementById('wine' + id).remove();
+            }
+        });
+    }
+    editable();
 }
 
 function newWine() {
@@ -161,40 +175,54 @@ function newWine() {
         async: false,
         success: function (id) {
             idNew = id;
-            var clone = table.rows[table.rows.length - 2].cloneNode(true);
-            clone.cells[0].firstChild.data =
-                clone.cells[0].firstChild.data.replace(/(\d+):/, function (str, g1) {
-                    return (+g1 + 1) + ':';
-                });
-            table.tBodies[0].insertBefore(clone, table.rows[table.rows.length - 1]);
+            //The clone part
+            $(table.rows[table.rows.length - 2]).clone().insertBefore(table.rows[table.rows.length - 1]);
+
+            // Make the new row visible
             var hidden = document.getElementsByClassName("hidden");
             console.log(hidden[0].lastElementChild);
-            hidden[0].lastElementChild.onclick = function() {
+            hidden[0].lastElementChild.onclick = function () {
                 deleteWine(idNew);
             };
-            hidden[0].setAttribute("id", "wine"+idNew);
+            hidden[0].setAttribute("id", "wine" + idNew);
             hidden[0].className = "";
+            console.log(table.rows[table.rows.length - 3]);
+            table.rows[table.rows.length - 3].lastElementChild.setAttribute("id", idNew);
+            console.log(table.rows[table.rows.length - 3]);
 
-            table.lastElementChild.setAttribute("id", idNew);
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip({
+                    container: 'body'
+                });
+            });
         }
     });
+    editable();
 }
 
 var contents = $('.editable').html();
-$('.editable').blur(function () {
-    if (contents != $(this).html()) {
-        editWine(this);
-        contents = $(this).html();
-    }
+var contentsColumn = $('.editableColumn').html();
+$(document).ready(function () {
+    editable();
 });
 
-var contentsColumn = $('.editableColumn').html();
-$('.editableColumn').blur(function () {
-    if (contentsColumn != $(this).html()) {
-        editWineColumn(this);
-        contentsColumn = $(this).html();
-    }
-});
+function editable() {
+    contents = $('.editable').html();
+    $('.editable').blur(function () {
+        if (contents !== $(this).html()) {
+            editWine(this);
+            contents = $(this).html();
+        }
+    });
+
+    contentsColumn = $('.editableColumn').html();
+    $('.editableColumn').blur(function () {
+        if (contentsColumn !== $(this).html()) {
+            editWineColumn(this);
+            contentsColumn = $(this).html();
+        }
+    });
+}
 
 $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip({

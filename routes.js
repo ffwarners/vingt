@@ -199,7 +199,6 @@ function newWineRoute(req, res) {
             console.error('Error while performing query: ' + err.message);
             res.end('Failed to add new wine');
         } else {
-            console.log(rows.insertId);
             console.log("new wine successfully added");
             res.json(rows.insertId);
         }
