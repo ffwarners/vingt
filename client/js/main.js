@@ -115,25 +115,41 @@ function editWineColumn(item) {
 }
 
 function addColumn() {
-    var columnName = document.getElementById("newColumnName").innerHTML;
-    $.ajax({
-        url: "/addNewColumnWine?name=" + columnName,
-        async: false,
-        success: function () {
-            $('<td style="font-weight: bold;" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div class="editableColumn" contenteditable>' + columnName +
-                '</div></td>').insertBefore('td.add');
-            $('<td id="' + columnName + '" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div class="editable" contenteditable></div></td>').insertBefore('.beneathAdd');
-            $('<td onclick="deleteColumn(' + "'" + columnName + "'" + ', this"><span class="glyphicon">&#xe020;</span></td>').insertBefore('.aboveAdd');
-            $('[data-toggle="tooltip"]').tooltip({
-                container: 'body'
-            });
-            document.getElementById("newColumnName").innerHTML = "Nieuwe kolom";
-            var colspan = document.getElementsByClassName("addWine")[0].getAttribute("colspan");
-            colspan++;
-            document.getElementsByClassName("addWine")[0].setAttribute("colspan", colspan);
-        }
-    });
+    var columnName = $("#newColumnName").html();
+    if (!HasColumn(columnName)) {
+        $.ajax({
+            url: "/addNewColumnWine?name=" + columnName,
+            async: false,
+            success: function () {
+                $('<td style="font-weight: bold;" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div class="editableColumn" contenteditable>' + columnName +
+                    '</div></td>').insertBefore('td.add');
+                $('<td id="' + columnName + '" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div class="editable" contenteditable></div></td>').insertBefore('.beneathAdd');
+                columnName = "'" + columnName + "'";
+                $('<td onclick="deleteColumn(' + columnName + ', ' + "this" + ')"><span class="glyphicon">&#xe020;</span></td>').insertBefore('.aboveAdd');
+                $('[data-toggle="tooltip"]').tooltip({
+                    container: 'body'
+                });
+                document.getElementById("newColumnName").innerHTML = "Nieuwe kolom";
+                var colspan = document.getElementsByClassName("addWine")[0].getAttribute("colspan");
+                colspan++;
+                document.getElementsByClassName("addWine")[0].setAttribute("colspan", colspan);
+            }
+        });
+    } else {
+        alert("Deze kolom bestaat al!");
+    }
     editable();
+}
+
+function HasColumn(text) {
+    var bool = false;
+    var cells = document.getElementById("wineTable").tHead.rows[1].cells;
+    for (var i = 0; i < cells.length - 2; i++) {
+        if (cells[i].children[0].innerHTML === text) {
+            bool = true;
+        }
+    }
+    return bool;
 }
 
 function deleteColumn(classname, current) {
@@ -180,15 +196,12 @@ function newWine() {
 
             // Make the new row visible
             var hidden = document.getElementsByClassName("hidden");
-            console.log(hidden[0].lastElementChild);
             hidden[0].lastElementChild.onclick = function () {
                 deleteWine(idNew);
             };
             hidden[0].setAttribute("id", "wine" + idNew);
             hidden[0].className = "";
-            console.log(table.rows[table.rows.length - 3]);
             table.rows[table.rows.length - 3].lastElementChild.setAttribute("id", idNew);
-            console.log(table.rows[table.rows.length - 3]);
 
             $(document).ready(function () {
                 $('[data-toggle="tooltip"]').tooltip({
