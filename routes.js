@@ -33,10 +33,10 @@ module.exports = function (app, passport, Connection) {
 
     router.get('/', home);
     router.get('/kaart', kaart);
+    router.get('/proeverijen', proeverijen);
     router.get('/contact-us.html', contact);
     router.get('/index.html', home);
     router.get('/portfolio.html', portfolio);
-    router.get('/services.html', service);
 
     router.get('/start', isLoggedIn, showStart);
     router.get('/adaptKaart', isLoggedIn, adaptKaart);
@@ -61,6 +61,7 @@ function isLoggedIn(req, res, next) {
 function getLogin(req, res) {
     res.render('login', {message: req.flash('loginMessage')});
 }
+
 function postLogin(req, res) {
     if (req.body.remember) {
         req.session.cookie.maxAge = 1000 * 60 * 3;
@@ -68,6 +69,7 @@ function postLogin(req, res) {
         req.session.cookie.expires = false;
     }
 }
+
 function logout(req, res) {
     req.logout();
     res.redirect('/login');
@@ -84,6 +86,7 @@ function kaart(req, res) {
         });
     });
 }
+
 function adaptKaart(req, res) {
     dbHandler.getWineColumns(function (columns) {
         dbHandler.getWines(function (rows) {
@@ -240,8 +243,10 @@ function portfolio(req, res) {
     res.sendFile(__dirname + '/views/portfolio.html');
 }
 
-function service(req, res) {
-    res.sendFile(__dirname + '/views/services.html');
+function proeverijen(req, res) {
+    dbHandler.getProeverijen(function (rows) {
+        res.render('proeverijen', {proeverijen: rows});
+    });
 }
 
 function showStart(req, res) {

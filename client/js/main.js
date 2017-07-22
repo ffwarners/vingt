@@ -141,6 +141,9 @@ function addColumn() {
     editable();
 }
 
+/**
+ * @return {boolean}
+ */
 function HasColumn(text) {
     var bool = false;
     var cells = document.getElementById("wineTable").tHead.rows[1].cells;
@@ -242,3 +245,19 @@ $(document).ready(function () {
         container: 'body'
     });
 });
+
+function alertTemp(melding) {
+    var tijd_datum = new Date();
+    var dag = tijd_datum.getDay(); //dag in woorden
+    var dag2 = tijd_datum.getDate(); // dag in getal
+    var maand = tijd_datum.getMonth()+1; // +1 want js begint bij 0 te tellen
+    var jaar = tijd_datum.getFullYear();
+
+    var uur = tijd_datum.getHours();
+    var minuten = tijd_datum.getMinutes();
+    var seconden = tijd_datum.getSeconds();
+
+    var maandarray = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
+    var dagarray = ['zondag','maandag','dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+    alert(dagarray[dag]+" "+dag2+" "+maandarray[maand]+" "+jaar+" "+uur+":"+minuten+":"+seconden);
+}

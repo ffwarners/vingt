@@ -35,6 +35,14 @@ module.exports.getWineColumns = function (succes) {
     query(sqlquery, succes);
 };
 
+module.exports.getProeverijen = function (succes) {
+    console.log('Proeverijen are requested');
+
+    var sqlquery = 'SELECT * FROM proeverijen';
+
+    query(sqlquery, succes);
+};
+
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {
         if (err) {
