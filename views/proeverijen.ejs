@@ -53,97 +53,26 @@
 	   <div class="container">
             <div class="center wow fadeInDown">
                 <h2>Proeverijen</h2>
-                <p class="lead">Aankomende proeverijen</p>
+                <p class="lead">Aankomende proeverijen, klik op een proeverij om naar het aanmeldscherm te gaan</p>
             </div>
 
             <div class="row">
 
                 <% proeverijen.forEach(function(proeverij) { %>
-                <div class="col-sm-6 col-md-4 pointer" onclick="alertTemp('<%=proeverij.Naam%>')">
+                <% if (proeverij.shown == "true") {%>
+                <div class="col-sm-6 col-md-4 pointer" onclick="alertTemp('<%=proeverij.name%>')">
                     <div class="media services-wrap wow fadeInDown">
                         <div class="pull-left">
                             <img class="img-responsive" src="images/services/services<%=proeverij.id%>.png">
                         </div>
                         <div class="media-body">
-                            <h3 class="media-heading"><%= proeverij.Naam %></h3>
-                            <p>Datum: <%=proeverij.Datum%><br>
-                                <%=proeverij.Details%></p>
+                            <h3 class="media-heading"><%= proeverij.name %></h3>
+                            <p>Datum: <%=proeverij.date%><br>
+                                <%=proeverij.details%></p>
                         </div>
                     </div>
                 </div>
-                <% }); %>
-
-                <!--<div class="col-sm-6 col-md-4">-->
-                    <!--<div class="media services-wrap wow fadeInDown">-->
-                        <!--<div class="pull-left">-->
-                            <!--<img class="img-responsive" src="images/services/services1.png">-->
-                        <!--</div>-->
-                        <!--<div class="media-body">-->
-                            <!--<h3 class="media-heading">SEO Marketing</h3>-->
-                            <!--<p>Lorem ipsum dolor sit ame consectetur adipisicing elit</p>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-6 col-md-4">-->
-                    <!--<div class="media services-wrap wow fadeInDown">-->
-                        <!--<div class="pull-left">-->
-                            <!--<img class="img-responsive" src="images/services/services2.png">-->
-                        <!--</div>-->
-                        <!--<div class="media-body">-->
-                            <!--<h3 class="media-heading">SEO Marketing</h3>-->
-                            <!--<p>Lorem ipsum dolor sit ame consectetur adipisicing elit</p>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-6 col-md-4">-->
-                    <!--<div class="media services-wrap wow fadeInDown">-->
-                        <!--<div class="pull-left">-->
-                            <!--<img class="img-responsive" src="images/services/services3.png">-->
-                        <!--</div>-->
-                        <!--<div class="media-body">-->
-                            <!--<h3 class="media-heading">SEO Marketing</h3>-->
-                            <!--<p>Lorem ipsum dolor sit ame consectetur adipisicing elit</p>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-6 col-md-4">-->
-                    <!--<div class="media services-wrap wow fadeInDown">-->
-                        <!--<div class="pull-left">-->
-                            <!--<img class="img-responsive" src="images/services/services4.png">-->
-                        <!--</div>-->
-                        <!--<div class="media-body">-->
-                            <!--<h3 class="media-heading">SEO Marketing</h3>-->
-                            <!--<p>Lorem ipsum dolor sit ame consectetur adipisicing elit</p>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-6 col-md-4">-->
-                    <!--<div class="media services-wrap wow fadeInDown">-->
-                        <!--<div class="pull-left">-->
-                            <!--<img class="img-responsive" src="images/services/services5.png">-->
-                        <!--</div>-->
-                        <!--<div class="media-body">-->
-                            <!--<h3 class="media-heading">SEO Marketing</h3>-->
-                            <!--<p>Lorem ipsum dolor sit ame consectetur adipisicing elit</p>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="col-sm-6 col-md-4">-->
-                    <!--<div class="media services-wrap wow fadeInDown">-->
-                        <!--<div class="pull-left">-->
-                            <!--<img class="img-responsive" src="images/services/services6.png">-->
-                        <!--</div>-->
-                        <!--<div class="media-body">-->
-                            <!--<h3 class="media-heading">SEO Marketing</h3>-->
-                            <!--<p>Lorem ipsum dolor sit ame consectetur adipisicing elit</p>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
+                <% }}); %>
             </div><!--/.row-->
         </div><!--/.container-->
     </section><!--/#services-->

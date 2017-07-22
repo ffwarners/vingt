@@ -222,6 +222,18 @@ $(document).ready(function () {
     editable();
 });
 
+var contentsProeverij = $('.editableProeverij').html();
+$(document).ready(function () {
+    contentsProeverij = $('.editableProeverij').html();
+    $('.editableProeverij').blur(function () {
+        if (contentsProeverij !== $(this).html()) {
+            console.log($(this).html());
+            contentsProeverij = $(this).html();
+        }
+    });
+});
+
+
 function editable() {
     contents = $('.editable').html();
     $('.editable').blur(function () {
@@ -246,11 +258,11 @@ $(document).ready(function () {
     });
 });
 
-function alertTemp(melding) {
+function alertTemp() {
     var tijd_datum = new Date();
     var dag = tijd_datum.getDay(); //dag in woorden
     var dag2 = tijd_datum.getDate(); // dag in getal
-    var maand = tijd_datum.getMonth()+1; // +1 want js begint bij 0 te tellen
+    var maand = tijd_datum.getMonth() + 1; // +1 want js begint bij 0 te tellen
     var jaar = tijd_datum.getFullYear();
 
     var uur = tijd_datum.getHours();
@@ -258,6 +270,35 @@ function alertTemp(melding) {
     var seconden = tijd_datum.getSeconds();
 
     var maandarray = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
-    var dagarray = ['zondag','maandag','dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
-    alert(dagarray[dag]+" "+dag2+" "+maandarray[maand]+" "+jaar+" "+uur+":"+minuten+":"+seconden);
+    var dagarray = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+    alert(dagarray[dag] + " " + dag2 + " " + maandarray[maand] + " " + jaar + " " + uur + ":" + minuten + ":" + seconden);
+}
+
+Date.prototype.yyyymmdd = function () {
+    var mm = this.getMonth() + 1; // getMonth() is zero-based
+    var dd = this.getDate();
+
+    return [this.getFullYear(),
+        (mm > 9 ? '' : '0') + mm,
+        (dd > 9 ? '' : '0') + dd
+    ].join('');
+};
+
+function changeHidden(id) {
+    var checkbox = document.getElementById("checkboxThreeInput" + id);
+    console.log(checkbox.checked);
+    $.ajax({
+        url: "/changeHidden?id=" + id + "&shown='" + checkbox.checked + "'",
+        async: false,
+        success: function () {
+            var parent = checkbox.parentNode.parentNode.parentNode.parentNode.parentNode;
+            var classList = parent.classList;
+            if (classList.contains("notShown")) {
+                classList.remove("notShown");
+            } else {
+                classList.add("notShown");
+            }
+            console.log(parent.classList);
+        }
+    });
 }

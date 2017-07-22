@@ -40,12 +40,16 @@ module.exports = function (app, passport, Connection) {
 
     router.get('/start', isLoggedIn, showStart);
     router.get('/adaptKaart', isLoggedIn, adaptKaart);
+    router.get('/adaptProeverijen', isLoggedIn, adaptProeverijen);
+
     router.get('/editWine?', isLoggedIn, editWineRoute);
     router.get('/editWineColumn?', isLoggedIn, editWineColumnRoute);
     router.get('/addNewColumnWine?', isLoggedIn, addNewColumn);
     router.get('/deleteWineColumn?', isLoggedIn, deleteWineColumn);
     router.get('/newWine?', isLoggedIn, newWineRoute);
     router.get('/deleteWine?', isLoggedIn, deleteWineRoute);
+
+    router.get('/changeHidden?', isLoggedIn, changeHiddenRoute);
     app.use(router);
 };
 
@@ -90,10 +94,17 @@ function kaart(req, res) {
 function adaptKaart(req, res) {
     dbHandler.getWineColumns(function (columns) {
         dbHandler.getWines(function (rows) {
-            res.render('adoptKaart', {wines: rows, columns: columns});
+            res.render('adaptKaart', {wines: rows, columns: columns});
         });
     });
 }
+
+function adaptProeverijen(req, res) {
+    dbHandler.getProeverijen(function (rows) {
+        res.render('adaptProeverijen', {proeverijen: rows});
+    });
+}
+
 
 function editWineRoute(req, res) {
     var urlData = url.parse(req.url, true);
@@ -222,6 +233,30 @@ function deleteWineRoute(req, res) {
             } else {
                 console.log("wine successfully deleted");
                 connection.query("SELECT * FROM wines", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no id defined");
+    }
+}
+
+function changeHiddenRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.id !== undefined) {
+
+        var update = "UPDATE proeverijen SET shown=" + query.shown + " where id=" + query.id;
+
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to update proeverijen');
+            } else {
+                console.log("proeverijen successfully updated");
+                connection.query("SELECT * FROM proeverijen WHERE id =?;", [query.id], function (err, result) {
                     res.json(result);
                 });
             }
