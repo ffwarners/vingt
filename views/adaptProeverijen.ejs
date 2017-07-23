@@ -58,35 +58,36 @@
             <p class="lead">Aankomende proeverijen</p>
         </div>
 
-        <div class="row">
+        <div class="row" id="proeverijenDiv">
 
             <% proeverijen.forEach(function(proeverij) { %>
-            <div class="col-sm-6 col-md-4
+            <div id="proeverij<%=proeverij.id%>" class="col-sm-6 col-md-4
                 <% if (proeverij.shown == "false") { %> notShown<% } %>">
                 <div class="media services-wrap wow fadeInDown">
+                    <div class="pull-right" onclick="deleteProeverij(<%=proeverij.id%>)">&#10006;</div>
                     <div class="pull-left">
                         <section>
                             <div class="checkboxThree"><input onchange="changeHidden('<%=proeverij.id%>')" type="checkbox" <% if (proeverij.shown == "true") { %> checked <% } %> value="1" id="checkboxThreeInput<%=proeverij.id%>" name=""/><label for="checkboxThreeInput<%=proeverij.id%>"></label></div>
                         </section>
                     </div>
-                    <div class="media-body">
-                        <div><div onchange="alertTemp()" class="media-heading pointer editableProeverij" data-toggle="tooltip" data-placement="left" title="Bewerk..." contenteditable><%= proeverij.name %></div></div>
-                        <div><input data-toggle="tooltip" data-placement="left" title="Bewerk..." class="pointer editableProeverij" contenteditable value="<%= proeverij.date %>" type="date"/></div>
-                        <div><div class="media-heading pointer editableProeverij" data-toggle="tooltip" data-placement="left" title="Bewerk..." contenteditable><%= proeverij.details %></div></div>
+                    <div class="media-body" id="<%=proeverij.id%>">
+                        <div id="name"><div class="media-heading pointer editableProeverij" data-toggle="tooltip" data-placement="left" title="Bewerk..." contenteditable><%= proeverij.name %></div></div>
+                        <div id="date"><input data-toggle="tooltip" data-placement="left" title="Bewerk..." class="pointer editableProeverij" contenteditable value="<%= proeverij.date %>" type="date"/></div>
+                        <div id="details"><div class="media-heading pointer editableProeverij" data-toggle="tooltip" data-placement="left" title="Bewerk..." contenteditable><%= proeverij.details %></div></div>
                     </div>
                 </div>
             </div>
             <% }); %>
-            <div class="col-sm-6 col-md-4">
+            <div id="addDiv" class="col-sm-6 col-md-4">
                 <div class="media services-wrap wow fadeInDown">
                     <div class="pull-left">
                         <img class="img-responsive" src="images/services/services1.png">
                     </div>
                     <div class="media-body">
-                        <input class="media-heading pointer" placeholder="Nieuwe proeverij" type="text"/>
-                        <input class="pointer" type="date"/>
-                        <input class="pointer" type="text" placeholder="details"/>
-                        <button type="button" class="btn btn-primary">Toevoegen</button>
+                        <input id="proefName" class="media-heading pointer" placeholder="Nieuwe proeverij" type="text"/>
+                        <input id="proefDate" class="pointer" type="date"/>
+                        <input id="proefDetails" class="pointer" type="text" placeholder="details"/>
+                        <button type="button" onclick="addProeverij()" class="btn btn-primary">Toevoegen</button>
                     </div>
                 </div>
             </div>

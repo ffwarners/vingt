@@ -218,20 +218,22 @@ function newWine() {
 
 var contents = $('.editable').html();
 var contentsColumn = $('.editableColumn').html();
+var contentsProeverij = $('.editableProeverij').html();
+
 $(document).ready(function () {
     editable();
+    editableProeverij();
 });
 
-var contentsProeverij = $('.editableProeverij').html();
-$(document).ready(function () {
+function editableProeverij() {
     contentsProeverij = $('.editableProeverij').html();
     $('.editableProeverij').blur(function () {
         if (contentsProeverij !== $(this).html()) {
-            console.log($(this).html());
+            editProeverij(this);
             contentsProeverij = $(this).html();
         }
     });
-});
+}
 
 
 function editable() {
@@ -258,35 +260,9 @@ $(document).ready(function () {
     });
 });
 
-function alertTemp() {
-    var tijd_datum = new Date();
-    var dag = tijd_datum.getDay(); //dag in woorden
-    var dag2 = tijd_datum.getDate(); // dag in getal
-    var maand = tijd_datum.getMonth() + 1; // +1 want js begint bij 0 te tellen
-    var jaar = tijd_datum.getFullYear();
-
-    var uur = tijd_datum.getHours();
-    var minuten = tijd_datum.getMinutes();
-    var seconden = tijd_datum.getSeconds();
-
-    var maandarray = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
-    var dagarray = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
-    alert(dagarray[dag] + " " + dag2 + " " + maandarray[maand] + " " + jaar + " " + uur + ":" + minuten + ":" + seconden);
-}
-
-Date.prototype.yyyymmdd = function () {
-    var mm = this.getMonth() + 1; // getMonth() is zero-based
-    var dd = this.getDate();
-
-    return [this.getFullYear(),
-        (mm > 9 ? '' : '0') + mm,
-        (dd > 9 ? '' : '0') + dd
-    ].join('');
-};
 
 function changeHidden(id) {
     var checkbox = document.getElementById("checkboxThreeInput" + id);
-    console.log(checkbox.checked);
     $.ajax({
         url: "/changeHidden?id=" + id + "&shown='" + checkbox.checked + "'",
         async: false,
@@ -298,7 +274,126 @@ function changeHidden(id) {
             } else {
                 classList.add("notShown");
             }
-            console.log(parent.classList);
         }
     });
+}
+
+function editProeverij(item) {
+    var changed = item.innerHTML;
+    var id = item.parentNode.parentNode.id;
+    if (item.parentNode.id === "date") changed = item.value;
+    $.ajax({
+        url: "/editProeverij?id=" + id + "&changed=" + item.parentNode.id + "&newvalue=" + changed,
+        async: false,
+        complete: function () {
+            $(item).css('backgroundColor', 'green');
+            $(item).animate({
+                'opacity': '0.5'
+            }, 1000, function () {
+                $(item).css({
+                    'backgroundColor': '#fff',
+                    'opacity': '1'
+                });
+            });
+        }
+    });
+    editableProeverij();
+}
+
+function deleteProeverij(id) {
+    if (confirm("Weet je het zeker?")) {
+        $.ajax({
+            url: "/deleteProeverij?id=" + id,
+            async: false,
+            complete: function (result) {
+                $('#proeverij' + id).fadeOut(1000, function () {
+                    $(this).remove();
+                });
+            }
+        });
+    }
+    editableProeverij();
+}
+
+function addProeverij() {
+    var div = document.getElementById("proeverijenDiv");
+    var date = document.getElementById("proefDate").value;
+    var name = document.getElementById("proefName").value;
+    var details = document.getElementById("proefDetails").value;
+
+    $.ajax({
+        url: "/newProeverij?name=" + name + "&date=" + date + "&details=" + details,
+        async: false,
+        success: function (id) {
+            var basic = document.createElement("div");
+            basic.setAttribute("id", "proeverij" + id);
+            basic.classList.add("col-sm-6");
+            basic.classList.add("col-md-4");
+
+            var mediaDiv = document.createElement("div");
+            mediaDiv.classList.add("media");
+            mediaDiv.classList.add("wow");
+            mediaDiv.classList.add("fadeInDown");
+            mediaDiv.classList.add("services-wrap");
+
+            var close = document.createElement("div");
+            close.classList.add('pull-right');
+            close.onclick = function() {
+                deleteProeverij(id)
+            };
+            close.innerHTML = "&#10006;";
+
+            var left = document.createElement("div");
+            left.classList.add("pull-left");
+
+            var section = document.createElement("section");
+
+            var checkbox = document.createElement("div");
+            checkbox.classList.add("checkboxThree");
+
+            var checkInput = document.createElement("input");
+            checkInput.onclick = function() {
+                changeHidden(id)
+            };
+            checkInput.setAttribute("type", "checkbox");
+            checkInput.checked = true;
+            checkInput.setAttribute("value", "1");
+            checkInput.setAttribute("id", id);
+            checkInput.setAttribute("name", "");
+
+            var label = document.createElement("label");
+            label.setAttribute("for", "checkboxThreeInput" + id);
+
+            var mediaBody = document.createElement("div");
+            mediaBody.classList.add("media-body");
+            mediaBody.setAttribute("id", id);
+
+            $('<div id="name"><div class="media-heading pointer editableProeverij" data-toggle="tooltip" data-placement="left" title="Bewerk..." contenteditable>' + name + '</div></div>' +
+                '                        <div id="date"><input data-toggle="tooltip" data-placement="left" title="Bewerk..." class="pointer editableProeverij" contenteditable value="' + date + '" type="date"/></div>' +
+                '                        <div id="details"><div class="media-heading pointer editableProeverij" data-toggle="tooltip" data-placement="left" title="Bewerk..." contenteditable>' + details + '</div></div>').appendTo(mediaBody);
+
+            checkbox.appendChild(checkInput);
+            checkbox.appendChild(label);
+            section.appendChild(checkbox);
+            left.appendChild(checkbox);
+            mediaDiv.appendChild(close);
+            mediaDiv.appendChild(left);
+            mediaDiv.appendChild(mediaBody);
+            basic.appendChild(mediaDiv);
+
+            $(basic).insertBefore('#addDiv');
+
+            document.getElementById("proefDate").value = "";
+            document.getElementById("proefName").value = "";
+            document.getElementById("proefDetails").value = "";
+
+
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip({
+                    container: 'body'
+                });
+            });
+        }
+    });
+    editableProeverij();
 }

@@ -67,7 +67,12 @@
                         </div>
                         <div class="media-body">
                             <h3 class="media-heading"><%= proeverij.name %></h3>
-                            <p>Datum: <%=proeverij.date%><br>
+                            <% var date = proeverij.date
+                                var year = date.substring(0,4);
+                                var month = date.substring(5,7);
+                                var day = date.substring(8,10);
+                                var newDate = day + "-" + month + "-" + year;%>
+                            <p id="">Datum: <%=newDate%><br>
                                 <%=proeverij.details%></p>
                         </div>
                     </div>

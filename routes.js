@@ -50,6 +50,9 @@ module.exports = function (app, passport, Connection) {
     router.get('/deleteWine?', isLoggedIn, deleteWineRoute);
 
     router.get('/changeHidden?', isLoggedIn, changeHiddenRoute);
+    router.get('/editProeverij?', isLoggedIn, editProeverijRoute);
+    router.get('/deleteProeverij?', isLoggedIn, deleteProeverijRoute);
+    router.get('/newProeverij?', isLoggedIn, addNewProeverij);
     app.use(router);
 };
 
@@ -120,7 +123,31 @@ function editWineRoute(req, res) {
                 res.end('Failed to update wines');
             } else {
                 console.log("wines successfully updated");
-                connection.query("SELECT * FROM wines WHERE id =?;", [query.id], function (err, result) {
+                connection.query("SELECT * FROM wines WHERE wine_id =?;", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no id defined");
+    }
+}
+
+function editProeverijRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.id !== undefined) {
+
+        var update = "UPDATE proeverijen SET `" + query.changed + "` = '" + query.newvalue + "' where id=" + query.id;
+
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to update proeverijen');
+            } else {
+                console.log("proeverijen successfully updated");
+                connection.query("SELECT * FROM proeverijen WHERE id =?;", [query.id], function (err, result) {
                     res.json(result);
                 });
             }
@@ -140,7 +167,6 @@ function editWineColumnRoute(req, res) {
             type = "INT";
         }
         var update = "ALTER TABLE wines CHANGE `" + query.old + "` `" + query.newvalue + "` " + type;
-        console.log(update);
         connection.query(update, function (err, rows) {
             if (err) {
                 console.error('Error while performing query: ' + err.message);
@@ -163,7 +189,6 @@ function addNewColumn(req, res) {
 
     if (query.name !== undefined) {
         var update = "ALTER TABLE wines ADD `" + query.name + "` TEXT";
-        console.log(update);
         connection.query(update, function (err, rows) {
             if (err) {
                 console.error('Error while performing query: ' + err.message);
@@ -186,7 +211,6 @@ function deleteWineColumn(req, res) {
 
     if (query.delete !== undefined) {
         var update = "ALTER TABLE wines DROP COLUMN `" + query.delete + "`";
-        console.log(update);
         connection.query(update, function (err, rows) {
             if (err) {
                 console.error('Error while performing query: ' + err.message);
@@ -225,7 +249,6 @@ function deleteWineRoute(req, res) {
 
     if (query.id !== undefined) {
         var update = "DELETE FROM wines WHERE wine_id = " + query.id;
-        console.log(update);
         connection.query(update, function (err, rows) {
             if (err) {
                 console.error('Error while performing query: ' + err.message);
@@ -233,6 +256,28 @@ function deleteWineRoute(req, res) {
             } else {
                 console.log("wine successfully deleted");
                 connection.query("SELECT * FROM wines", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no id defined");
+    }
+}
+
+function deleteProeverijRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.id !== undefined) {
+        var update = "DELETE FROM proeverijen WHERE id = " + query.id;
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to delete proeverij');
+            } else {
+                console.log("proeverijen successfully deleted");
+                connection.query("SELECT * FROM proeverij", [query.id], function (err, result) {
                     res.json(result);
                 });
             }
@@ -264,6 +309,22 @@ function changeHiddenRoute(req, res) {
     } else {
         res.end("Error: no id defined");
     }
+}
+
+function addNewProeverij(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    var update = "INSERT INTO proeverijen VALUES(0, '" + query.name + "', '" + query.date + "', '" + query.details + "', 'true');";
+    connection.query(update, function (err, rows) {
+        if (err) {
+            console.error('Error while performing query: ' + err.message);
+            res.end('Failed to add new proeverij');
+        } else {
+            console.log("new proeverij successfully added");
+            res.json(rows.insertId);
+        }
+    });
 }
 
 function blog(req, res) {
