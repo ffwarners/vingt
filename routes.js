@@ -1,5 +1,7 @@
 var router = require('express').Router();
 var url = require('url');
+var sh = require("shorthash");
+
 
 var dbHandler = require('./databaseHandler');
 var config = require('./config');
@@ -53,6 +55,9 @@ module.exports = function (app, passport, Connection) {
     router.get('/editProeverij?', isLoggedIn, editProeverijRoute);
     router.get('/deleteProeverij?', isLoggedIn, deleteProeverijRoute);
     router.get('/newProeverij?', isLoggedIn, addNewProeverij);
+
+    router.get('/registrationUn?', registrationUn);
+    router.get('/registration?', registration);
     app.use(router);
 };
 
@@ -105,6 +110,44 @@ function adaptKaart(req, res) {
 function adaptProeverijen(req, res) {
     dbHandler.getProeverijen(function (rows) {
         res.render('adaptProeverijen', {proeverijen: rows});
+    });
+}
+
+function registrationUn(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+    console.log(query.id);
+    console.log("hashed: " + sh.unique("id=" + query.id));
+
+
+    res.redirect('registration?' + sh.unique("id=" + query.id));
+}
+
+function registration(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    var url2 = req.url;
+    var id = url2.substring(14);
+    var hashedId;
+    var correctId;
+    dbHandler.getProeverijenID(function (rows) {
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            hashedId = sh.unique("id=" + row.id);
+            if (hashedId === id) {
+                correctId = row.id;
+                break;
+            }
+        }
+        if(!correctId) res.render('404');
+        dbHandler.getProeverij(correctId, function (rows) {
+            if(rows[0].shown === "true") {
+                res.render('registration', {proeverij: rows[0]});
+            } else {
+                res.render('404');
+            }
+        });
     });
 }
 

@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
--- Host: localhost    Database: wines
+-- Host: 127.0.0.1    Database: wines
 -- ------------------------------------------------------
 -- Server version	5.7.18-log
 
@@ -39,6 +39,33 @@ LOCK TABLES `producers` WRITE;
 /*!40000 ALTER TABLE `producers` DISABLE KEYS */;
 INSERT INTO `producers` VALUES (1,'Reinhold Haart','Germany','Mosel'),(2,'Forstmeister-Geltz Zilliken','Germany','Mosel'),(3,'A.J. Adam','Germany','Mosel'),(4,'Julian Haart','Germany','Mosel'),(5,'Keller','Germany','Rheinhessen'),(6,'Kühling-Gillot','Germany','Rheinhessen'),(7,'Battenfeld Spanier','Germany','Rheinhessen'),(8,'Schäfer-Fröhlich','Germany','Nahe'),(9,'Emrich-Schönleber','Germany','Nahe');
 /*!40000 ALTER TABLE `producers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `proeverijen`
+--
+
+DROP TABLE IF EXISTS `proeverijen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `proeverijen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text,
+  `date` text,
+  `details` text,
+  `shown` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `proeverijen`
+--
+
+LOCK TABLES `proeverijen` WRITE;
+/*!40000 ALTER TABLE `proeverijen` DISABLE KEYS */;
+INSERT INTO `proeverijen` VALUES (1,'opa','2222-02-22','123','true'),(2,'Hidden proeverij','2017-07-13','Deze zou verborgen moeten zijn','true'),(3,'Eerste proeverij ooit','2014-12-01','Gezellig bij Felix thuis','true'),(4,'test','2017-02-02','Wijn drinken','true'),(5,'Nieuwe proeverij','1998-10-22','Even kijken wat deze afbeelding is','true'),(6,'volgende foto','1998-05-12','Details volgen nog','true');
+/*!40000 ALTER TABLE `proeverijen` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -100,16 +127,16 @@ DROP TABLE IF EXISTS `wines`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wines` (
-  `wine_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `vintage` int(10) unsigned NOT NULL,
-  `producer` varchar(60) NOT NULL,
-  `vineyard` varchar(60) DEFAULT NULL,
-  `predikat` varchar(60) DEFAULT NULL,
-  `name` varchar(45) DEFAULT NULL,
-  `grapes` varchar(45) DEFAULT NULL,
-  `trocken` enum('Y','N') DEFAULT NULL,
-  `size` float NOT NULL DEFAULT '0.75',
-  `purchase_price` float DEFAULT NULL,
+  `wine_id` int(11) NOT NULL AUTO_INCREMENT,
+  `vintage` text,
+  `producer` text,
+  `vineyard` text,
+  `predikat` text,
+  `name` text,
+  `grapes` text,
+  `trocken` text,
+  `size` text,
+  `purchase price` text,
   PRIMARY KEY (`wine_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -120,7 +147,7 @@ CREATE TABLE `wines` (
 
 LOCK TABLES `wines` WRITE;
 /*!40000 ALTER TABLE `wines` DISABLE KEYS */;
-INSERT INTO `wines` VALUES (1,2015,'Reinhold Haart','Piesporter Goldtröpfchen','Kabinett',NULL,'Riesling','N',0.75,NULL),(2,2016,'Keller',NULL,'','von der Fels','Riesling','Y',0.75,NULL);
+INSERT INTO `wines` VALUES (1,'2015','Reinhold Haart','Piesporter Goldtröpfchen','Kabinett',NULL,'Riesling','N','0.75',''),(2,'2016','Keller','home','','von der Fels','Riesling','Y','0.75',NULL);
 /*!40000 ALTER TABLE `wines` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -133,4 +160,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-13 13:14:39
+-- Dump completed on 2017-07-29 12:53:54

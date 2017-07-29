@@ -14,7 +14,7 @@ module.exports.connect = function () {
 module.exports.getUser = function (id, succes) {
     console.log('user is requested');
 
-    var sqlquery = 'SELECT * FROM users where id = ' + id +';';
+    var sqlquery = 'SELECT * FROM users where id = ' + id + ';';
 
     query(sqlquery, succes);
 };
@@ -39,6 +39,22 @@ module.exports.getProeverijen = function (succes) {
     console.log('Proeverijen are requested');
 
     var sqlquery = 'SELECT * FROM proeverijen';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getProeverijenID = function (succes) {
+    console.log("Id's of proeverijen are requested");
+
+    var sqlquery = 'SELECT id FROM proeverijen';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getProeverij = function (id, succes) {
+    console.log("Proeverij with id: " + id + " is requested");
+
+    var sqlquery = 'SELECT * FROM proeverijen WHERE id = ' + id;
 
     query(sqlquery, succes);
 };
