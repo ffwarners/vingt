@@ -52,36 +52,56 @@
 <section id="services" class="service-item">
     <div class="container">
         <div class="center wow fadeInDown">
-            <h2><%=proeverij.name%></h2>
-            <p class="lead"><%=proeverij.details%></p>
-            <p class="lead">op <%=proeverij.date%></p>
+            <h2><%= proeverij.name %></h2>
+            <% var proefDetails = proeverij.details %>
+            <% if(proefDetails.includes("<br>")) { %>
+            <p class="lead">
+                <% var n = proefDetails.lastIndexOf("<br>"); %>
+                <%= proefDetails.substring(0, n) %></p>
+            <p class="lead">
+                <%= proefDetails.substring(n + 4); %></p>
+            <% } else { %>
+            <p class="lead">
+                <%= proeverij.details %></p>
+            <% } %>
+
+            <% var date = proeverij.date
+            var year = date.substring(0, 4);
+            var month = date.substring(5, 7);
+            var day = date.substring(8, 10);
+            var newDate = day + "-" + month + "-" + year; %>
+            <p class="lead">Datum: <%= newDate %><br></p>
         </div>
 
-        <div class="row">
+        <div class="row wow fadeInDown">
 
-            <form action="/action_page.php">
-                <div class="container">
+            <form method="post" action="/registrate">
+                <div class="container fadeInDown">
+                    <input name="id" value="<%=proeverij.id%>" class="hidden">
+                    <label for="proeverij"><b class="white">Uw gewenste proeverij:</b></label><br>
+                    <input class="curved" style="max-width: 50%; min-width: 200px; cursor:not-allowed;" type="text" name="proeverij" value="<%=proeverij.name%>" readonly required title="proeverij">
+                    <br>
                     <label><b class="white">Uw geslacht</b></label><br>
-                    <select id="gender">
+                    <select  class="curved" id="gender" name="gender" title="gender">
                         <option value="man">Man</option>
                         <option value="vrouw">Vrouw</option>
                     </select>
                     <br>
                     <br>
                     <label for="name"><b class="white">Uw voor- en achternaam *</b></label>
-                    <input type="text" placeholder="Donnie van den Beuken" name="name" required>
+                    <input class="curved" type="text" placeholder="Donnie van den Beuken" name="name" required>
                     <br>
                     <label for="email"><b class="white">Uw e-mail *</b></label>
-                    <input type="email" placeholder="DonnievandenBeuken@armyspy.com" name="email" required>
+                    <input class="curved" type="email" placeholder="DonnievandenBeuken@armyspy.com" name="email" required>
                     <br>
                     <label for="telephone"><b class="white">Uw telefoonnummer *</b></label>
-                    <input type="tel" placeholder="06-63600715" name="telephone" required>
+                    <input class="curved" type="tel" placeholder="06-63600715" name="telephone" required>
                     <br>
                     <label for="birthdate"><b class="white">Uw geboortedatum *</b></label>
-                    <input type="date" placeholder="06-63600715" name="birthdate" required>
+                    <input class="curved" type="date" placeholder="06-63600715" name="birthdate" required>
 
-                    <label><b class="white">Welke taal spreekt u? (What language do you speak?) *</b></label><br>
-                    <select id="language">
+                    <label><b class="white">Welke taal spreekt u? (What language do you speak?) </b></label><br>
+                    <select class="curved" id="language" name="language">
                         <option value="dutch">Nederlands</option>
                         <option value="english">English</option>
                         <option value="french">Français</option>
@@ -89,20 +109,19 @@
                     </select>
                     <br>
 
-                    <p class="white"><small>De onderdelen met een * zijn verplicht, kijk in onze <a href="#">voorwaarden</a>.</small></p>
+                    <p class="white">
+                        <small>De onderdelen met een * zijn verplicht, kijk in onze <a href="#">voorwaarden</a>.</small>
+                    </p>
 
 
                     <div class="clearfix">
-                        <button type="submit" class="signupbtn">Sign Up</button>
+                        <button type="submit" class="signupbtn">Meld mij aan!</button>
                     </div>
                 </div>
             </form>
         </div><!--/.row-->
     </div><!--/.container-->
 </section><!--/#services-->
-
-
-
 
 
 <section id="bottom">

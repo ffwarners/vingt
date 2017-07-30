@@ -73,7 +73,7 @@
                     <div class="media-body" id="<%=proeverij.id%>">
                         <div id="name"><div class="media-heading pointer editableProeverij" data-toggle="tooltip" data-placement="left" title="Bewerk..." contenteditable><%= proeverij.name %></div></div>
                         <div id="date"><input data-toggle="tooltip" data-placement="left" title="Bewerk..." class="pointer editableProeverij" contenteditable value="<%= proeverij.date %>" type="date"/></div>
-                        <div id="details"><div class="media-heading pointer editableProeverij" data-toggle="tooltip" data-placement="left" title="Bewerk..." contenteditable><%= proeverij.details %></div></div>
+                        <div id="details"><div class="media-heading pointer editableProeverij" data-toggle="tooltip" data-placement="left" title="Bewerk..." contenteditable><% var proefDetails = proeverij.details %><% if(proefDetails.includes("<br>")) { %><% var n = proefDetails.lastIndexOf("<br>"); %><%= proefDetails.substring(0, n+4) %><br><%= proefDetails.substring(n+4); %><% } else { %><%= proefDetails %><% } %></div></div>
                     </div>
                 </div>
             </div>

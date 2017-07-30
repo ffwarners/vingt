@@ -278,8 +278,19 @@ function changeHidden(id) {
     });
 }
 
+$('div[contenteditable]').keydown(function(e) {
+    // trap the return key being pressed
+    if (e.keyCode === 13) {
+        // insert 2 br tags (if only one br tag is inserted the cursor won't go to the next line)
+        document.execCommand('insertHTML', false, '<br>');
+        // prevent the default behaviour of return key pressed
+        return false;
+    }
+});
+
 function editProeverij(item) {
     var changed = item.innerHTML;
+    console.log(changed);
     var id = item.parentNode.parentNode.id;
     if (item.parentNode.id === "date") changed = item.value;
     $.ajax({

@@ -1,6 +1,11 @@
 var router = require('express').Router();
 var url = require('url');
 var sh = require("shorthash");
+var fs = require('fs');
+var nodemailer = require('nodemailer');
+var mg = require('nodemailer-mailgun-transport');
+var ejs = require('ejs');
+var bcrypt = require('bcrypt-nodejs');
 
 
 var dbHandler = require('./databaseHandler');
@@ -58,6 +63,10 @@ module.exports = function (app, passport, Connection) {
 
     router.get('/registrationUn?', registrationUn);
     router.get('/registration?', registration);
+    router.post('/registrate', sendmail);
+    router.get('/test', test);
+    router.get('/confirmUn?', confirmedUn);
+    router.get('/confirmed?', confirm);
     app.use(router);
 };
 
@@ -140,9 +149,9 @@ function registration(req, res) {
                 break;
             }
         }
-        if(!correctId) res.render('404');
+        if (!correctId) res.render('404');
         dbHandler.getProeverij(correctId, function (rows) {
-            if(rows[0].shown === "true") {
+            if (rows[0].shown === "true") {
                 res.render('registration', {proeverij: rows[0]});
             } else {
                 res.render('404');
@@ -150,7 +159,6 @@ function registration(req, res) {
         });
     });
 }
-
 
 function editWineRoute(req, res) {
     var urlData = url.parse(req.url, true);
@@ -392,4 +400,99 @@ function showStart(req, res) {
     dbHandler.getUser(req.user.id, function (rows) {
         res.render('ingelogd', {user: rows[0].name})
     });
+}
+
+function test(req, res) {
+    dbHandler.getProeverij(1, function (rows) {
+        res.render('email', {
+                proeverij: rows[0], person: {
+                    id: '2',
+                    proeverij: 'Hidden proeverij',
+                    gender: 'man',
+                    name: 'Steven Lambregts',
+                    email: 'stevenlambregts@gmail.com',
+                    telephone: '06-123456789',
+                    birthdate: '1998-10-22',
+                    language: 'dutch'
+                }
+            }
+        );
+    });
+}
+
+function sendmail(req, res) {
+    var id = req.body.id;
+    dbHandler.getProeverij(id, function (row) {
+        var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/email.ejs', 'utf8'));
+        var html = compiled({proeverij: row[0], person: req.body});
+
+        var auth = {
+            auth: {
+                api_key: 'key-eadd5996875559e35a0948edc0478cb8',
+                domain: 'sandboxaa40e321565e4288abd236f2e92a6cbd.mailgun.org'
+            }
+        };
+
+        var nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+        nodemailerMailgun.sendMail({
+            from: "Vingt wijnhandelaar, <vingt@gmail.com>",
+            to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
+            subject: 'Vingt - bevestig uw registratie voor ' + req.body.proeverij,
+            html: html
+        }, function (err, info) {
+            if (err) {
+                console.error('Error: ' + err);
+            }
+            else {
+                res.redirect('/');
+            }
+        });
+    });
+}
+
+function confirmedUn(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+    var string = JSON.stringify(query);
+    res.redirect('confirmed?' + encrypt(string));
+}
+
+function confirm(req, res) {
+    var urlData = url.parse(req.url, true);
+    var string = req.url.substring(11);
+    var dc = decrypt(string);
+    var query = JSON.parse(dc);
+    console.log(query);
+
+    //TODO::
+    var update = "INSERT INTO aanmelders () VALUES (0, '" + query.name + "', '" + query.email + "', '" + query.gender + "', '" + query.birthdate + "', '" + query.telephone + "', '" + query.language + "', '" + query.proeverijName + "', " + query.proeverijId + ")";
+    connection.query(update, function (err, rows) {
+        if (err) {
+            console.error('Error while performing query: ' + err.message);
+            res.end('Failed to add new aanmelder');
+        } else {
+            console.log("new aanmelder successfully added");
+            res.render('confirm', {person: query});
+        }
+    });
+
+}
+
+var crypto = require('crypto'),
+    algorithm = 'aes-256-ctr',
+    password = 'd6F3Efeq';
+
+function encrypt(text){
+    var cipher = crypto.createCipher(algorithm,password);
+    var crypted = cipher.update(text,'utf8','hex');
+    crypted += cipher.final('hex');
+    return crypted;
+}
+
+function decrypt(text){
+    var decipher = crypto.createDecipher(algorithm,password);
+    var dec = decipher.update(text,'hex','utf8');
+    dec += decipher.final('utf8');
+    return dec;
 }
