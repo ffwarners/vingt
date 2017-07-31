@@ -16,6 +16,37 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `aanmelders`
+--
+
+DROP TABLE IF EXISTS `aanmelders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `aanmelders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text,
+  `email` text,
+  `gender` text,
+  `birthdate` text,
+  `telephone` text,
+  `language` text,
+  `proeverijName` text,
+  `proeverijID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aanmelders`
+--
+
+LOCK TABLES `aanmelders` WRITE;
+/*!40000 ALTER TABLE `aanmelders` DISABLE KEYS */;
+INSERT INTO `aanmelders` VALUES (1,'Felix Warners','ffwarners@gmail.com','man','1986-02-16','06-12345678','Dutch','opa',1),(8,'Steven Lambregts','stevenlambregts@gmail.com','man','1998-10-22','06-123456789','Dutch','opa',1),(9,'Steven Lambregts','stevenlambregts@gmail.com','man','1998-10-22','06-123456789','Dutch','volgende foto',6);
+/*!40000 ALTER TABLE `aanmelders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `producers`
 --
 
@@ -64,7 +95,7 @@ CREATE TABLE `proeverijen` (
 
 LOCK TABLES `proeverijen` WRITE;
 /*!40000 ALTER TABLE `proeverijen` DISABLE KEYS */;
-INSERT INTO `proeverijen` VALUES (1,'opa','2222-02-22','123','true'),(2,'Hidden proeverij','2017-07-13','Deze zou verborgen moeten zijn','true'),(3,'Eerste proeverij ooit','2014-12-01','Gezellig bij Felix thuis','true'),(4,'test','2017-02-02','Wijn drinken','true'),(5,'Nieuwe proeverij','1998-10-22','Even kijken wat deze afbeelding is','true'),(6,'volgende foto','1998-05-12','Details volgen nog','true');
+INSERT INTO `proeverijen` VALUES (1,'opa','2222-02-22','Dit is een faketekst. Alles wat hier staat is slechts om een indruk te geven van het grafische effect van tekst op deze plek. Wat u hier leest is een voorbeeldtekst. Deze wordt later vervangen door de uiteindelijke tekst, die nu nog niet bekend is. De faketekst is dus een tekst die eigenlijk nergens over gaat. Het grappige is, dat mensen deze toch vaak lezen. Zelfs als men weet dat het om een faketekst gaat, lezen ze toch door.','true'),(2,'Hidden proeverij','2017-07-13','Deze zou verborgen moeten zijn','true'),(3,'Eerste proeverij ooit','2014-12-01','Gezellig bij Felix thuis','true'),(4,'test','2017-02-02','Wijn drinken','true'),(5,'Nieuwe proeverij','1998-10-22','Even kijken wat deze afbeelding is','true'),(6,'volgende foto','1998-05-12','Details volgen nog','true');
 /*!40000 ALTER TABLE `proeverijen` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,4 +191,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-29 12:53:54
+-- Dump completed on 2017-07-31 19:00:59

@@ -223,6 +223,7 @@ var contentsProeverij = $('.editableProeverij').html();
 $(document).ready(function () {
     editable();
     editableProeverij();
+    editableAanmelders();
 });
 
 function editableProeverij() {
@@ -234,7 +235,6 @@ function editableProeverij() {
         }
     });
 }
-
 
 function editable() {
     contents = $('.editable').html();
@@ -260,7 +260,6 @@ $(document).ready(function () {
     });
 });
 
-
 function changeHidden(id) {
     var checkbox = document.getElementById("checkboxThreeInput" + id);
     $.ajax({
@@ -278,7 +277,7 @@ function changeHidden(id) {
     });
 }
 
-$('div[contenteditable]').keydown(function(e) {
+$('div[contenteditable]').keydown(function (e) {
     // trap the return key being pressed
     if (e.keyCode === 13) {
         // insert 2 br tags (if only one br tag is inserted the cursor won't go to the next line)
@@ -349,7 +348,7 @@ function addProeverij() {
 
             var close = document.createElement("div");
             close.classList.add('pull-right');
-            close.onclick = function() {
+            close.onclick = function () {
                 deleteProeverij(id)
             };
             close.innerHTML = "&#10006;";
@@ -363,7 +362,7 @@ function addProeverij() {
             checkbox.classList.add("checkboxThree");
 
             var checkInput = document.createElement("input");
-            checkInput.onclick = function() {
+            checkInput.onclick = function () {
                 changeHidden(id)
             };
             checkInput.setAttribute("type", "checkbox");
@@ -407,4 +406,88 @@ function addProeverij() {
         }
     });
     editableProeverij();
+}
+
+function deleteAanmelder(id) {
+    $.ajax({
+        url: "/removeAanmelder?id=" + id,
+        async: false,
+        success: function () {
+            document.getElementById("aanmelder" + id).remove();
+        }
+    });
+}
+
+function showProeverij(id) {
+    var list = document.getElementById("div" + id).classList;
+    if (list.contains("hidden")) {
+        list.remove("hidden");
+    } else {
+        list.add("hidden");
+    }
+}
+
+$(document).ready(function () {
+    $(".btnExport").click(function (e) {
+        var id = this.parentNode.id.substring(3);
+        var name = this.id;
+        e.preventDefault();
+
+        //getting data from our table
+        var data_type = 'data:application/vnd.ms-excel';
+        var table_div = document.getElementById('proeverijTable' + id);
+        var table_html = table_div.outerHTML.replace(/ /g, '%20');
+
+        var d = new Date();
+
+        var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
+            d.getFullYear() + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+
+
+        console.log(datestring);
+
+        var a = document.createElement('a');
+        a.href = data_type + ', ' + table_html;
+        a.download = "Aanmelders '" + name + "' (" + datestring + ")" + '.xls';
+        a.click();
+    });
+});
+
+var contentsAanmelders = $('.editableAanmelder').html();
+
+function editableAanmelders() {
+    contentsAanmelders = $('.editableAanmelder').html();
+    $('.editableAanmelder').blur(function () {
+        if (contentsAanmelders !== $(this).html()) {
+            editAanmelders(this);
+            contentsAanmelders = $(this).html();
+        }
+    });
+}
+
+function editAanmelders(item) {
+    if (confirm("Weet je het heel zeker?")) {
+        var changed = item.innerHTML;
+        var id = item.parentNode.parentNode.id.substring(9);
+        if (item.parentNode.id !== "birthdate") {
+            $.ajax({
+                url: "/editAanmelders?id=" + id + "&changed=" + item.parentNode.id + "&newvalue=" + changed,
+                async: false,
+                complete: function () {
+                    $(item).css('backgroundColor', 'green');
+                    $(item).animate({
+                        'opacity': '0.5'
+                    }, 1000, function () {
+                        $(item).css({
+                            'backgroundColor': '#fff',
+                            'opacity': '1'
+                        });
+                    });
+                }
+            });
+        }else {
+            alert('Je kan niet de verjaardag van de persoon aanpassen, verwijder de persoon van deze proeverij en vraag voor een heraanmelding.\n\nHet wordt aangeraden nu de pagina te verversen!');
+        }
+    }
+    editableAanmelders();
 }

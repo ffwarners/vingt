@@ -67,6 +67,10 @@ module.exports = function (app, passport, Connection) {
     router.get('/test', test);
     router.get('/confirmUn?', confirmedUn);
     router.get('/confirmed?', confirm);
+
+    router.get('/aanmelders', isLoggedIn, aanmelders);
+    router.get('/removeAanmelder?', isLoggedIn, removeAanmelder);
+    router.get('/editAanmelders?', isLoggedIn, editAanmeldersRoute);
     app.use(router);
 };
 
@@ -378,8 +382,12 @@ function addNewProeverij(req, res) {
     });
 }
 
-function blog(req, res) {
-    res.sendFile(__dirname + '/views/blog.html');
+function aanmelders(req, res) {
+    dbHandler.getProeverijen(function (rijen) {
+        dbHandler.getAanmelders(function (rows) {
+            res.render('aanmelders', {aanmelders: rows, proeverijen: rijen});
+        });
+    });
 }
 
 function contact(req, res) {
@@ -403,17 +411,17 @@ function showStart(req, res) {
 }
 
 function test(req, res) {
-    dbHandler.getProeverij(1, function (rows) {
+    dbHandler.getProeverij(6, function (rows) {
         res.render('email', {
                 proeverij: rows[0], person: {
-                    id: '2',
-                    proeverij: 'Hidden proeverij',
+                    id: '6',
+                    proeverij: 'volgende foto',
                     gender: 'man',
                     name: 'Steven Lambregts',
                     email: 'stevenlambregts@gmail.com',
                     telephone: '06-123456789',
                     birthdate: '1998-10-22',
-                    language: 'dutch'
+                    language: 'Dutch'
                 }
             }
         );
@@ -465,8 +473,8 @@ function confirm(req, res) {
     var query = JSON.parse(dc);
     console.log(query);
 
-    //TODO::
     var update = "INSERT INTO aanmelders () VALUES (0, '" + query.name + "', '" + query.email + "', '" + query.gender + "', '" + query.birthdate + "', '" + query.telephone + "', '" + query.language + "', '" + query.proeverijName + "', " + query.proeverijId + ")";
+    console.log(update);
     connection.query(update, function (err, rows) {
         if (err) {
             console.error('Error while performing query: ' + err.message);
@@ -483,16 +491,62 @@ var crypto = require('crypto'),
     algorithm = 'aes-256-ctr',
     password = 'd6F3Efeq';
 
-function encrypt(text){
-    var cipher = crypto.createCipher(algorithm,password);
-    var crypted = cipher.update(text,'utf8','hex');
+function encrypt(text) {
+    var cipher = crypto.createCipher(algorithm, password);
+    var crypted = cipher.update(text, 'utf8', 'hex');
     crypted += cipher.final('hex');
     return crypted;
 }
 
-function decrypt(text){
-    var decipher = crypto.createDecipher(algorithm,password);
-    var dec = decipher.update(text,'hex','utf8');
+function decrypt(text) {
+    var decipher = crypto.createDecipher(algorithm, password);
+    var dec = decipher.update(text, 'hex', 'utf8');
     dec += decipher.final('utf8');
     return dec;
+}
+
+function removeAanmelder(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.id !== undefined) {
+        var update = "DELETE FROM aanmelders WHERE id = " + query.id;
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to delete aanmelder');
+            } else {
+                console.log("aanmelder successfully deleted");
+                connection.query("SELECT * FROM aanmelders", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no id defined");
+    }
+}
+
+function editAanmeldersRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.id !== undefined) {
+
+        var update = "UPDATE aanmelders SET `" + query.changed + "` = '" + query.newvalue + "' where id=" + query.id;
+
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to update aanmelders');
+            } else {
+                console.log("aanmelders successfully updated");
+                connection.query("SELECT * FROM aanmelders WHERE id =?;", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no id defined");
+    }
 }

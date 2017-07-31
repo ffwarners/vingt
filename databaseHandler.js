@@ -59,6 +59,14 @@ module.exports.getProeverij = function (id, succes) {
     query(sqlquery, succes);
 };
 
+module.exports.getAanmelders = function(succes) {
+    console.log("Aanmelders are requested");
+
+    var sqlquery = 'SELECT * FROM aanmelders';
+
+    query(sqlquery, succes);
+};
+
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {
         if (err) {
