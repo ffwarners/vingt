@@ -41,9 +41,8 @@ module.exports = function (app, passport, Connection) {
     router.get('/', home);
     router.get('/kaart', kaart);
     router.get('/proeverijen', proeverijen);
-    router.get('/contact-us.html', contact);
-    router.get('/index.html', home);
-    router.get('/portfolio.html', portfolio);
+    router.get('/contact', contact);
+    router.get('/impressie', impressie);
 
     router.get('/start', isLoggedIn, showStart);
     router.get('/adaptKaart', isLoggedIn, adaptKaart);
@@ -71,6 +70,8 @@ module.exports = function (app, passport, Connection) {
     router.get('/editAanmelders?', isLoggedIn, editAanmeldersRoute);
     router.get('/sign-out', signOut);
     router.get('/signout?', signoutEmail);
+
+    router.post('/contact', contactPost);
     app.use(router);
 };
 
@@ -381,11 +382,11 @@ function aanmelders(req, res) {
 }
 
 function contact(req, res) {
-    res.sendFile(__dirname + '/views/contact-us.html');
+    res.render('contact', {message: "", failure: ""});
 }
 
-function portfolio(req, res) {
-    res.sendFile(__dirname + '/views/portfolio.html');
+function impressie(req, res) {
+    res.sendFile(__dirname + '/views/impressie.html');
 }
 
 function proeverijen(req, res) {
@@ -405,16 +406,12 @@ function showStart(req, res) {
 
 function test(req, res) {
     dbHandler.getProeverij(6, function (rows) {
-        res.render('email', {
+        res.render('contactMail', {
                 proeverij: rows[0], person: {
-                    id: '6',
-                    proeverij: 'volgende foto',
-                    gender: 'man',
                     name: 'Steven Lambregts',
                     email: 'stevenlambregts@gmail.com',
-                    telephone: '06-123456789',
-                    birthdate: '1998-10-22',
-                    language: 'Dutch'
+                    subject: 'ONDERWERP',
+                    message: 'Dit is het testbericht dat u mij heeft gestuurd'
                 }
             }
         );
@@ -571,4 +568,36 @@ function signoutEmail(req, res) {
         res.end("Error: no email defined");
     }
 
+}
+
+function contactPost(req, res) {
+    var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/contactMail.ejs', 'utf8'));
+
+    var html = compiled({person: req.body});
+
+    var auth = {
+        auth: {
+            api_key: 'key-eadd5996875559e35a0948edc0478cb8',
+            domain: 'sandboxaa40e321565e4288abd236f2e92a6cbd.mailgun.org'
+        }
+    };
+
+    var nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+    nodemailerMailgun.sendMail({
+        // from: "Vingt wijnhandelaar, <vingt@gmail.com>, " req.body.name + "<" + req.body.email + ">",
+        // to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
+        from: req.body.name + "<" + req.body.email + ">",
+        to: "Steven Lambregts <stevenlambregts@gmail.com>, " + req.body.name + "<" + req.body.email + ">",
+        subject: '[Kopie van uw mail] ' + req.body.subject,
+        html: html
+    }, function (err, info) {
+        if (err) {
+            console.error('Error: ' + err);
+            res.render('contact', {message: "", failure: "Uw bericht is niet verstuurd, probeer het later nog eens.."})
+        }
+        else {
+            res.render('contact', {message: 'Uw bericht is succesvol verstuurd', failure: ""})
+        }
+    });
 }
