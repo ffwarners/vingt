@@ -35,6 +35,14 @@ module.exports.getWineColumns = function (succes) {
     query(sqlquery, succes);
 };
 
+module.exports.getWijn = function (id, succes) {
+    console.log("Wine with id: "+ id + " is requested");
+
+    var sqlquery = "SELECT * FROM wines where wine_id = " + id;
+
+    query(sqlquery, succes);
+};
+
 module.exports.getProeverijen = function (succes) {
     console.log('Proeverijen are requested');
 

@@ -72,6 +72,7 @@ module.exports = function (app, passport, Connection) {
     router.get('/signout?', signoutEmail);
 
     router.post('/contact', contactPost);
+    router.get('/wijn?', wijnen);
     app.use(router);
 };
 
@@ -108,6 +109,9 @@ function home(req, res) {
 function kaart(req, res) {
     dbHandler.getWineColumns(function (columns) {
         dbHandler.getWines(function (rows) {
+            rows.forEach(function (rijen) {
+                rijen.link = encrypt("id=" + rijen.wine_id);
+            });
             res.render('kaart', {wines: rows, columns: columns});
         });
     });
@@ -600,5 +604,18 @@ function contactPost(req, res) {
         else {
             res.render('contact', {message: 'Uw bericht is succesvol verstuurd', failure: ""})
         }
+    });
+}
+
+function wijnen(req, res) {
+    var urlData = url.parse(req.url, true);
+    var string = req.url.substring(6);
+    var dc = decrypt(string);
+    dc = "/wine?" + dc;
+    var query = url.parse(dc, true).query;
+    dbHandler.getWineColumns(function (rows) {
+        dbHandler.getWijn(query.id, function(rijen) {
+            res.render('wijn', {wine: rijen[0], columns: rows});
+        });
     });
 }

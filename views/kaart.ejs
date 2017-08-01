@@ -50,44 +50,63 @@
 
 </header><!--/header-->
 
+
 <section id="about-us">
     <div class="container">
         <div class="skill-wrap clearfix">
-            <div class="center wow fadeInDown">
-                <h2>About <span>Gp.</span></h2>
-                <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                    incididunt ut <br> et dolore magna aliqua. Ut enim ad minim veniam</p>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                        <tr>
-                            <% columns.forEach(function(column) { %>
-                            <% if (column.Field != "wine_id") { %>
-                            <td style="font-weight: bold;"><%= column.Field %></td>
-                            <% }}); %>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <% wines.forEach(function(wine) { %>
-                        <tr>
-                            <% columns.forEach(function(column) { %>
-                            <% if (column.Field != "wine_id") { %>
-                            <% var field = column.Field; %>
-                            <td><%= wine[field] %></td>
-                            <% }}); %>
-                        </tr>
-                        <% }); %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                <section id="recent-works">
+                    <div class="container">
+                        <div class="center wow fadeInDown">
+                            <h2>Onze wijnen</h2>
+                            <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                tempor incididunt ut <br> et dolore magna aliqua. Ut enim ad minim veniam</p>
+                        </div>
+
+                        <ul class="portfolio-filter text-center">
+                            <li><a class="btn btn-default active" href="#" data-filter="*">Alle wijnen</a></li>
+                            <li><a class="btn btn-default" href="#" data-filter=".under15">Prijs onder €15,-</a></li>
+                            <li><a class="btn btn-default" href="#" data-filter=".droog">Droog</a></li>
+                            <li><a class="btn btn-default" href="#" data-filter=".small">Kleiner dan 1L</a></li>
+                        </ul><!--/#portfolio-filter-->
+
+                        <div class="row">
+                            <div class="portfolio-items">
+                                <% var number = 0 %>
+                                <% wines.forEach(function(wine) { %>
+                                <% number++; %>
+                                <% if(number > 12) number = 1; %>
+                                <div class="portfolio-item apps col-xs-12 col-sm-4 col-md-3
+                                 <% if (wine['purchase price'] <= 15) { %> under15 <% } %>
+                                 <% if (wine['size'] <= 1.0) { %> small <% } %>
+                                 <% if (wine['droog'] === 'true') { %> droog <% } %>">
+                                    <div class="recent-work-wrap">
+                                        <img class="img-responsive" src="images/wines/small/fake<%= 1 %>.jpg"
+                                             alt="">
+                                        <div class="overlay">
+                                            <div class="recent-work-inner">
+                                                <h3><a href="/wijn?<%=wine.link%>"><%= wine.name %></a></h3>
+                                                <p>Geproduceerd door: <%= wine.producer %></p>
+                                                <a class="preview" href="images/wines/fake<%= number %>.jpg"
+                                                   rel="prettyPhoto"><i
+                                                            class="fa fa-eye"></i> View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!--/.portfolio-item-->
+                                <% }); %>
+
+                            </div>
+                        </div>
+                    </div><!--/.container-->
+                </section><!--/#recent-works-->
+
 
             <div class="row">
                 <div class="col-sm-3">
                     <div class="sinlge-skill wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="300ms">
                         <div class="joomla-skill">
                             <p><em>85%</em></p>
-                            <p>Joomla</p>
+                            <p>Droog</p>
                         </div>
                     </div>
                 </div>
@@ -96,7 +115,7 @@
                     <div class="sinlge-skill wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
                         <div class="html-skill">
                             <p><em>95%</em></p>
-                            <p>HTML</p>
+                            <p>Witte wijn</p>
                         </div>
                     </div>
                 </div>
@@ -105,7 +124,7 @@
                     <div class="sinlge-skill wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="900ms">
                         <div class="css-skill">
                             <p><em>80%</em></p>
-                            <p>CSS</p>
+                            <p>Boven de €15,-</p>
                         </div>
                     </div>
                 </div>
@@ -113,8 +132,8 @@
                 <div class="col-sm-3">
                     <div class="sinlge-skill wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="1200ms">
                         <div class="wp-skill">
-                            <p><em>90%</em></p>
-                            <p>Wordpress</p>
+                            <p><em>40%</em></p>
+                            <p>test</p>
                         </div>
                     </div>
                 </div>

@@ -977,12 +977,12 @@ a.accordion-toggle i {
 
 .wp-skill {
     background: rgb(242, 242, 242); /* Old browsers */
-    background: -moz-linear-gradient(top, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 19%, rgba(219, 54, 21, 1) 19%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(242, 242, 242, 1)), color-stop(19%, rgba(242, 242, 242, 1)), color-stop(19%, rgba(219, 54, 21, 1))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 19%, rgba(219, 54, 21, 1) 19%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 19%, rgba(219, 54, 21, 1) 19%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 19%, rgba(219, 54, 21, 1) 19%); /* IE10+ */
-    background: linear-gradient(to bottom, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 19%, rgba(219, 54, 21, 1) 19%); /* W3C */
+    background: -moz-linear-gradient(top, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 69%, rgba(219, 54, 21, 1) 69%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(242, 242, 242, 1)), color-stop(69%, rgba(242, 242, 242, 1)), color-stop(69%, rgba(219, 54, 21, 1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 69%, rgba(219, 54, 21, 1) 69%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 69%, rgba(219, 54, 21, 1) 69%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 69%, rgba(219, 54, 21, 1) 69%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(242, 242, 242, 1) 0%, rgba(242, 242, 242, 1) 69%, rgba(219, 54, 21, 1) 69%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#db3615', GradientType=0); /* IE6-9 */
 }
 
