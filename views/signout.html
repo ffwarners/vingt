@@ -52,84 +52,27 @@
 <section id="services" class="service-item">
     <div class="container">
         <div class="center wow fadeInDown">
-            <h2>Proeverijen</h2>
-            <p class="pull-left lead">Aankomende proeverijen, klik op een proeverij om naar het aanmeldscherm te gaan</p>
-            <a href="/sign-out" class="pull-right pointer">Al aangemeld? Klik hier om je af te melden</a>
+            <h2>Uitschrijven</h2>
+            <p class="lead">Let op, u schrijft zich uit voor alle proeverijen waar uw email adres is gevonden!</p>
+            <p class="lead">U dient zich opnieuw aan te melden voor de correcte proeverijen</p>
         </div>
-
-
-        <div class="row">
-            <% var image = 1;%>
-            <% proeverijen.forEach(function(proeverij) { %>
-            <% if (proeverij.shown == "true") { %>
-            <a href="/registration?<%=proeverij.id%>">
-                <div class="col-sm-6 col-md-4 pointer">
-                    <div class="media services-wrap wow fadeInDown">
-                        <div class="pull-left">
-                            <img class="img-responsive" src="images/services/services<%= image %>.png">
-                        </div>
-                        <div class="media-body">
-                            <h3 class="media-heading"><%= proeverij.name.substring(0,15); %><% if(proeverij.name.length > 15) {%>...<%}%></h3>
-                            <% var date = proeverij.date
-                                var year = date.substring(0, 4);
-                                var month = date.substring(5, 7);
-                                var day = date.substring(8, 10);
-                                var newDate = day + "-" + month + "-" + year; %>
-                            <p id="">Datum: <%= newDate %><br>
-                                <%= proeverij.details.substring(0,20); %><% if(proeverij.details.length > 20) {%>...<%}%></p>
-                        </div>
-                    </div>
+        <div class="row wow fadeInDown">
+            <div class="container fadeInDown">
+                <label><b class="white">Uw e-mail *</b></label>
+                <input id="emailSignOut" class="curved" type="email" placeholder="DonnievandenBeuken@armyspy.com"
+                       name="email" required>
+                <label style="width:100%; text-align: center;" class="white hidden" id="loaderText">Even checken of u
+                    ingeschreven bent...</label>
+                <div id="loader" class="loader hidden"></div>
+                <div id="removeNotiSucc" class="alert alert-success hidden"></div>
+                <div id="removeNotiFail" class="alert alert-danger hidden"></div>
+                <div class="clearfix">
+                    <button onclick="signout()" class="signupbtn buttonMeld">Uitschrijven!</button>
                 </div>
-            </a>
-            <% image++; if(image>6) image = 1;%>
-            <% }}); %>
+            </div>
         </div><!--/.row-->
     </div><!--/.container-->
 </section><!--/#services-->
-
-<section id="feature" class="transparent-bg">
-    <div class="container">
-        <div class="get-started center wow fadeInDown">
-            <h2>Ready to get started</h2>
-            <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-                ut labore et dolore magna aliqua. <br> Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo</p>
-            <div class="request">
-                <h4><a href="#">Request a free Quote</a></h4>
-            </div>
-        </div><!--/.get-started-->
-
-        <div class="clients-area center wow fadeInDown">
-            <h2>What our client says</h2>
-            <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-                ut <br> et dolore magna aliqua. Ut enim ad minim veniam</p>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4 wow fadeInDown">
-                <div class="clients-comments text-center">
-                    <img src="images/client1.png" class="img-circle" alt="">
-                    <h3>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt</h3>
-                    <h4><span>-John Doe /</span> Director of corlate.com</h4>
-                </div>
-            </div>
-            <div class="col-md-4 wow fadeInDown">
-                <div class="clients-comments text-center">
-                    <img src="images/client2.png" class="img-circle" alt="">
-                    <h3>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt</h3>
-                    <h4><span>-John Doe /</span> Director of corlate.com</h4>
-                </div>
-            </div>
-            <div class="col-md-4 wow fadeInDown">
-                <div class="clients-comments text-center">
-                    <img src="images/client3.png" class="img-circle" alt="">
-                    <h3>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt</h3>
-                    <h4><span>-John Doe /</span> Director of corlate.com</h4>
-                </div>
-            </div>
-        </div>
-    </div><!--/.container-->
-</section><!--/#feature-->
 
 
 <section id="bottom">

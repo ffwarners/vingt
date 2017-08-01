@@ -69,6 +69,8 @@ module.exports = function (app, passport, Connection) {
     router.get('/aanmelders', isLoggedIn, aanmelders);
     router.get('/removeAanmelder?', isLoggedIn, removeAanmelder);
     router.get('/editAanmelders?', isLoggedIn, editAanmeldersRoute);
+    router.get('/sign-out', signOut);
+    router.get('/signout?', signoutEmail);
     app.use(router);
 };
 
@@ -389,7 +391,7 @@ function portfolio(req, res) {
 function proeverijen(req, res) {
     dbHandler.getProeverijen(function (rows) {
         rows.forEach(function (row) {
-            row.id =  sh.unique("id=" + row.id);
+            row.id = sh.unique("id=" + row.id);
         });
         res.render('proeverijen', {proeverijen: rows});
     });
@@ -423,7 +425,7 @@ function sendmail(req, res) {
     var id = req.body.id;
     dbHandler.getProeverij(id, function (row) {
         var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/email.ejs', 'utf8'));
-        var string ="name=" + req.body.name + "&email=" + req.body.email + "&telephone=" + req.body.telephone + "&gender=" + req.body.gender + "&birthdate=" + req.body.birthdate + "&language=" + req.body.language + "&proeverijId=" + row[0].id + "&proeverijName=" + row[0].name;
+        var string = "name=" + req.body.name + "&email=" + req.body.email + "&telephone=" + req.body.telephone + "&gender=" + req.body.gender + "&birthdate=" + req.body.birthdate + "&language=" + req.body.language + "&proeverijId=" + row[0].id + "&proeverijName=" + row[0].name;
 
         var html = compiled({proeverij: row[0], person: req.body, link: encrypt(string)});
 
@@ -458,20 +460,26 @@ function sendmail(req, res) {
 function confirm(req, res) {
     var string = req.url.substring(11);
     var dc = decrypt(string);
-    dc="/confirmed?" + dc;
+    dc = "/confirmed?" + dc;
     var query = url.parse(dc, true).query;
-
-    var update = "INSERT INTO aanmelders () VALUES (0, '" + query.name + "', '" + query.email + "', '" + query.gender + "', '" + query.birthdate + "', '" + query.telephone + "', '" + query.language + "', '" + query.proeverijName + "', " + query.proeverijId + ")";
-    connection.query(update, function (err, rows) {
-        if (err) {
-            console.error('Error while performing query: ' + err.message);
-            res.end('Failed to add new aanmelder');
+    var string2 = "SELECT * FROM aanmelders WHERE name = ? AND email = ? AND proeverijName = ? AND proeverijId = ?";
+    var values = [query.name, query.email, query.proeverijName, query.proeverijId];
+    connection.query(string2, values, function (err, rijen) {
+        if (rijen.length === 0) {
+            var update = "INSERT INTO aanmelders () VALUES (0, '" + query.name + "', '" + query.email + "', '" + query.gender + "', '" + query.birthdate + "', '" + query.telephone + "', '" + query.language + "', '" + query.proeverijName + "', " + query.proeverijId + ")";
+            connection.query(update, function (err, rows) {
+                if (err) {
+                    console.error('Error while performing query: ' + err.message);
+                    res.end('Failed to add new aanmelder');
+                } else {
+                    console.log("new aanmelder successfully added");
+                    res.render('confirm', {person: query});
+                }
+            });
         } else {
-            console.log("new aanmelder successfully added");
-            res.render('confirm', {person: query});
+            res.render('declined', {person: query})
         }
     });
-
 }
 
 var crypto = require('crypto'),
@@ -536,4 +544,31 @@ function editAanmeldersRoute(req, res) {
     } else {
         res.end("Error: no id defined");
     }
+}
+
+function signOut(req, res) {
+    res.sendFile(__dirname + '/views/signout.html');
+}
+
+function signoutEmail(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.email !== undefined) {
+        connection.query("SELECT * FROM aanmelders WHERE email ='" + query.email + "'", function (err2, rows) {
+            var update = "DELETE FROM aanmelders WHERE email = '" + query.email + "'";
+            connection.query(update, function (err, result) {
+                if (err) {
+                    console.error('Error while performing query: ' + err.message);
+                    res.end('Failed to delete aanmelder');
+                } else {
+                    console.log("aanmelder successfully deleted");
+                    res.send(JSON.stringify(rows));
+                }
+            });
+        });
+    } else {
+        res.end("Error: no email defined");
+    }
+
 }

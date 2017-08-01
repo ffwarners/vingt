@@ -189,6 +189,7 @@
                                     <div class="editableAanmelder" onchange=""
                                          contenteditable><%= aanmelder.proeverijName %></div>
                                 </td>
+                                <td onclick="deleteAanmelder(<%= aanmelder.id %>)"> x</td>
                             </tr>
                             <% }); %>
                             </tbody>

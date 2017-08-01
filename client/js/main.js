@@ -481,9 +481,75 @@ function editAanmelders(item) {
                     });
                 }
             });
-        }else {
+        } else {
             alert('Je kan niet de verjaardag van de persoon aanpassen, verwijder de persoon van deze proeverij en vraag voor een heraanmelding.\n\nHet wordt aangeraden nu de pagina te verversen!');
         }
     }
     editableAanmelders();
+}
+
+function signout() {
+    var loader = document.getElementById("loader");
+    var loaderText = document.getElementById("loaderText");
+    var input = document.getElementById("emailSignOut");
+    var value = input.value;
+    if (validateEmail(value)) {
+        loader.classList.remove("hidden");
+        loaderText.classList.remove("hidden");
+        setTimeout(function () {
+            $(loader).animate({
+                'opacity': '0.0'
+            }, {duration: 1000, queue: false});
+
+            $(loaderText).animate({
+                'opacity': '0.0'
+            }, {duration: 1000, queue: false});
+
+
+        }, 1000);
+        setTimeout(function () {
+            loader.classList.add("hidden");
+            loaderText.classList.add("hidden");
+            $(loader).animate({
+                'opacity': '1.0'
+            }, {duration: 10, queue: false});
+            $(loaderText).animate({
+                'opacity': '1.0'
+            }, {duration: 10, queue: false});
+
+
+        }, 2000);
+        var email = document.getElementById("emailSignOut").value;
+
+        $.ajax({
+            url: "/signout?email=" + email,
+            async: false,
+            success: function (succes) {
+                var result = JSON.parse(succes);
+                var length = result.length;
+                var div;
+                setTimeout(function () {
+                    if (length > 0) {
+                        div = document.getElementById("removeNotiSucc");
+                        div.innerHTML = "We hebben met succes " + length + " aanmeldingen van u verwijderd";
+                    } else {
+                        div = document.getElementById("removeNotiFail");
+                        div.innerHTML = "U bent niet gevonden tussen onze aanmeldingen";
+
+                    }
+                    div.classList.remove("hidden");
+                    setTimeout(function() {
+                        div.classList.add("hidden");
+                    }, 4000);
+                }, 2000);
+            }
+        });
+    } else {
+        alert("Geen geldig email");
+    }
+}
+
+function validateEmail(email) {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
 }
