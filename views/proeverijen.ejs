@@ -57,14 +57,14 @@
         </div>
 
         <div class="row">
-
+            <% var image = 1;%>
             <% proeverijen.forEach(function(proeverij) { %>
             <% if (proeverij.shown == "true") { %>
-            <a href="/registrationUn?id=<%=proeverij.id%>">
+            <a href="/registration?<%=proeverij.id%>">
                 <div class="col-sm-6 col-md-4 pointer">
                     <div class="media services-wrap wow fadeInDown">
                         <div class="pull-left">
-                            <img class="img-responsive" src="images/services/services<%= proeverij.id %>.png">
+                            <img class="img-responsive" src="images/services/services<%= image %>.png">
                         </div>
                         <div class="media-body">
                             <h3 class="media-heading"><%= proeverij.name.substring(0,15); %><% if(proeverij.name.length > 15) {%>...<%}%></h3>
@@ -79,6 +79,7 @@
                     </div>
                 </div>
             </a>
+            <% image++; if(image>6) image = 1;%>
             <% }}); %>
         </div><!--/.row-->
     </div><!--/.container-->

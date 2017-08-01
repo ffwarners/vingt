@@ -289,7 +289,6 @@ $('div[contenteditable]').keydown(function (e) {
 
 function editProeverij(item) {
     var changed = item.innerHTML;
-    console.log(changed);
     var id = item.parentNode.parentNode.id;
     if (item.parentNode.id === "date") changed = item.value;
     $.ajax({
@@ -441,10 +440,7 @@ $(document).ready(function () {
         var d = new Date();
 
         var datestring = ("0" + d.getDate()).slice(-2) + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
-            d.getFullYear() + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
-
-
-        console.log(datestring);
+            d.getFullYear() + " " + ("0" + d.getHours()).slice(-2) + "꞉" + ("0" + d.getMinutes()).slice(-2);
 
         var a = document.createElement('a');
         a.href = data_type + ', ' + table_html;

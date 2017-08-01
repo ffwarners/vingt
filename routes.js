@@ -61,11 +61,9 @@ module.exports = function (app, passport, Connection) {
     router.get('/deleteProeverij?', isLoggedIn, deleteProeverijRoute);
     router.get('/newProeverij?', isLoggedIn, addNewProeverij);
 
-    router.get('/registrationUn?', registrationUn);
     router.get('/registration?', registration);
     router.post('/registrate', sendmail);
     router.get('/test', test);
-    router.get('/confirmUn?', confirmedUn);
     router.get('/confirmed?', confirm);
 
     router.get('/aanmelders', isLoggedIn, aanmelders);
@@ -124,16 +122,6 @@ function adaptProeverijen(req, res) {
     dbHandler.getProeverijen(function (rows) {
         res.render('adaptProeverijen', {proeverijen: rows});
     });
-}
-
-function registrationUn(req, res) {
-    var urlData = url.parse(req.url, true);
-    var query = urlData.query;
-    console.log(query.id);
-    console.log("hashed: " + sh.unique("id=" + query.id));
-
-
-    res.redirect('registration?' + sh.unique("id=" + query.id));
 }
 
 function registration(req, res) {
@@ -400,6 +388,9 @@ function portfolio(req, res) {
 
 function proeverijen(req, res) {
     dbHandler.getProeverijen(function (rows) {
+        rows.forEach(function (row) {
+            row.id =  sh.unique("id=" + row.id);
+        });
         res.render('proeverijen', {proeverijen: rows});
     });
 }
@@ -432,7 +423,9 @@ function sendmail(req, res) {
     var id = req.body.id;
     dbHandler.getProeverij(id, function (row) {
         var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/email.ejs', 'utf8'));
-        var html = compiled({proeverij: row[0], person: req.body});
+        var string ="name=" + req.body.name + "&email=" + req.body.email + "&telephone=" + req.body.telephone + "&gender=" + req.body.gender + "&birthdate=" + req.body.birthdate + "&language=" + req.body.language + "&proeverijId=" + row[0].id + "&proeverijName=" + row[0].name;
+
+        var html = compiled({proeverij: row[0], person: req.body, link: encrypt(string)});
 
         var auth = {
             auth: {
@@ -444,8 +437,10 @@ function sendmail(req, res) {
         var nodemailerMailgun = nodemailer.createTransport(mg(auth));
 
         nodemailerMailgun.sendMail({
-            from: "Vingt wijnhandelaar, <vingt@gmail.com>",
-            to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
+            // from: "Vingt wijnhandelaar, <vingt@gmail.com>",
+            // to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
+            from: "Steven Lambregts <stevenlambregts@gmail.com>",
+            to: "Steven Lambregts <stevenlambregts@gmail.com>",
             subject: 'Vingt - bevestig uw registratie voor ' + req.body.proeverij,
             html: html
         }, function (err, info) {
@@ -459,22 +454,14 @@ function sendmail(req, res) {
     });
 }
 
-function confirmedUn(req, res) {
-    var urlData = url.parse(req.url, true);
-    var query = urlData.query;
-    var string = JSON.stringify(query);
-    res.redirect('confirmed?' + encrypt(string));
-}
 
 function confirm(req, res) {
-    var urlData = url.parse(req.url, true);
     var string = req.url.substring(11);
     var dc = decrypt(string);
-    var query = JSON.parse(dc);
-    console.log(query);
+    dc="/confirmed?" + dc;
+    var query = url.parse(dc, true).query;
 
     var update = "INSERT INTO aanmelders () VALUES (0, '" + query.name + "', '" + query.email + "', '" + query.gender + "', '" + query.birthdate + "', '" + query.telephone + "', '" + query.language + "', '" + query.proeverijName + "', " + query.proeverijId + ")";
-    console.log(update);
     connection.query(update, function (err, rows) {
         if (err) {
             console.error('Error while performing query: ' + err.message);

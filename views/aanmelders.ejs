@@ -73,11 +73,11 @@
                             <thead>
                             <tr style="font-weight: bold;">
                                 <td>Naam</td>
-                                <td>email</td>
-                                <td>geslacht</td>
-                                <td>geboortedatum</td>
-                                <td>telefoonnummer</td>
-                                <td>spreektaal</td>
+                                <td>E-mail</td>
+                                <td>Geslacht</td>
+                                <td>Geboortedatum</td>
+                                <td>Telefoonnummer</td>
+                                <td>Spreektaal</td>
                             </tr>
                             </thead>
                             <tbody>
@@ -127,6 +127,75 @@
                     </div>
                     <% }); %>
                 </div>
+                <div class="table-responsive">
+
+                    <h3 class="pointer unselectable red" onclick="showProeverij('All')">Allemaal &#x25BC;</h3>
+                    <div id="divAll" class="hidden">
+                        <button id="All" type="button" class="btnExport">Download tabel in Excel</button>
+
+                        <table id="proeverijTableAll"
+                               class="table tabcontent table-bordered table-hover">
+                            <thead>
+                            <tr style="font-weight: bold;">
+                                <td>Naam</td>
+                                <td>E-mail</td>
+                                <td>Geslacht</td>
+                                <td>Geboortedatum</td>
+                                <td>Telefoonnummer</td>
+                                <td>Spreektaal</td>
+                                <td>Proeverij</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% aanmelders.forEach(function(aanmelder) { %>
+                            <tr id="aanmelder<%= aanmelder.id %>">
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="name">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.name %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="email">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.email %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="gender">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.gender %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="birthdate">
+                                    <% var date = aanmelder.birthdate
+                                        var year = date.substring(0, 4);
+                                        var month = date.substring(5, 7);
+                                        var day = date.substring(8, 10);
+                                        var newDate = day + "-" + month + "-" + year; %>
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= newDate %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="telephone">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.telephone %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="language">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.language %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="proeverijName">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.proeverijName %></div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
             <div class="row">
