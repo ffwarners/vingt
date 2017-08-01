@@ -520,9 +520,9 @@ function signout() {
 
         }, 2000);
         var email = document.getElementById("emailSignOut").value;
-
+        var proeverij = document.getElementById("proeverijen").value;
         $.ajax({
-            url: "/signout?email=" + email,
+            url: "/signout?email=" + email + "&id=" + proeverij,
             async: false,
             success: function (succes) {
                 var result = JSON.parse(succes);
@@ -532,6 +532,9 @@ function signout() {
                     if (length > 0) {
                         div = document.getElementById("removeNotiSucc");
                         div.innerHTML = "We hebben met succes " + length + " aanmeldingen van u verwijderd";
+                        if (length === 1) {
+                            div.innerHTML = "We hebben met succes " + length + " aanmelding van u verwijderd";
+                        }
                     } else {
                         div = document.getElementById("removeNotiFail");
                         div.innerHTML = "U bent niet gevonden tussen onze aanmeldingen";

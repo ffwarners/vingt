@@ -453,7 +453,6 @@ function sendmail(req, res) {
     });
 }
 
-
 function confirm(req, res) {
     var string = req.url.substring(11);
     var dc = decrypt(string);
@@ -544,7 +543,9 @@ function editAanmeldersRoute(req, res) {
 }
 
 function signOut(req, res) {
-    res.sendFile(__dirname + '/views/signout.html');
+    dbHandler.getProeverijen(function (rows) {
+        res.render('signout', {proeverijen: rows});
+    });
 }
 
 function signoutEmail(req, res) {
@@ -552,8 +553,8 @@ function signoutEmail(req, res) {
     var query = urlData.query;
 
     if (query.email !== undefined) {
-        connection.query("SELECT * FROM aanmelders WHERE email ='" + query.email + "'", function (err2, rows) {
-            var update = "DELETE FROM aanmelders WHERE email = '" + query.email + "'";
+        connection.query("SELECT * FROM aanmelders WHERE email ='" + query.email + "' AND proeverijID = " + query.id, function (err2, rows) {
+            var update = "DELETE FROM aanmelders WHERE email = '" + query.email + "' AND proeverijID = " + query.id;
             connection.query(update, function (err, result) {
                 if (err) {
                     console.error('Error while performing query: ' + err.message);

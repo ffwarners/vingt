@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gp Bootstrap Template</title>
+    <title>Vingt</title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -53,14 +53,23 @@
     <div class="container">
         <div class="center wow fadeInDown">
             <h2>Uitschrijven</h2>
-            <p class="lead">Let op, u schrijft zich uit voor alle proeverijen waar uw email adres is gevonden!</p>
-            <p class="lead">U dient zich opnieuw aan te melden voor de correcte proeverijen</p>
+            <p class="lead">Let op, u schrijft alle aanmeldingen met dit email adres uit.</p>
+            <p class="lead">U dient zich opnieuw aan te melden als andere personen wel mee willen doen op hetzelfde
+                email adres.
+                <small style="font-size: x-small;">(Excuses dit zijn veiligheidsmaatregelen)</small>
+            </p>
         </div>
         <div class="row wow fadeInDown">
             <div class="container fadeInDown">
                 <label><b class="white">Uw e-mail *</b></label>
                 <input id="emailSignOut" class="curved" type="email" placeholder="DonnievandenBeuken@armyspy.com"
                        name="email" required>
+                <label for="proeverijen"><b class="white">Proeverij *</b></label><br>
+                <select style="min-width: 100px; margin-bottom: 10px" class="curved" id="proeverijen" name="proeverijen">
+                    <% proeverijen.forEach(function (proeverij) { %>
+                        <option value="<%=proeverij.id%>"><%=proeverij.name%></option>
+                    <% }); %>
+                </select><br>
                 <label style="width:100%; text-align: center;" class="white hidden" id="loaderText">Even checken of u
                     ingeschreven bent...</label>
                 <div id="loader" class="loader hidden"></div>
