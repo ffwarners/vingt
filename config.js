@@ -17,7 +17,7 @@ config.sessionOptions = {
 };
 
 config.loginOptions = {
-    successRedirect : '/adaptkaart',
+    successRedirect : '/start',
     failureRedirect : '/login',
     failureFlash : true
 };

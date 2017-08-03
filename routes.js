@@ -43,6 +43,7 @@ module.exports = function (app, passport, Connection) {
     router.get('/proeverijen', proeverijen);
     router.get('/contact', contact);
     router.get('/impressie', impressie);
+    router.get('/blog', blog);
 
     router.get('/start', isLoggedIn, showStart);
     router.get('/adaptKaart', isLoggedIn, adaptKaart);
@@ -406,6 +407,10 @@ function impressie(req, res) {
     res.sendFile(__dirname + '/views/impressie.html');
 }
 
+function blog(req, res) {
+    res.sendFile(__dirname + '/views/blog.html');
+}
+
 function proeverijen(req, res) {
     dbHandler.getProeverijen(function (rows) {
         rows.forEach(function (row) {
@@ -455,7 +460,7 @@ function sendmail(req, res) {
             // to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
             from: "Steven Lambregts <stevenlambregts@gmail.com>",
             to: "Steven Lambregts <stevenlambregts@gmail.com>",
-            subject: 'Vingt - bevestig uw registratie voor ' + req.body.proeverij,
+            subject: 'Vingt - [Bevestig] bevestig uw registratie voor ' + req.body.proeverij,
             html: html
         }, function (err, info) {
             if (err) {
@@ -592,7 +597,7 @@ function sendSignoutMail(req, res) {
                     // to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
                     from: "Steven Lambregts <stevenlambregts@gmail.com>",
                     to: aanmelder.name + "<" + aanmelder.email + ">",
-                    subject: '[Uitschrijven] ' + aanmelder.proeverijName,
+                    subject: 'Vingt - [Uitschrijven] ' + aanmelder.proeverijName,
                     html: html
                 }, function (err, info) {
                     if (err) {
@@ -649,7 +654,7 @@ function contactPost(req, res) {
         // to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
         from: req.body.name + "<" + req.body.email + ">",
         to: "Steven Lambregts <stevenlambregts@gmail.com>, " + req.body.name + "<" + req.body.email + ">",
-        subject: '[Kopie van uw mail] ' + req.body.subject,
+        subject: 'Vingt - [Kopie van uw mail] ' + req.body.subject,
         html: html
     }, function (err, info) {
         if (err) {
