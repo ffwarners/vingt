@@ -422,7 +422,11 @@ function proeverijen(req, res) {
 
 function showStart(req, res) {
     dbHandler.getUser(req.user.id, function (rows) {
-        res.render('ingelogd', {user: rows[0].name})
+        dbHandler.getLastChange(function (rijen) {
+            console.log(rijen[0]);
+            res.render('ingelogd', {user: rows[0].name, time: rijen[0].UPDATE_TIME})
+        });
+
     });
 }
 

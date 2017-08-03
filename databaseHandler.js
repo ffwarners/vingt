@@ -91,6 +91,16 @@ module.exports.getAanmeldersEmail = function (email, succes) {
     query(sqlquery, succes);
 };
 
+module.exports.getLastChange = function(succes) {
+    console.log("Last change is requested");
+
+    var sqlquery = "SELECT UPDATE_TIME, TABLE_SCHEMA, TABLE_NAME " +
+        "FROM information_schema.tables " +
+        "ORDER BY UPDATE_TIME DESC, TABLE_SCHEMA, TABLE_NAME";
+
+    query(sqlquery, succes);
+};
+
 
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {

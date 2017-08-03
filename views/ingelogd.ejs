@@ -233,6 +233,31 @@
         <div class="center wow fadeInDown">
             <h2>Welkom <%= user %></h2>
             <p class="lead">Je bent nu ingelogd</p>
+            <%function initArray() {
+                this.length = initArray.arguments.length;
+                for (var i = 0; i < this.length; i++)
+                    this[i+1] = initArray.arguments[i];
+            }%>
+            <% var dagArray = new initArray("zondag","maandag", "dinsdag","woensdag","donderdag","vrijdag","zaterdag");
+
+            var maandArray = new initArray("januari","februari","maart","april","mei","juni","juli", "augustus","september","oktober","november","december");
+
+            var nu = new Date(time);
+            var dagtekst = dagArray[(nu.getDay()+1)];
+            var dag = nu.getDate();
+            var maandtekst = maandArray[(nu.getMonth()+1)];
+            var jaar = nu.getYear();
+            var jaar4 = ((jaar < 1900) ? (jaar + 1900) : (jaar));
+            var uren = nu.getHours();
+            var uren2 = ((uren < 10) ? "0" : "") + uren;
+            var minuten = nu.getMinutes();
+            var minuten2 = ((minuten < 10) ? ":0" : ":") + minuten;
+            var seconden = nu.getSeconds();
+            var seconden2 = ((seconden < 10) ? ":0" : ":") + seconden;
+
+            var tijdweergave = uren2 + minuten2 + seconden2;
+            var datumweergave = dagtekst + " " + dag + " " + maandtekst + " " + jaar4 + " om " + tijdweergave;%>
+            <p class="lead">Er is voor het laatst iets gewijzigd op: <%=datumweergave%></p>
         </div>
 
         <div class="row">
