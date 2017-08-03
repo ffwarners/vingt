@@ -214,6 +214,7 @@ function newWine() {
         }
     });
     editable();
+
 }
 
 var contents = $('.editable').html();
@@ -525,15 +526,15 @@ function signout() {
             url: "/signout?email=" + email + "&id=" + proeverij,
             async: false,
             success: function (succes) {
-                var result = JSON.parse(succes);
+                var result = succes;
                 var length = result.length;
                 var div;
                 setTimeout(function () {
                     if (length > 0) {
                         div = document.getElementById("removeNotiSucc");
-                        div.innerHTML = "We hebben met succes " + length + " aanmeldingen van u verwijderd";
+                        div.innerHTML = "We hebben u met succes een maitlje gestuurd beftreft " + length + " aanmeldingen";
                         if (length === 1) {
-                            div.innerHTML = "We hebben met succes " + length + " aanmelding van u verwijderd";
+                            div.innerHTML = "We hebben u met succes een maitlje gestuurd beftreft " + length + " aanmelding";
                         }
                     } else {
                         div = document.getElementById("removeNotiFail");
@@ -541,7 +542,7 @@ function signout() {
 
                     }
                     div.classList.remove("hidden");
-                    setTimeout(function() {
+                    setTimeout(function () {
                         div.classList.add("hidden");
                     }, 4000);
                 }, 2000);
@@ -556,3 +557,70 @@ function validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
     return re.test(email);
 }
+
+function close() {
+    window.close();
+}
+
+$('#upload-input').on('change', function () {
+
+    var files = $(this).get(0).files;
+
+    if (files.length > 0) {
+        // create a FormData object which will be sent as the data payload in the
+        // AJAX request
+        var formData = new FormData();
+
+        // loop through all the selected files and add them to the formData object
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            // add the files to formData object for the data payload
+            formData.append('uploads[]', file, file.name);
+        }
+
+        $.ajax({
+            url: '/upload',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log('upload successful!\n' + data);
+            },
+            xhr: function () {
+                // create an XMLHttpRequest
+                var xhr = new XMLHttpRequest();
+
+                // listen to the 'progress' event
+                xhr.upload.addEventListener('progress', function (evt) {
+
+                    if (evt.lengthComputable) {
+                        // calculate the percentage of upload completed
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+
+                        // once the upload reaches 100%, set the progress bar text to done
+                        if (percentComplete === 100) {
+                            $('.progress-bar').html('Done');
+                        }
+
+                    }
+
+                }, false);
+
+                return xhr;
+            }
+        });
+    }
+
+    $.ajax({
+        url: "/lastId",
+        async: false,
+        success: function (id) {
+            var url = "/crop?id=" + id;
+            window.open(url, '_blank');
+        }
+    });
+});
+

@@ -2024,3 +2024,10 @@ input[type=text], input[type=email], input[type=tel], input[type=date] {
 .googleMaps {
     margin: 121px 0 0 0 ;
 }
+
+.file-upload
+{
+    opacity: 0;
+    width: 100%;
+    position: absolute;
+}

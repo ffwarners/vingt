@@ -67,7 +67,7 @@
                 <div class="row">
                     <div class="modal-body row center wow fadeInDownBig">
                         <div class="col-md-6">
-                            <img src="/images/client1.png"/>
+                            <img src="/images/wines/wine<%= wine.wine_id %>.jpg"/>
                         </div>
                         <div class="col-md-6 table-responsive">
                             <table class="table table-bordered table-hover">
@@ -77,10 +77,10 @@
                                 </thead>
                                 <tbody>
                                 <% columns.forEach(function(column) { %>
-                                <%if(column.Field !== "wine_id") {%>
+                                <% if (column.Field != "wine_id" && column.Field != "imageExt") { %>
                                 <tr>
-                                <td><%=column.Field%></td>
-                                <td><%=wine[column.Field]%></td>
+                                    <td><%= column.Field %></td>
+                                    <td><%= wine[column.Field] %></td>
                                 </tr>
                                 <% }}); %>
                                 </tbody>

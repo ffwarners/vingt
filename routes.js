@@ -62,19 +62,32 @@ module.exports = function (app, passport, Connection) {
 
     router.get('/registration?', registration);
     router.post('/registrate', sendmail);
-    router.get('/test', test);
+    router.get('/crop?', isLoggedIn, crop2);
     router.get('/confirmed?', confirm);
 
     router.get('/aanmelders', isLoggedIn, aanmelders);
     router.get('/removeAanmelder?', isLoggedIn, removeAanmelder);
     router.get('/editAanmelders?', isLoggedIn, editAanmeldersRoute);
     router.get('/sign-out', signOut);
-    router.get('/signout?', signoutEmail);
+    router.get('/signout?', sendSignoutMail);
+    router.get('/confirmSignOut?', confirmSignOut);
 
     router.post('/contact', contactPost);
     router.get('/wijn?', wijnen);
+
+    router.post('/upload', isLoggedIn, upload);
+    router.post('/crop', isLoggedIn, crop);
+    router.get('/lastId', isLoggedIn, lastId);
+    router.get('/test', test);
     app.use(router);
 };
+
+function test(req, res) {
+    dbHandler.getAanmeldersEmail('stevenlambregts@gmail.com', function (aanmelders) {
+        var link = "id=" + aanmelders[0].id + "&proeverijID=" + aanmelders[0].proeverijID;
+        res.render('uitschrijven', {aanmelder: aanmelders[0], link: encrypt(link)})
+    });
+}
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
@@ -408,15 +421,13 @@ function showStart(req, res) {
     });
 }
 
-function test(req, res) {
-    dbHandler.getProeverij(6, function (rows) {
-        res.render('contactMail', {
-                proeverij: rows[0], person: {
-                    name: 'Steven Lambregts',
-                    email: 'stevenlambregts@gmail.com',
-                    subject: 'ONDERWERP',
-                    message: 'Dit is het testbericht dat u mij heeft gestuurd'
-                }
+function crop2(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+    var id = query.id;
+    dbHandler.getWijn(id, function (rows) {
+        res.render('crop', {
+                wine: rows[0], close: ""
             }
         );
     });
@@ -552,27 +563,71 @@ function signOut(req, res) {
     });
 }
 
-function signoutEmail(req, res) {
+function sendSignoutMail(req, res) {
     var urlData = url.parse(req.url, true);
     var query = urlData.query;
-
+    var rijen;
     if (query.email !== undefined) {
         connection.query("SELECT * FROM aanmelders WHERE email ='" + query.email + "' AND proeverijID = " + query.id, function (err2, rows) {
-            var update = "DELETE FROM aanmelders WHERE email = '" + query.email + "' AND proeverijID = " + query.id;
-            connection.query(update, function (err, result) {
-                if (err) {
-                    console.error('Error while performing query: ' + err.message);
-                    res.end('Failed to delete aanmelder');
-                } else {
-                    console.log("aanmelder successfully deleted");
-                    res.send(JSON.stringify(rows));
-                }
+            rijen = rows;
+            rows.forEach(function (aanmelder) {
+                var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/uitschrijven.ejs', 'utf8'));
+                var link = "id=" + aanmelder.id + "&proeverijID=" + aanmelder.proeverijID;
+                console.log(link+"AA");
+                link = encrypt(link);
+                console.log(link+"AA");
+                var html = compiled({aanmelder: aanmelder, link: link});
+
+                var auth = {
+                    auth: {
+                        api_key: 'key-eadd5996875559e35a0948edc0478cb8',
+                        domain: 'sandboxaa40e321565e4288abd236f2e92a6cbd.mailgun.org'
+                    }
+                };
+
+                var nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+                nodemailerMailgun.sendMail({
+                    // from: "Vingt wijnhandelaar, <vingt@gmail.com>, " req.body.name + "<" + req.body.email + ">",
+                    // to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
+                    from: "Steven Lambregts <stevenlambregts@gmail.com>",
+                    to: aanmelder.name + "<" + aanmelder.email + ">",
+                    subject: '[Uitschrijven] ' + aanmelder.proeverijName,
+                    html: html
+                }, function (err, info) {
+                    if (err) {
+                        res.end('Error: ' + err);
+                    }
+                });
             });
+            res.json(rijen);
+        });
+    }
+}
+
+function confirmSignOut(req, res) {
+    console.log(req.url);
+    var string = req.url.substring(16);
+    console.log(string);
+    var dc = decrypt(string);
+    console.log(dc);
+    dc = "/confirmSignOut?" + dc;
+    var query = url.parse(dc, true).query;
+console.log(query);
+    if (query.id !== undefined) {
+        var update = "DELETE FROM aanmelders WHERE id = '" + query.id + "' AND proeverijID = " + query.proeverijID;
+        connection.query(update, function (err, result) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to delete aanmelder');
+            } else {
+                console.log("aanmelder successfully deleted");
+                res.render('confirmUitschrijving');
+            }
         });
     } else {
         res.end("Error: no email defined");
     }
-
 }
 
 function contactPost(req, res) {
@@ -599,7 +654,10 @@ function contactPost(req, res) {
     }, function (err, info) {
         if (err) {
             console.error('Error: ' + err);
-            res.render('contact', {message: "", failure: "Uw bericht is niet verstuurd, probeer het later nog eens.."})
+            res.render('contact', {
+                message: "",
+                failure: "Uw bericht is niet verstuurd, probeer het later nog eens.."
+            })
         }
         else {
             res.render('contact', {message: 'Uw bericht is succesvol verstuurd', failure: ""})
@@ -614,8 +672,95 @@ function wijnen(req, res) {
     dc = "/wine?" + dc;
     var query = url.parse(dc, true).query;
     dbHandler.getWineColumns(function (rows) {
-        dbHandler.getWijn(query.id, function(rijen) {
+        dbHandler.getWijn(query.id, function (rijen) {
             res.render('wijn', {wine: rijen[0], columns: rows});
         });
+    });
+}
+
+var formidable = require('formidable');
+var path = require('path');
+
+function upload(req, res) {
+    // create an incoming form object
+    var form = new formidable.IncomingForm();
+
+    // specify that we want to disallow the user to upload multiple files in a single request
+    form.multiples = false;
+
+    // store all uploads in the /uploads directory
+    form.uploadDir = path.join(__dirname, '/client/images/wines');
+    var name = "";
+    // every time a file has been uploaded successfully,
+    // rename it to it's orignal name
+    form.on('file', function (field, file) {
+        dbHandler.getMaxId(function (rows) {
+            var ext = file.name.slice((file.name.lastIndexOf(".") - 1 >>> 0) + 2);
+            name = "wine" + rows[0]['MAX(wine_id)'] + "." + ext;
+            fs.rename(file.path, path.join(form.uploadDir, name));
+
+            var urlData = url.parse(req.url, true);
+            var query = urlData.query;
+            var update = "UPDATE wines SET imageExt = '" + ext + "' WHERE wine_id = " + rows[0]['MAX(wine_id)'];
+            connection.query(update, function (err, rows) {
+                if (err) {
+                    console.error('Error while performing query: ' + err.message);
+                    res.end('Failed to update wines');
+                } else {
+                    console.log("wines successfully updated");
+                    connection.query("SELECT * FROM wines", function (err, result) {
+                        // res.json(result);
+                    });
+                }
+            });
+        });
+    });
+
+    // log any errors that occur
+    form.on('error', function (err) {
+        console.log('An error has occured: \n' + err);
+    });
+
+    // parse the incoming request containing the form data
+    form.parse(req);
+
+    // once all the files have been uploaded, send a response to the client
+    form.on('end', function () {
+        res.end('success');
+    });
+
+}
+
+function crop(req, res) {
+    var imageBuffer = decodeBase64Image(req.body.imagebase64);
+    var name = "";
+    dbHandler.getMaxId(function (rows) {
+        name = "wine" + rows[0]['MAX(wine_id)'];
+        fs.writeFile('client/images/wines/small/' + name + '.jpg', imageBuffer.data, function (err) {
+        });
+    });
+    res.redirect('adaptKaart');
+}
+
+var mkdirp = require('mkdirp');
+var getDirName = require('path').dirname;
+
+function decodeBase64Image(dataString) {
+    var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+        response = {};
+
+    if (matches.length !== 3) {
+        return new Error('Invalid input string');
+    }
+
+    response.type = matches[1];
+    response.data = new Buffer(matches[2], 'base64');
+
+    return response;
+}
+
+function lastId(req, res) {
+    dbHandler.getMaxId(function (rows) {
+        res.json(rows[0]['MAX(wine_id)']);
     });
 }

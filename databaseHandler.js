@@ -36,7 +36,7 @@ module.exports.getWineColumns = function (succes) {
 };
 
 module.exports.getWijn = function (id, succes) {
-    console.log("Wine with id: "+ id + " is requested");
+    console.log("Wine with id: " + id + " is requested");
 
     var sqlquery = "SELECT * FROM wines where wine_id = " + id;
 
@@ -67,13 +67,30 @@ module.exports.getProeverij = function (id, succes) {
     query(sqlquery, succes);
 };
 
-module.exports.getAanmelders = function(succes) {
+module.exports.getAanmelders = function (succes) {
     console.log("Aanmelders are requested");
 
     var sqlquery = 'SELECT * FROM aanmelders';
 
     query(sqlquery, succes);
 };
+
+module.exports.getMaxId = function (succes) {
+    console.log("Max id is requested from wines");
+
+    var sqlquery = "SELECT MAX(wine_id) FROM wines;";
+
+    query(sqlquery, succes);
+};
+
+module.exports.getAanmeldersEmail = function (email, succes) {
+    console.log("Aanmelders are requested with email " + email);
+
+    var sqlquery = 'SELECT * FROM aanmelders WHERE email = "' + email + '"';
+
+    query(sqlquery, succes);
+};
+
 
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {
