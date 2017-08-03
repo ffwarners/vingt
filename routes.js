@@ -6,7 +6,13 @@ var nodemailer = require('nodemailer');
 var mg = require('nodemailer-mailgun-transport');
 var ejs = require('ejs');
 var bcrypt = require('bcrypt-nodejs');
+var formidable = require('formidable');
+var path = require('path');
+var getDirName = require('path').dirname;
 
+var crypto = require('crypto'),
+    algorithm = 'aes-256-ctr',
+    password = 'd6F3Efeq';
 
 var dbHandler = require('./databaseHandler');
 var config = require('./config');
@@ -502,10 +508,6 @@ function confirm(req, res) {
     });
 }
 
-var crypto = require('crypto'),
-    algorithm = 'aes-256-ctr',
-    password = 'd6F3Efeq';
-
 function encrypt(text) {
     var cipher = crypto.createCipher(algorithm, password);
     var crypted = cipher.update(text, 'utf8', 'hex');
@@ -687,9 +689,6 @@ function wijnen(req, res) {
     });
 }
 
-var formidable = require('formidable');
-var path = require('path');
-
 function upload(req, res) {
     // create an incoming form object
     var form = new formidable.IncomingForm();
@@ -750,9 +749,6 @@ function crop(req, res) {
     });
     res.redirect('adaptKaart');
 }
-
-var mkdirp = require('mkdirp');
-var getDirName = require('path').dirname;
 
 function decodeBase64Image(dataString) {
     var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
