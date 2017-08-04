@@ -20,6 +20,15 @@ var config = require('./config');
 // connect to mysql
 var connection;
 
+var auth = {
+    auth: {
+        api_key: 'key-eadd5996875559e35a0948edc0478cb8',
+        domain: 'sandboxaa40e321565e4288abd236f2e92a6cbd.mailgun.org'
+    }
+};
+
+var nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
 module.exports = function (app, passport, Connection) {
     connection = Connection;
 
@@ -69,7 +78,6 @@ module.exports = function (app, passport, Connection) {
 
     router.get('/registration?', registration);
     router.post('/registrate', sendmail);
-    router.get('/crop?', isLoggedIn, crop2);
     router.get('/confirmed?', confirm);
 
     router.get('/aanmelders', isLoggedIn, aanmelders);
@@ -84,6 +92,8 @@ module.exports = function (app, passport, Connection) {
 
     router.post('/upload', isLoggedIn, upload);
     router.post('/crop', isLoggedIn, crop);
+    router.get('/crop?', isLoggedIn, crop2);
+    router.get('/crops', isLoggedIn, cropShow);
     router.get('/lastId', isLoggedIn, lastId);
     router.get('/test', test);
     app.use(router);
@@ -127,13 +137,17 @@ function home(req, res) {
 }
 
 function kaart(req, res) {
-    dbHandler.getWineColumns(function (columns) {
-        dbHandler.getWines(function (rows) {
-            rows.forEach(function (rijen) {
-                rijen.link = encrypt("id=" + rijen.wine_id);
-            });
-            res.render('kaart', {wines: rows, columns: columns});
+    dbHandler.getWines(function (rows) {
+        rows.forEach(function (rijen) {
+            rijen.link = encrypt("id=" + rijen.wine_id);
         });
+        res.render('kaart', {wines: rows});
+    });
+}
+
+function cropShow(req, res) {
+    dbHandler.getWines(function (rows) {
+        res.render('crops', {wines: rows});
     });
 }
 
@@ -192,7 +206,7 @@ function editWineRoute(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to update wines');
             } else {
-                console.log("wines successfully updated");
+                console.log("Wines successfully updated");
                 connection.query("SELECT * FROM wines WHERE wine_id =?;", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -216,7 +230,7 @@ function editProeverijRoute(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to update proeverijen');
             } else {
-                console.log("proeverijen successfully updated");
+                console.log("Proeverijen successfully updated");
                 connection.query("SELECT * FROM proeverijen WHERE id =?;", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -242,7 +256,7 @@ function editWineColumnRoute(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to update columns');
             } else {
-                console.log("wines successfully updated");
+                console.log("Wines successfully updated");
                 connection.query("SELECT * FROM wines", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -264,7 +278,7 @@ function addNewColumn(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to update columns');
             } else {
-                console.log("wines successfully updated");
+                console.log("Wines successfully updated");
                 connection.query("SELECT * FROM wines", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -286,7 +300,7 @@ function deleteWineColumn(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to delete columns');
             } else {
-                console.log("column succesfully deleted");
+                console.log("Column succesfully deleted");
                 connection.query("SELECT * FROM wines", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -307,7 +321,7 @@ function newWineRoute(req, res) {
             console.error('Error while performing query: ' + err.message);
             res.end('Failed to add new wine');
         } else {
-            console.log("new wine successfully added");
+            console.log("New wine successfully added");
             res.json(rows.insertId);
         }
     });
@@ -324,7 +338,7 @@ function deleteWineRoute(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to delete wine');
             } else {
-                console.log("wine successfully deleted");
+                console.log("Wine successfully deleted");
                 connection.query("SELECT * FROM wines", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -346,7 +360,7 @@ function deleteProeverijRoute(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to delete proeverij');
             } else {
-                console.log("proeverijen successfully deleted");
+                console.log("Proeverij successfully deleted");
                 connection.query("SELECT * FROM proeverij", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -370,7 +384,7 @@ function changeHiddenRoute(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to update proeverijen');
             } else {
-                console.log("proeverijen successfully updated");
+                console.log("Proeverijen successfully updated");
                 connection.query("SELECT * FROM proeverijen WHERE id =?;", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -391,7 +405,7 @@ function addNewProeverij(req, res) {
             console.error('Error while performing query: ' + err.message);
             res.end('Failed to add new proeverij');
         } else {
-            console.log("new proeverij successfully added");
+            console.log("New proeverij successfully added");
             res.json(rows.insertId);
         }
     });
@@ -429,7 +443,6 @@ function proeverijen(req, res) {
 function showStart(req, res) {
     dbHandler.getUser(req.user.id, function (rows) {
         dbHandler.getLastChange(function (rijen) {
-            console.log(rijen[0]);
             res.render('ingelogd', {user: rows[0].name, time: rijen[0].UPDATE_TIME})
         });
 
@@ -456,15 +469,6 @@ function sendmail(req, res) {
 
         var html = compiled({proeverij: row[0], person: req.body, link: encrypt(string)});
 
-        var auth = {
-            auth: {
-                api_key: 'key-eadd5996875559e35a0948edc0478cb8',
-                domain: 'sandboxaa40e321565e4288abd236f2e92a6cbd.mailgun.org'
-            }
-        };
-
-        var nodemailerMailgun = nodemailer.createTransport(mg(auth));
-
         nodemailerMailgun.sendMail({
             // from: "Vingt wijnhandelaar, <vingt@gmail.com>",
             // to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
@@ -474,7 +478,7 @@ function sendmail(req, res) {
             html: html
         }, function (err, info) {
             if (err) {
-                console.error('Error: ' + err);
+                console.error(err);
             }
             else {
                 res.redirect('/');
@@ -498,7 +502,7 @@ function confirm(req, res) {
                     console.error('Error while performing query: ' + err.message);
                     res.end('Failed to add new aanmelder');
                 } else {
-                    console.log("new aanmelder successfully added");
+                    console.log("New aanmelder successfully added");
                     res.render('confirm', {person: query});
                 }
             });
@@ -533,7 +537,7 @@ function removeAanmelder(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to delete aanmelder');
             } else {
-                console.log("aanmelder successfully deleted");
+                console.log("Aanmelder successfully deleted");
                 connection.query("SELECT * FROM aanmelders", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -557,7 +561,7 @@ function editAanmeldersRoute(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to update aanmelders');
             } else {
-                console.log("aanmelders successfully updated");
+                console.log("Aanmelders successfully updated");
                 connection.query("SELECT * FROM aanmelders WHERE id =?;", [query.id], function (err, result) {
                     res.json(result);
                 });
@@ -584,19 +588,8 @@ function sendSignoutMail(req, res) {
             rows.forEach(function (aanmelder) {
                 var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/uitschrijven.ejs', 'utf8'));
                 var link = "id=" + aanmelder.id + "&proeverijID=" + aanmelder.proeverijID;
-                console.log(link+"AA");
                 link = encrypt(link);
-                console.log(link+"AA");
                 var html = compiled({aanmelder: aanmelder, link: link});
-
-                var auth = {
-                    auth: {
-                        api_key: 'key-eadd5996875559e35a0948edc0478cb8',
-                        domain: 'sandboxaa40e321565e4288abd236f2e92a6cbd.mailgun.org'
-                    }
-                };
-
-                var nodemailerMailgun = nodemailer.createTransport(mg(auth));
 
                 nodemailerMailgun.sendMail({
                     // from: "Vingt wijnhandelaar, <vingt@gmail.com>, " req.body.name + "<" + req.body.email + ">",
@@ -617,14 +610,10 @@ function sendSignoutMail(req, res) {
 }
 
 function confirmSignOut(req, res) {
-    console.log(req.url);
     var string = req.url.substring(16);
-    console.log(string);
     var dc = decrypt(string);
-    console.log(dc);
     dc = "/confirmSignOut?" + dc;
     var query = url.parse(dc, true).query;
-console.log(query);
     if (query.id !== undefined) {
         var update = "DELETE FROM aanmelders WHERE id = '" + query.id + "' AND proeverijID = " + query.proeverijID;
         connection.query(update, function (err, result) {
@@ -632,7 +621,7 @@ console.log(query);
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to delete aanmelder');
             } else {
-                console.log("aanmelder successfully deleted");
+                console.log("Aanmelder successfully deleted");
                 res.render('confirmUitschrijving');
             }
         });
@@ -646,15 +635,6 @@ function contactPost(req, res) {
 
     var html = compiled({person: req.body});
 
-    var auth = {
-        auth: {
-            api_key: 'key-eadd5996875559e35a0948edc0478cb8',
-            domain: 'sandboxaa40e321565e4288abd236f2e92a6cbd.mailgun.org'
-        }
-    };
-
-    var nodemailerMailgun = nodemailer.createTransport(mg(auth));
-
     nodemailerMailgun.sendMail({
         // from: "Vingt wijnhandelaar, <vingt@gmail.com>, " req.body.name + "<" + req.body.email + ">",
         // to: '"' + req.body.name + '" <' + req.body.email + ">, Steven Lambregts <stevenlambregts@gmail.com>",
@@ -664,7 +644,7 @@ function contactPost(req, res) {
         html: html
     }, function (err, info) {
         if (err) {
-            console.error('Error: ' + err);
+            console.error(err);
             res.render('contact', {
                 message: "",
                 failure: "Uw bericht is niet verstuurd, probeer het later nog eens.."
@@ -715,7 +695,7 @@ function upload(req, res) {
                     console.error('Error while performing query: ' + err.message);
                     res.end('Failed to update wines');
                 } else {
-                    console.log("wines successfully updated");
+                    console.log("Wines successfully updated");
                     connection.query("SELECT * FROM wines", function (err, result) {
                         // res.json(result);
                     });
@@ -741,11 +721,10 @@ function upload(req, res) {
 
 function crop(req, res) {
     var imageBuffer = decodeBase64Image(req.body.imagebase64);
+    var id = req.body.id;
     var name = "";
-    dbHandler.getMaxId(function (rows) {
-        name = "wine" + rows[0]['MAX(wine_id)'];
-        fs.writeFile('client/images/wines/small/' + name + '.jpg', imageBuffer.data, function (err) {
-        });
+    name = "wine" + id;
+    fs.writeFile('client/images/wines/small/' + name + '.jpg', imageBuffer.data, function (err) {
     });
     res.redirect('adaptKaart');
 }

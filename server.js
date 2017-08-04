@@ -17,6 +17,15 @@ authentication(passport, connection);
 
 // create the app
 var app = express();
+
+// Extends the limit so there won't be a too large request entity anymore
+app.use( bodyParser.json({limit: '50mb'}) );
+app.use(bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true,
+    parameterLimit:50000
+}));
+
 app.use(express.static(config.staticPath));
 
 app.set('views', __dirname + "/views");
@@ -24,11 +33,6 @@ app.set('view engine', 'ejs');
 
 // set the logger component
 app.use(logger);
-
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(bodyParser.json());
 
 // use passport authentication
 app.use(session(config.sessionOptions));

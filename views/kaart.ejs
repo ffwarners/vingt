@@ -73,8 +73,8 @@
                         <div class="portfolio-items">
                             <% wines.forEach(function(wine) { %>
                             <div class="portfolio-item apps col-xs-12 col-sm-4 col-md-3
-                                 <% if (wine['purchase price'] <= 15) { %> under15 <% } %>
-                                 <% if (wine['size'] <= 1.0) { %> small <% } %>
+                                 <% if (wine['aankoop prijs'] <= 15) { %> under15 <% } %>
+                                 <% if (wine['inhoud'] <= 1.0) { %> small <% } %>
                                  <% if (wine['droog'] === 'true') { %> droog <% } %>">
                                 <div class="recent-work-wrap">
                                     <img class="img-responsive" src="images/wines/Small/wine<%= wine.wine_id  %>.jpg"
