@@ -633,3 +633,23 @@ $('#upload-input').on('change', function () {
     });
 });
 
+function deleteBlog(id) {
+    $.ajax({
+        url: "/deleteBlog?id=" + id,
+        async: false,
+        success: function () {
+            document.getElementById("div" + id).remove();
+        }
+    });
+}
+
+function changeApproved(id) {
+    var checkbox = document.getElementById("checkboxThreeInput" + id);
+    $.ajax({
+        url: "/changeApproved?id=" + id + "&approved=" + checkbox.checked,
+        async: false,
+        success: function () {
+        }
+    });
+}
+

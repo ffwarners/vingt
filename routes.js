@@ -102,6 +102,10 @@ module.exports = function (app, passport, Connection) {
 
     router.get('/reactie?', reactieRender);
     router.post('/reactie', reactie);
+
+    router.get('/adaptBlog', adaptBlog);
+    router.get('/deleteBlog?', deleteBlogRoute);
+    router.get('/changeApproved?', changeApprovedRoute);
     app.use(router);
 };
 
@@ -481,17 +485,68 @@ function blog(req, res) {
     var page = query.page;
     if(!query.page) page = 1;
     dbHandler.getBlog(function (rows) {
-        if(Math.ceil(rows.length/2) >= page && page>0) {
-            console.log(rows.length);
+        if(Math.ceil((rows.length-1)/2) >= page && page>0) {
             rows.forEach(function (row) {
                 row.link = encrypt("?id=" + row.id);
             });
-            console.log("Page = " + page);
+            console.log(rows);
             res.render('blog', {blog: rows, pagina: page});
         } else {
             res.render('404');
         }
     });
+}
+
+function adaptBlog(req, res) {
+    dbHandler.getBlogRaw(function(rows) {
+        res.render('adaptBlog', {blog: rows});
+    });
+}
+
+function deleteBlogRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.id !== undefined) {
+        var update = "DELETE FROM blog WHERE id = " + query.id;
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to delete blog');
+            } else {
+                console.log("Blog successfully deleted");
+                connection.query("SELECT * FROM wines", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no id defined");
+    }
+}
+
+function changeApprovedRoute(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+
+    if (query.id !== undefined) {
+
+        var update = "UPDATE blog SET approved='" + query.approved + "' where id=" + query.id;
+
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to update blog');
+            } else {
+                console.log("Blog successfully updated");
+                connection.query("SELECT * FROM blog WHERE id =?;", [query.id], function (err, result) {
+                    res.json(result);
+                });
+            }
+        });
+    } else {
+        res.end("Error: no id defined");
+    }
 }
 
 function proeverijen(req, res) {

@@ -110,9 +110,17 @@ module.exports.getAanmeldersProeverij = function (id, succes) {
 };
 
 module.exports.getBlog = function (succes) {
-    console.log("Blog is requested");
+    console.log("Blog is requested where approved = true");
 
     var sqlquery = 'SELECT * FROM blog WHERE approved = "true"';
+
+    query(sqlquery, succes)
+};
+
+module.exports.getBlogRaw = function (succes) {
+    console.log("Blog is requested");
+
+    var sqlquery = 'SELECT * FROM blog WHERE id > 1 ORDER BY id DESC;';
 
     query(sqlquery, succes)
 };

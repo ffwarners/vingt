@@ -14,6 +14,12 @@
     <link href="css/style.css" rel="stylesheet">
     <link href="css/responsive.css" rel="stylesheet">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/jquery.Jcrop.js"></script>
+
 </head>
 <body class="homepage">
 <header id="header">
@@ -31,12 +37,13 @@
 
             <div class="collapse navbar-collapse navbar-right">
                 <ul class="nav navbar-nav">
-                    <li><a href="/">Vingt</a></li>
-                    <li><a href="kaart">Kaart</a></li>
-                    <li><a href="proeverijen">Proeverijen</a></li>
-                    <li><a href="impressie">Impressie</a></li>
-                    <li class="active"><a href="blog">Blog</a></li>
-                    <li><a href="contact">Contact</a></li>
+                    <li><a href="/start">Vingt</a></li>
+                    <li><a href="/adaptkaart">Kaart</a></li>
+                    <li><a href="/adaptproeverijen">Proeverijen</a></li>
+                    <li><a href="/aanmelders">Aanmelders</a></li>
+                    <li><a href="/crops">Thumbnails</a></li>
+                    <li class="active"><a href="/adaptBlog">Blog</a></li>
+                    <li><a href="#"><strike>Contact</strike></a></li>
                 </ul>
             </div>
         </div><!--/.container-->
@@ -47,81 +54,31 @@
 <section id="blog" class="container" style="margin-top: 140px">
     <div class="center">
         <h2>Blogs</h2>
-        <p class="lead">Pellentesque habitant morbi tristique senectus et netus et malesuada</p>
+        <p class="lead">Controleer hier of er niks op de website komt wat er niet hoort. U kan niks wijzigen alleen uitschakelen en verwijderen</p>
     </div>
 
     <div class="blog">
         <div class="row">
             <div class="col-md-12">
-                <div class="blog-item">
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-2 text-center">
-                            <div class="entry-meta">
-                                <%var page = pagina *2%>
-                                <% var date = blog[page-1].reactionDate.substring(8, 10); %>
-                                <% var month = blog[page-1].reactionDate.substring(4, 7); %>
-                                <% var name = blog[page-1].personName %>
-                                <% name.length >= 20 ? name = name.substring(0, 20) + "..." : name; %>
-                                <% var message = blog[page-1].reaction.substring(0, 20) + "..." %>
-                                <span id="publish_date"><%= date + " " + month %></span>
-                                <span><i class="fa fa-user"></i> <a href="#"><%= name %></a></span>
-                                <span><i class="fa fa-comment"></i> <a><%= message %></a></span>
-                                <span><i class="fa fa-star"></i><a href="#"><%= blog[page-1].rate %></a></span>
-                            </div>
-                        </div>
-
+                <% blog.forEach(function(reaction) { %>
+                <div class="blog-item" id="div<%=reaction.id%>">
+                    <div class="row" style="border: 2px solid red;">
+                        <section>
+                            <div class="checkboxThree"><input onchange="changeApproved('<%=reaction.id%>')" type="checkbox" <% if (reaction.approved == "true") { %> checked <% } %> value="1" id="checkboxThreeInput<%=reaction.id%>" name=""/><label for="checkboxThreeInput<%=reaction.id%>"></label></div>
+                        </section>
+                        <div onclick="deleteBlog('<%=reaction.id%>')" class="pull-right"><h1 style="color: black; margin-right: 40px;">x</h1></div>
                         <div class="col-xs-12 col-sm-10 blog-content">
-                            <a href="#"><img class="img-responsive img-blog" src="images/blog/blog1.jpg" width="100%"
-                                             alt=""/></a>
-                            <h2><a>Proeverij: <%= blog[page-1].proeverijName %></a></h2>
-                            <h3><%= blog[page-1].reaction %></h3>
-                            <a class="btn btn-primary readmore" href="/blog<%= blog[page-1].link %>">Meer lezen <i
-                                        class="fa fa-angle-right"></i></a>
+                            <h2><strong>Aanmelder:</strong> <%= reaction.personName %></h2>
+                            <h2><strong>Proeverij naam:</strong> <%= reaction.proeverijName %></h2>
+                            <h2><strong>Proeverij datum:</strong> <%= reaction.proeverijDate %></h2>
+                            <h2><strong>Reactie datum:</strong> <%= reaction.reactionDate %></h2>
+                            <h2><strong>Rating:</strong> <%= reaction.rate %></h2>
+                            <h3><%= reaction.reaction %></h3>
                         </div>
                     </div>
                 </div><!--/.blog-item-->
-
-                <% if(blog.length-1 >= page) { %>
-                <div class="blog-item">
-                    <div class="row">
-                        <div class="col-sm-2 text-center">
-                            <div class="entry-meta">
-                                <% var current2 = page %>
-                                <% var date2 = blog[current2].reactionDate.substring(8, 10); %>
-                                <% var month2 = blog[current2].reactionDate.substring(4, 7); %>
-                                <% var name2 = blog[current2].personName %>
-                                <% name2.length >= 20 ? name2 = name2.substring(0, 20) + "..." : name2; %>
-                                <% var message2 = blog[current2].reaction.substring(0, 20) + "..." %>
-                                <span id="publish_date"><%= date2 + " " + month2 %></span>
-                                <span><i class="fa fa-user"></i> <a href="#"><%= name2 %></a></span>
-                                <span><i class="fa fa-comment"></i> <a><%= message2 %></a></span>
-                                <span><i class="fa fa-star"></i><a href="#"><%= blog[current2].rate %></a></span>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-10 blog-content">
-                            <a href="#"><img class="img-responsive img-blog" src="images/blog/blog2.jpg" width="100%"
-                                             alt=""/></a>
-                            <h2><a>Proeverij: <%= blog[current2].proeverijName %></a></h2>
-                            <h3><%= blog[current2].reaction %></h3>
-                            <a class="btn btn-primary readmore" href="/blog<%= blog[current2].link %>">Meer lezen <i
-                                        class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
-                </div><!--/.blog-item-->
-                <% } %>
-                <ul class="pagination pagination-lg">
-                    <%if(page/2 >1) {%><li><a href="/blog?page=<%=page/2-1%>"><i class="fa fa-long-arrow-left"></i>Previous Page</a></li><%}%>
-                    <% for(var i = 0; i < Math.ceil((blog.length-1) / 2); i++) { %>
-                    <li
-                            <% if(pagina - 1 == i) { %>
-                            class="active"
-                            <% } %>
-                    ><a href="/blog?page=<%= i + 1 %>"><%= i + 1 %></a></li>
-                    <% } %>
-                    <%if(blog.length-1 > page) {%><li><a href="/blog?page=<%=page/2+ 1%>">Next Page<i class="fa fa-long-arrow-right"></i></a></li><%}%>
-                </ul><!--/.pagination-->
-            </div><!--/.col-md-8-->
+                <% }); %>
+            </div><!--/.col-md-12-->
 
             <!--<aside class="col-md-4">-->
             <!--<div class="widget search">-->
@@ -327,6 +284,15 @@
 <script src="js/jquery.isotope.min.js"></script>
 <script src="js/wow.min.js"></script>
 <script src="js/main.js"></script>
+
+<!-- Script for the $JSON -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
 </body>
 </html>
