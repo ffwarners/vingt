@@ -58,7 +58,7 @@ module.exports = function (app, passport, Connection) {
     router.get('/proeverijen', proeverijen);
     router.get('/contact', contact);
     router.get('/impressie', impressie);
-    router.get('/blog', blog);
+    router.get('/blog?', blog);
 
     router.get('/start', isLoggedIn, showStart);
     router.get('/adaptKaart', isLoggedIn, adaptKaart);
@@ -97,14 +97,60 @@ module.exports = function (app, passport, Connection) {
     router.get('/lastId', isLoggedIn, lastId);
     router.get('/test', test);
 
-    router.get('/email?', emailPage);
-    router.post('/email', email);
+    router.get('/email?', isLoggedIn, emailPage);
+    router.post('/email', isLoggedIn, email);
+
+    router.get('/reactie?', reactieRender);
+    router.post('/reactie', reactie);
     app.use(router);
 };
 
 function test(req, res) {
     dbHandler.getAanmeldersProeverij(15, function (rijen) {
-        res.render('proeverijEmailSend', {onderwerp: 'test', aanmelder: rijen[0], bericht: "testBericht", link: "/reactie?"+encrypt("id=15")})
+        res.render('proeverijEmailSend', {
+            onderwerp: 'test',
+            aanmelder: rijen[0],
+            bericht: "testBericht",
+            link: "/reactie?" + encrypt("id=15")
+        })
+    });
+}
+
+function reactieRender(req, res) {
+    var string = req.url.substring(9);
+    var dc = decrypt(string);
+    dc = "/reactie?" + dc;
+    var query = url.parse(dc, true).query;
+    console.log(query);
+    dbHandler.getProeverij(query.id, function (rijen) {
+        var update = "SELECT * FROM aanmelders WHERE id = " + query.aanmelderId;
+        connection.query(update, function (err, rows) {
+            if (err) {
+                console.error('Error while performing query: ' + err.message);
+                res.end('Failed to select aanmelders');
+            } else {
+                res.render('reactie', {proeverij: rijen[0], message: "", failure: "", aanmelder: rows[0]});
+            }
+        });
+    });
+}
+
+function reactie(req, res) {
+    console.log(req.body);
+    dbHandler.getProeverij(req.body.proeverijId, function (rows) {
+        var query = "SELECT * FROM aanmelders WHERE id = " + req.body.aanmelderId;
+        connection.query(query, function (err, rijen) {
+            var date = new Date();
+            var update = "INSERT INTO blog VALUES(0, '" + req.body.name + "', '" + rows[0].name + "', '" + req.body.message + "', '" + rows[0].date + "', '" + date.toDateString() + "', '" + req.body.rate+ "', '" + "false" + "');";
+            connection.query(update, function (err, rowss) {
+                if (err) {
+                    console.error('Error while performing query: ' + err.message);
+                    res.render('reactie', {proeverij: rows[0], message: "", failure: "Uw bericht is niet verstuurd, probeer het later nog eens..", aanmelder: rijen[0]});
+                } else {
+                    res.render('reactie', {proeverij: rows[0],message: "Uw bericht is succesvol verstuurd, bedankt voor uw reactie.", failure: "", aanmelder: rijen[0]});
+                }
+            });
+        });
     });
 }
 
@@ -430,7 +476,22 @@ function impressie(req, res) {
 }
 
 function blog(req, res) {
-    res.sendFile(__dirname + '/views/blog.html');
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+    var page = query.page;
+    if(!query.page) page = 1;
+    dbHandler.getBlog(function (rows) {
+        if(Math.ceil(rows.length/2) >= page && page>0) {
+            console.log(rows.length);
+            rows.forEach(function (row) {
+                row.link = encrypt("?id=" + row.id);
+            });
+            console.log("Page = " + page);
+            res.render('blog', {blog: rows, pagina: page});
+        } else {
+            res.render('404');
+        }
+    });
 }
 
 function proeverijen(req, res) {
@@ -525,7 +586,7 @@ function email(req, res) {
                     var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/proeverijEmailSend.ejs', 'utf8'));
                     var link = "";
                     if (req.body.onderwerp === "Other") req.body.onderwerp = req.body.other;
-                    if (req.body.onderwerp === "Validatie") link = "reactie?" + encrypt("id=" + req.body.id);
+                    if (req.body.onderwerp === "Validatie") link = "reactie?" + encrypt("id=" + req.body.id + "&aanmelderId=" + row.id);
                     var html = compiled({
                         onderwerp: req.body.onderwerp,
                         aanmelder: row,

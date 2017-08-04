@@ -109,6 +109,14 @@ module.exports.getAanmeldersProeverij = function (id, succes) {
     query(sqlquery, succes)
 };
 
+module.exports.getBlog = function (succes) {
+    console.log("Blog is requested");
+
+    var sqlquery = 'SELECT * FROM blog WHERE approved = "true"';
+
+    query(sqlquery, succes)
+};
+
 
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {

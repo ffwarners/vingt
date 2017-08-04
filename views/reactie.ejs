@@ -41,7 +41,7 @@
                     <li><a href="kaart">Kaart</a></li>
                     <li><a href="proeverijen">Proeverijen</a></li>
                     <li><a href="impressie">Impressie</a></li>
-                    <li class="active"><a href="blog">Blog</a></li>
+                    <li><a href="blog">Blog</a></li>
                     <li><a href="contact">Contact</a></li>
                 </ul>
             </div>
@@ -50,22 +50,59 @@
 
 </header><!--/header-->
 
-
-<section id="about-us">
+<section id="contact-page" class="wow fadeInDown">
     <div class="container">
-        <div class="skill-wrap clearfix">
-            <section id="recent-works">
-                <div class="container">
-                    <div class="center wow fadeInDown">
-                        <h2>Even geduld</h2>
-                        <p class="lead">Deze pagina is nog onder constructie<br>We hopen u zo spoedig mogelijk een prachtig resultaat te bieden</p>
-                    </div>
-
-                </div><!--/.container-->
-            </section><!--/#recent-works-->
+        <div class="center" style="margin-top: 140px;">
+            <h2><%=proeverij.name%></h2>
+            <p class="lead">Beste <%=aanmelder.name%>,<br> Laat hier alstublieft uw reactie achter over de door uw bezochte proeverij.<br>Beschrijft u zo gedetailleerd mogelijk wat u vond van de proeverij. Op deze manier kunnen andere hetzelfde ervaren als u al heeft gedaan.<br>  <span>Vingt</span></p>
         </div>
+        <div class="row contact-wrap">
+            <div class="col-sm-8 col-sm-offset-2">
+                <form method="post" action="/reactie" class="contactForm">
+                    <div class="form-group">
+                        <label for="name"><b>Uw voor- en achternaam *</b></label>
+
+                        <input type="text" readonly style="cursor:not-allowed;" value="<%=aanmelder.name%>" name="name" id="name" placeholder="Uw naam" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><b>Uw email *</b></label>
+                        <input type="email" readonly style="cursor:not-allowed;" value="<%=aanmelder.email%>" name="email" id="email" placeholder="Uw email" required/>
+                        <input type="hidden" name="aanmelderId" value="<%=aanmelder.id%>">
+                        <input type="hidden" name="proeverijId" value="<%=proeverij.id%>">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject"><b>De proeverij *</b></label>
+                        <input type="text" readonly style="cursor:not-allowed;" value="<%=proeverij.name%>" name="subject" id="subject" placeholder="Onderwerp" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="message"><b>Uw bericht *</b></label>
+                        <textarea name="message" style="min-width: 100%; max-width: 100%" required
+                                  placeholder="Uw bericht"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message"><b>Uw waardering <i class="fa fa-star"></i></b></label>
+                        <select class="curved" style="width: 100%;" name="rate" id="rate">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option selected value="5">5</option>
+                        </select>
+                    </div>
+                    <% if (message.length > 0) { %>
+                    <div class="alert alert-success"><%= message %></div>
+                    <% } %>
+                    <% if(failure.length > 0) { %>
+                    <div class="alert alert-danger"><%= failure %></div>
+                    <% } %>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">Verstuur bericht</button>
+                    </div>
+                </form>
+            </div>
+        </div><!--/.row-->
     </div><!--/.container-->
-</section><!--/about-us-->
+</section><!--/#contact-page-->
 
 <section id="bottom">
     <div class="container wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
