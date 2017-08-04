@@ -450,6 +450,15 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function () {
+    $(".btnSend").click(function (e) {
+        var id = this.parentNode.id.substring(3);
+        e.preventDefault();
+
+        window.location.href = '/email?id=' + id;
+    });
+});
+
 var contentsAanmelders = $('.editableAanmelder').html();
 
 function editableAanmelders() {

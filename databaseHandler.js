@@ -101,6 +101,14 @@ module.exports.getLastChange = function(succes) {
     query(sqlquery, succes);
 };
 
+module.exports.getAanmeldersProeverij = function (id, succes) {
+    console.log("Aanmelders are requested for proeverij " + id);
+
+    var sqlquery = 'SELECT * FROM aanmelders WHERE proeverijID = ' + id;
+
+    query(sqlquery, succes)
+};
+
 
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {

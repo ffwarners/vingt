@@ -96,13 +96,15 @@ module.exports = function (app, passport, Connection) {
     router.get('/crops', isLoggedIn, cropShow);
     router.get('/lastId', isLoggedIn, lastId);
     router.get('/test', test);
+
+    router.get('/email?', emailPage);
+    router.post('/email', email);
     app.use(router);
 };
 
 function test(req, res) {
-    dbHandler.getAanmeldersEmail('stevenlambregts@gmail.com', function (aanmelders) {
-        var link = "id=" + aanmelders[0].id + "&proeverijID=" + aanmelders[0].proeverijID;
-        res.render('uitschrijven', {aanmelder: aanmelders[0], link: encrypt(link)})
+    dbHandler.getAanmeldersProeverij(15, function (rijen) {
+        res.render('proeverijEmailSend', {onderwerp: 'test', aanmelder: rijen[0], bericht: "testBericht", link: "/reactie?"+encrypt("id=15")})
     });
 }
 
@@ -485,6 +487,124 @@ function sendmail(req, res) {
             }
         });
     });
+}
+
+function emailPage(req, res) {
+    var urlData = url.parse(req.url, true);
+    var query = urlData.query;
+    var id = query.id;
+    if (id !== "All") {
+        dbHandler.getProeverij(id, function (row) {
+            dbHandler.getAanmeldersProeverij(id, function (rijen) {
+                res.render('proeverijEmail', {
+                    message: "",
+                    failure: "",
+                    proeverij: row[0],
+                    aanmelders: rijen
+                });
+            });
+        });
+    } else {
+        dbHandler.getAanmelders(function (rows) {
+            res.render('proeverijEmail', {
+                message: "",
+                failure: "",
+                proeverij: {id: 'All', name: "All", datum: '-', details: '-'},
+                aanmelders: rows
+            });
+        });
+    }
+}
+
+function email(req, res) {
+    console.log(req.body);
+    if (req.body.id !== "All") {
+        dbHandler.getProeverij(req.body.id, function (rijen) {
+            dbHandler.getAanmeldersProeverij(req.body.id, function (rows) {
+                rows.forEach(function (row) {
+                    var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/proeverijEmailSend.ejs', 'utf8'));
+                    var link = "";
+                    if (req.body.onderwerp === "Other") req.body.onderwerp = req.body.other;
+                    if (req.body.onderwerp === "Validatie") link = "reactie?" + encrypt("id=" + req.body.id);
+                    var html = compiled({
+                        onderwerp: req.body.onderwerp,
+                        aanmelder: row,
+                        bericht: req.body.message,
+                        link: link
+                    });
+
+                    nodemailerMailgun.sendMail({
+                        // from: "Vingt wijnhandelaar, <vingt@gmail.com>",
+                        // to: '"' + row.name + '" <' + row.email + ">",
+                        from: "Steven Lambregts <stevenlambregts@gmail.com>, ",
+                        to: "Steven Lambregts <stevenlambregts@gmail.com>",
+                        subject: 'Vingt - [' + req.body.onderwerp + ']',
+                        html: html
+                    }, function (err, info) {
+                        if (err) {
+                            console.error(err);
+                            res.render('proeverijEmail', {
+                                message: "",
+                                failure: "Uw bericht is niet verstuurd, probeer het later nog eens..",
+                                proeverij: rijen[0],
+                                aanmelders: rows
+                            });
+                        }
+                        else {
+                        }
+                    });
+                });
+                res.render('proeverijEmail', {
+                    message: "Uw bericht is succesvol verstuurd",
+                    failure: "",
+                    proeverij: rijen[0],
+                    aanmelders: rows
+                });
+            });
+        });
+    } else {
+        dbHandler.getAanmelders(function (rows) {
+            rows.forEach(function (row) {
+                var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/proeverijEmailSend.ejs', 'utf8'));
+                var link = "";
+                if (req.body.onderwerp === "Other") req.body.onderwerp = req.body.other;
+                if (req.body.onderwerp === "Validatie") link = "reactie?" + encrypt("id=" + req.body.id);
+                var html = compiled({
+                    onderwerp: req.body.onderwerp,
+                    aanmelder: row,
+                    bericht: req.body.message,
+                    link: link
+                });
+
+                nodemailerMailgun.sendMail({
+                    // from: "Vingt wijnhandelaar, <vingt@gmail.com>",
+                    // to: '"' + row.name + '" <' + row.email + ">",
+                    from: "Steven Lambregts <stevenlambregts@gmail.com>, ",
+                    to: "Steven Lambregts <stevenlambregts@gmail.com>",
+                    subject: 'Vingt - [' + req.body.onderwerp + ']',
+                    html: html
+                }, function (err, info) {
+                    if (err) {
+                        console.error(err);
+                        res.render('proeverijEmail', {
+                            message: "",
+                            failure: "Uw bericht is niet verstuurd, probeer het later nog eens..",
+                            proeverij: rijen[0],
+                            aanmelders: rows
+                        });
+                    }
+                    else {
+                    }
+                });
+            });
+            res.render('proeverijEmail', {
+                message: "Uw bericht is succesvol verstuurd",
+                failure: "",
+                proeverij: {id: 'All', name: "All", datum: '-', details: '-'},
+                aanmelders: rows
+            });
+        });
+    }
 }
 
 function confirm(req, res) {

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vingt</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/prettyPhoto.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
+    <!-- =======================================================
+        Theme Name: Gp
+        Theme URL: https://bootstrapmade.com/gp-free-multipurpose-html-bootstrap-templat/
+        Author: BootstrapMade
+        Author URL: https://bootstrapmade.com
+    ======================================================= -->
+
+</head>
+<body class="homepage">
+<header id="header">
+    <nav class="navbar navbar-fixed-top" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Vingt</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-right">
+                <ul class="nav navbar-nav">
+                    <li><a href="/start">Vingt</a></li>
+                    <li><a href="/adaptkaart">Kaart</a></li>
+                    <li><a href="/adaptproeverijen">Proeverijen</a></li>
+                    <li class="active"><a href="/aanmelders">Aanmelders</a></li>
+                    <li><a href="/crops">Thumbnails</a></li>
+                    <li><a href="#"><strike>Blog</strike></a></li>
+                    <li><a href="#"><strike>Contact</strike></a></li>
+                </ul>
+            </div>
+        </div><!--/.container-->
+    </nav><!--/nav-->
+
+</header><!--/header-->
+
+<section id="contact-page" class="wow fadeInDown">
+    <div class="container">
+        <div class="center" style="margin-top: 140px;">
+            <h2><%= proeverij.name %></h2>
+            <p class="lead">Stuur alle <strong><%= aanmelders.length %></strong> de aanmelders een mail</p>
+            <p class="lead"><strong>Gegevens: </strong><br> <strong>Datum: </strong><%= proeverij.date %> <br> <strong>Details: </strong> <%= proeverij.details %></p>
+        </div>
+        <div class="row contact-wrap">
+            <div class="col-sm-8 col-sm-offset-2">
+                <form method="post" action="/email" class="contactForm">
+                    <div class="form-group">
+                        <input name="id" value="<%=proeverij.id%>" class="hidden">
+                        <label for="proeverij"><b>Uw gewenste proeverij:</b></label><br>
+                        <input class="curved" style="max-width: 50%; min-width: 200px; cursor:not-allowed;" type="text" name="proeverij" value="<%=proeverij.name%>" readonly required title="proeverij"><br>
+                        <label for="onderwerp"><b>Betreft</b></label><br>
+
+                        <script type="text/javascript">
+                            function showfield(name) {
+                                if (name == 'Other') document.getElementById('div1').innerHTML = 'Other: <input type="text" name="other" placeholder="Onderwerp" />';
+                                else {
+                                    if (name == 'Validatie') document.getElementById('div1').innerHTML = 'Er verschijnt in de email een link naar de reactie pagina, die hoeft u NIET te noemen';
+                                    else document.getElementById('div1').innerHTML = '';
+                                }
+                            }
+                        </script>
+
+                        <select class="curved" style="width: 100%;" name="onderwerp" id="onderwerp"
+                                onchange="showfield(this.options[this.selectedIndex].value)">
+                            <option disabled selected value> &#45;&#45; Selecteer een optie &#45;&#45;</option>
+                            <option value="Wijziging datum">Wijziging datum</option>
+                            <option value="Herinnering">Herinnering</option>
+                            <option value="Informatie">Informatie</option>
+                            <option value="Annulering">Annulering</option>
+                            <option <%if (proeverij.id === "All") {%> disabled <%}%> value="Validatie">Validering</option>
+                            <option value="Other">Anders *</option>
+                        </select>
+                        <br>
+                        <div id="div1"></div>
+                    </div>
+                    <div class="form-group hidden" id="hiddenOther">
+                    </div>
+                    <div class="form-group">
+                        <label>Bericht</label><br>
+                        <small>Type geen 'Beste...' en 'Met vriendelijke groet,' <br>Type wel 'Wij hopen u hiermee voldoende te hebben geïnformeerd'</small>
+                        <textarea name="message" style="min-width: 100%; max-width: 100%" required
+                                  placeholder="Uw bericht"></textarea>
+                    </div>
+                    <% if (message.length > 0) { %>
+                    <div class="alert alert-success"><%= message %></div>
+                    <% } %>
+                    <% if(failure.length > 0) { %>
+                    <div class="alert alert-danger"><%= failure %></div>
+                    <% } %>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">Verstuur bericht</button>
+                    </div>
+                </form>
+            </div>
+        </div><!--/.row-->
+    </div><!--/.container-->
+</section><!--/#contact-page-->
+
+<section id="bottom">
+    <div class="container wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="widget">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About us</a></li>
+                        <li><a href="#">We are hiring</a></li>
+                        <li><a href="#">Meet the team</a></li>
+                        <li><a href="#">Copyright</a></li>
+                    </ul>
+                </div>
+            </div><!--/.col-md-3-->
+
+            <div class="col-md-3 col-sm-6">
+                <div class="widget">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Faq</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Forum</a></li>
+                        <li><a href="#">Documentation</a></li>
+                    </ul>
+                </div>
+            </div><!--/.col-md-3-->
+
+            <div class="col-md-3 col-sm-6">
+                <div class="widget">
+                    <h3>Developers</h3>
+                    <ul>
+                        <li><a href="#">Web Development</a></li>
+                        <li><a href="#">SEO Marketing</a></li>
+                        <li><a href="#">Theme</a></li>
+                        <li><a href="#">Development</a></li>
+                    </ul>
+                </div>
+            </div><!--/.col-md-3-->
+
+            <div class="col-md-3 col-sm-6">
+                <div class="widget">
+                    <h3>Our Partners</h3>
+                    <ul>
+                        <li><a href="#">Adipisicing Elit</a></li>
+                        <li><a href="#">Eiusmod</a></li>
+                        <li><a href="#">Tempor</a></li>
+                        <li><a href="#">Veniam</a></li>
+                    </ul>
+                </div>
+            </div><!--/.col-md-3-->
+        </div>
+    </div>
+</section><!--/#bottom-->
+
+<div class="top-bar">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="social">
+                    <ul class="social-share">
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                        <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+                        <li><a href="#"><i class="fa fa-skype"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div><!--/.container-->
+</div><!--/.top-bar-->
+
+<footer id="footer" class="midnight-blue">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <p>© 2017 Copyright Vingt.nl </p>
+
+            </div>
+            <div class="col-sm-6">
+                <ul class="pull-right">
+                    <li><a href="#">Vingt</a></li>
+                    <li><a href="#">Kaart</a></li>
+                    <li><a href="#">Proeverijen</a></li>
+                    <li><a href="#">Impressie</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer><!--/#footer-->
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.prettyPhoto.js"></script>
+<script src="js/jquery.isotope.min.js"></script>
+<script src="js/wow.min.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
