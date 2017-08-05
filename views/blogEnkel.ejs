@@ -46,88 +46,36 @@
 
 <section id="blog" class="container" style="margin-top: 140px">
     <div class="center">
-        <h2>Blogs</h2>
-        <p class="lead">U kunt hier kijken wat mensen die u voor zijn geweest van de proeverij hebben gevonden</p>
+        <h2><%= blog[0].proeverijName %></h2>
+        <p class="lead">Door: <%= blog[0].personName %></p>
     </div>
+
 
     <div class="blog">
         <div class="row">
             <div class="col-md-8">
                 <div class="blog-item">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-2 text-center">
-                            <div class="entry-meta">
-                                <% var page = pagina * 2 %>
-                                <% var date = blog[page - 1].reactionDate.substring(8, 10); %>
-                                <% var month = blog[page - 1].reactionDate.substring(4, 7); %>
-                                <% var name = blog[page - 1].personName %>
-                                <% name.length >= 10 ? name = name.substring(0, 10) + "..." : name; %>
-                                <% var message = blog[page - 1].reaction.substring(0, 9) + "..." %>
-                                <span id="publish_date"><%= date + " " + month %></span>
-                                <span><i class="fa fa-user"></i> <a href="#"><%= name %></a></span>
-                                <span><i class="fa fa-comment"></i> <a><%= message %></a></span>
-                                <span><i class="fa fa-star"></i><a href="#"><%= blog[page - 1].rate %></a></span>
-                            </div>
-                        </div>
                         <div class="col-xs-12 col-sm-10 blog-content">
-                            <!--<a href="#"><img class="img-responsive img-blog" src="images/blog/blog1.jpg" width="100%"-->
-                            <!--alt=""/></a>-->
-                            <h2><a>Proeverij: <%= blog[page - 1].proeverijName %></a></h2>
-                            <h3><%= blog[page - 1].proeverijBeschrijving.substring(0, 200) + "..." %></h3>
-                            <a class="btn btn-primary readmore" href="/blog-?<%= blog[page - 1].link %>">Meer lezen <i
-                                        class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
-                </div><!--/.blog-item-->
-
-                <% if(blog.length - 1 >= page) { %>
-                <div class="blog-item">
-                    <div class="row">
-                        <div class="col-sm-2 text-center">
-                            <div class="entry-meta">
-                                <% var current2 = page %>
-                                <% var date2 = blog[current2].reactionDate.substring(8, 10); %>
-                                <% var month2 = blog[current2].reactionDate.substring(4, 7); %>
-                                <% var name2 = blog[current2].personName %>
-                                <% name2.length >= 10 ? name2 = name2.substring(0, 10) + "..." : name2; %>
-                                <% var message2 = blog[current2].reaction.substring(0, 9) + "..." %>
-                                <span id="publish_date"><%= date2 + " " + month2 %></span>
-                                <span><i class="fa fa-user"></i> <a href="#"><%= name2 %></a></span>
-                                <span><i class="fa fa-comment"></i> <a><%= message2 %></a></span>
-                                <span><i class="fa fa-star"></i><a href="#"><%= blog[current2].rate %></a></span>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-10 blog-content">
-                            <!--<a href="#"><img class="img-responsive img-blog" src="images/blog/blog2.jpg" width="100%"-->
-                            <!--alt=""/></a>-->
-                            <h2><a>Proeverij: <%= blog[current2].proeverijName %></a></h2>
-                            <h3><%= blog[current2].proeverijBeschrijving.substring(0, 200) + "..." %></h3>
-                            <a class="btn btn-primary readmore" href="/blog-?<%= blog[current2].link %>">Meer lezen <i
-                                        class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
-                </div><!--/.blog-item-->
-                <% } %>
-                <ul class="pagination pagination-lg">
-                    <% if(page / 2 > 1) { %>
-                    <li><a href="/blog?page=<%= page / 2 - 1 %>"><i class="fa fa-long-arrow-left"></i>Vorige pagina</a>
-                    </li>
-                    <% } %>
-                    <% for(var i = 0; i < Math.ceil((blog.length - 1) / 2); i++) { %>
-                    <li
-                            <% if(pagina - 1 == i) { %>
-                            class="active"
+                            <h2><a>Proeverij: <%= blog[0].proeverijName %></a></h2>
+                            <h4><strong>Beschrijving proeverij: <br></strong><%= blog[0].proeverijBeschrijving %>
+                            </h4>
+                            <% var date = blog[0].proeverijDate
+                            var year = date.substring(0, 4);
+                            var month = date.substring(5, 7);
+                            var day = date.substring(8, 10);
+                            var newDate = day + "-" + month + "-" + year; %>
+                            <h4><strong>Datum proeverij: </strong><%= newDate %></h4>
+                            <h4><strong>Datum reactie: </strong><%= blog[0].reactionDate %></h4>
+                            <h4><strong>Reactie: </strong><br><%= blog[0].reaction %></h4>
+                            <h4><strong>Rating (<%= blog[0].rate %>/5): </strong></h4>
+                            <% for(var i = 0; i < blog[0].rate; i++) { %>
+                            <span><a><i class="fa fa-star"></i></a></span>
                             <% } %>
-                    ><a href="/blog?page=<%= i + 1 %>"><%= i + 1 %></a></li>
-                    <% } %>
-                    <% if(blog.length - 1 > page) { %>
-                    <li><a href="/blog?page=<%= page / 2 + 1 %>">Volgende pagina<i
-                                    class="fa fa-long-arrow-right"></i></a>
-                    </li>
-                    <% } %>
-                </ul><!--/.pagination-->
-            </div><!--/.col-md-8-->
+                        </div>
+                    </div>
+                </div><!--/.blog-item-->
+            </div>
 
             <aside class="col-md-4">
                 <div class="widget search">
@@ -137,13 +85,11 @@
                 </div><!--/.search-->
 
                 <div class="widget categories">
-
-
                     <h3>Recente blogs</h3>
                     <div class="row">
                         <div class="col-sm-12">
                             <%var max = 3;
-                            if (blog.length<=4) max = blog.length-1;%>
+                            if (blogs.length<=4) max = blogs.length-1;%>
                             <% function contains(a, obj) {
                                 for (var i = 0; i < a.length; i++) {
                                     if (a[i] === obj) {
@@ -154,21 +100,21 @@
                             } %>
                             <% var array = [max+1] %>
                             <% for (var j = 0; j < max; j++) { %>
-                            <% var random = Math.floor((Math.random() * blog.length - 1) + 1); %>
+                            <% var random = Math.floor((Math.random() * blogs.length - 1) + 1); %>
                             <% if (random == 0) random++; %>
                             <% while (contains(array, random)) {
-                                random = Math.floor((Math.random() * blog.length - 1) + 1);
+                                random = Math.floor((Math.random() * blogs.length - 1) + 1);
                                 if (random == 0) random++;
                             } array.push(random); %>
 
-                            <div class="single_comments pointer" onclick="location.href='/blog-?<%= blog[random].link %>'">
+                            <div class="single_comments pointer" onclick="location.href='/blog-?<%= blogs[random].link %>'">
                                 <img src="images/blog/avatar3.png" alt=""/>
-                                <% var name3 = blog[random].personName %>
+                                <% var name3 = blogs[random].personName %>
                                 <% name3.length >= 10 ? name3 = name3.substring(0, 10) + "..." : name3; %>
-                                <p><%= blog[random].reaction.substring(0, 75) + "..." %></p>
+                                <p><%= blogs[random].reaction.substring(0, 75) + "..." %></p>
                                 <div class="entry-meta small muted">
                                     <span>Door <a href="#"><%= name3 %></a></span><span>Bij <a
-                                                href="#"><%=blog[random].proeverijName.substring(0,15) + "..."%></a></span>
+                                                href="#"><%=blogs[random].proeverijName.substring(0,15) + "..."%></a></span>
                                 </div>
                             </div>
                             <% } %>

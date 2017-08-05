@@ -91,7 +91,7 @@ module.exports.getAanmeldersEmail = function (email, succes) {
     query(sqlquery, succes);
 };
 
-module.exports.getLastChange = function(succes) {
+module.exports.getLastChange = function (succes) {
     console.log("Last change is requested");
 
     var sqlquery = "SELECT UPDATE_TIME, TABLE_SCHEMA, TABLE_NAME " +
@@ -112,9 +112,17 @@ module.exports.getAanmeldersProeverij = function (id, succes) {
 module.exports.getBlog = function (succes) {
     console.log("Blog is requested where approved = true");
 
-    var sqlquery = 'SELECT * FROM blog WHERE approved = "true"';
+    var sqlquery = 'SELECT * FROM blog WHERE approved = "true" ORDER BY rate DESC;';
 
     query(sqlquery, succes)
+};
+
+module.exports.getBlogId = function (id, succes) {
+    console.log("Blog is requested with id = true and approved = true");
+
+    var sqlquery = 'SELECT * FROM blog WHERE id = ' + id + ' AND approved = "true"';
+
+    query(sqlquery, succes);
 };
 
 module.exports.getBlogRaw = function (succes) {
