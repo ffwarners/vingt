@@ -143,7 +143,6 @@ function blog(req, res) {
     if(!query.page) page = 1;
     dbHandler.getBlog(function (rows) {
         if(Math.ceil((rows.length-1)/2) >= page && page>0) {
-            console.log(rows.length);
             rows.forEach(function (row) {
                 row.link = encrypt("id=" + row.id);
             });
@@ -275,7 +274,7 @@ function confirmSignOut(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to delete aanmelder');
             } else {
-                console.log("Aanmelder successfully deleted");
+                ("Aanmelder successfully deleted");
                 res.render('confirmUitschrijving');
             }
         });
@@ -336,7 +335,6 @@ function reactieRender(req, res) {
     var dc = decrypt(string);
     dc = "/reactie?" + dc;
     var query = url.parse(dc, true).query;
-    console.log(query);
     dbHandler.getProeverij(query.id, function (rijen) {
         var update = "SELECT * FROM aanmelders WHERE id = " + query.aanmelderId;
         connection.query(update, function (err, rows) {
@@ -350,7 +348,6 @@ function reactieRender(req, res) {
     });
 }
 function reactie(req, res) {
-    console.log(req.body);
     dbHandler.getProeverij(req.body.proeverijId, function (rows) {
         var query = "SELECT * FROM aanmelders WHERE id = " + req.body.aanmelderId;
         connection.query(query, function (err, rijen) {
@@ -371,12 +368,9 @@ function reactie(req, res) {
 // Specifieke blog
 function blogEnkel(req, res) {
     var string = req.url.substring(7);
-    console.log(string);
     var dc = decrypt(string);
-    console.log(dc);
     dc = "/blog?" + dc;
     var query = url.parse(dc, true).query;
-    console.log(query);
     dbHandler.getBlogId(query.id, function (rows) {
         dbHandler.getBlog(function (rijen) {
             rijen.forEach(function (row) {
@@ -787,7 +781,6 @@ function emailPage(req, res) {
     }
 }
 function email(req, res) {
-    console.log(req.body);
     if (req.body.id !== "All") {
         dbHandler.getProeverij(req.body.id, function (rijen) {
             dbHandler.getAanmeldersProeverij(req.body.id, function (rows) {
