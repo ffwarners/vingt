@@ -84,11 +84,14 @@
                 <div class="table-responsive">
 
                     <% proeverijen.forEach( function (proeverij) { %>
-                    <h3 id="<%=proeverij.name%>"class="<%=proeverij.id%> pointer unselectable" onclick="showProeverij(<%= proeverij.id %>)"><%= proeverij.name %>
+                    <h3 id="<%= proeverij.name %>" class="<%= proeverij.id %> pointer unselectable"
+                        onclick="showProeverij(<%= proeverij.id %>)"><%= proeverij.name %>
                         &#x25BC;</h3>
                     <div id="div<%= proeverij.id %>" class="hidden">
-                        <button id="<%=proeverij.name%>" type="button" class="btnExport">Download tabel in Excel</button>
-                        <button id="<%=proeverij.name%>" type="button" class="btnSend">Stuur iedereen een E-mail</button>
+                        <button id="<%= proeverij.name %>" type="button" class="btnExport">Download tabel in Excel
+                        </button>
+                        <button id="<%= proeverij.name %>" type="button" class="btnSend">Stuur iedereen een E-mail
+                        </button>
 
                         <table id="proeverijTable<%= proeverij.id %>"
                                class="table tabcontent table-bordered table-hover">
@@ -104,7 +107,7 @@
                             </thead>
                             <tbody>
                             <% aanmelders.forEach(function(aanmelder) { %>
-                            <% if (aanmelder.proeverijID === proeverij.id) { %>
+                            <% if (aanmelder.proeverijID === proeverij.id && aanmelder.bevestigd === "true") { %>
                             <tr id="aanmelder<%= aanmelder.id %>">
                                 <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
                                     class="pointer" id="name">
@@ -167,6 +170,7 @@
                                 <td>Telefoonnummer</td>
                                 <td>Spreektaal</td>
                                 <td>Proeverij</td>
+                                <td>Bevestigd</td>
                             </tr>
                             </thead>
                             <tbody>
@@ -212,6 +216,11 @@
                                     <div class="editableAanmelder" onchange=""
                                          contenteditable><%= aanmelder.proeverijName %></div>
                                 </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="bevestigd">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.bevestigd %></div>
+                                </td>
                                 <td onclick="deleteAanmelder(<%= aanmelder.id %>)"> x</td>
                             </tr>
                             <% }); %>
@@ -219,6 +228,79 @@
                         </table>
                     </div>
                 </div>
+                <div class="table-responsive">
+
+                    <h3 class="pointer unselectable blue" onclick="showProeverij('Onbevestigd')">Onbevestigd
+                        &#x25BC;</h3>
+                    <div id="divOnbevestigd" class="hidden">
+                        <button id="Onbevestigd" type="button" class="btnExport">Download tabel in Excel</button>
+                        <button id="Onbevestigd" type="button" class="btnSend">Stuur iedereen een E-mail</button>
+
+                        <table id="proeverijTableOnbevestigd"
+                               class="table tabcontent table-bordered table-hover">
+                            <thead>
+                            <tr style="font-weight: bold;">
+                                <td>Naam</td>
+                                <td>E-mail</td>
+                                <td>Geslacht</td>
+                                <td>Geboortedatum</td>
+                                <td>Telefoonnummer</td>
+                                <td>Spreektaal</td>
+                                <td>Proeverij</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% aanmelders.forEach(function(aanmelder) { %>
+                            <% if (aanmelder.bevestigd === "false") { %>
+                            <tr id="aanmelder<%= aanmelder.id %>">
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="name">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.name %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="email">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.email %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="gender">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.gender %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="birthdate">
+                                    <% var date = aanmelder.birthdate
+                                        var year = date.substring(0, 4);
+                                        var month = date.substring(5, 7);
+                                        var day = date.substring(8, 10);
+                                        var newDate = day + "-" + month + "-" + year; %>
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= newDate %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="telephone">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.telephone %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="language">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.language %></div>
+                                </td>
+                                <td data-toggle="tooltip" data-placement="bottom" title="Bewerk..."
+                                    class="pointer" id="proeverijName">
+                                    <div class="editableAanmelder" onchange=""
+                                         contenteditable><%= aanmelder.proeverijName %></div>
+                                </td>
+                                <td onclick="deleteAanmelder(<%= aanmelder.id %>)"> x</td>
+                            </tr>
+                            <% }}); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
 
             </div>
 

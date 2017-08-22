@@ -109,6 +109,14 @@ module.exports.getAanmeldersProeverij = function (id, succes) {
     query(sqlquery, succes)
 };
 
+module.exports.getAanmeldersOnbevestigd = function (succes) {
+    console.log("Aanmelders are requested who are onbevestigd");
+
+    var sqlquery = 'SELECT * FROM aanmelders WHERE bevestigd = "false"';
+
+    query(sqlquery, succes)
+};
+
 module.exports.getBlog = function (succes) {
     console.log("Blog is requested where approved = true");
 

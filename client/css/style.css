@@ -2006,6 +2006,10 @@ input[type=text], input[type=email], input[type=tel], input[type=date] {
     color: red;
 }
 
+.blue {
+    color: blue;
+}
+
 .loader {
     border: 6px solid #f3f3f3; /* Light grey */
     border-top: 6px solid #3498db; /* Blue */

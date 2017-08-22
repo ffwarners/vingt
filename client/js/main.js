@@ -156,6 +156,8 @@ function HasColumn(text) {
 }
 
 function deleteColumn(classname, current) {
+    console.log(classname);
+    console.log(current);
     if (confirm("Weet je het zeker?")) {
         $.ajax({
             url: "/deleteWineColumn?delete=" + classname,
@@ -541,9 +543,9 @@ function signout() {
                 setTimeout(function () {
                     if (length > 0) {
                         div = document.getElementById("removeNotiSucc");
-                        div.innerHTML = "We hebben u met succes een maitlje gestuurd beftreft " + length + " aanmeldingen";
+                        div.innerHTML = "We hebben u met succes een email gestuurd beftreft " + length + " aanmeldingen";
                         if (length === 1) {
-                            div.innerHTML = "We hebben u met succes een maitlje gestuurd beftreft " + length + " aanmelding";
+                            div.innerHTML = "We hebben u met succes een email gestuurd beftreft " + length + " aanmelding";
                         }
                     } else {
                         div = document.getElementById("removeNotiFail");

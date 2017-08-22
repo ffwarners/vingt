@@ -240,10 +240,13 @@
                         <thead>
                         <tr>
                             <% columns.forEach(function(column) { %>
-                            <% if (column.Field != "wine_id") { %>
+                            <% if (column.Field != "wine_id" && column.Field != "imageExt") { %>
+                            <% if(column.Field == "naam" || column.Field == "producent" || column.Field == "aankoop prijs" || column.Field == "inhoud" || column.Field == "droog") {%>
+                            <td></td>
+                            <%} else {%>
                             <td onclick="deleteColumn('<%= column.Field %>', this)"><span
                                         class="glyphicon">&#xe020;</span></td>
-                            <% }}); %>
+                            <% }}}); %>
                             <td class="aboveAdd"></td>
                         </tr>
                         <tr>

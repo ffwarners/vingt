@@ -69,9 +69,10 @@
 
                         <script type="text/javascript">
                             function showfield(name) {
-                                if (name == 'Other') document.getElementById('div1').innerHTML = 'Other: <input type="text" name="other" placeholder="Onderwerp" />';
+                                if (name === 'Other') document.getElementById('div1').innerHTML = 'Other: <input type="text" name="other" placeholder="Onderwerp" />';
+                                else if(name === 'Herinnering bevestiging') document.getElementById('div1').innerHTML = '<br> Er verschijnt een knop om de aanmelding te bevestigen in de mail, die hoeft u NIET te noemen';
                                 else {
-                                    if (name == 'Validatie') document.getElementById('div1').innerHTML = 'Er verschijnt in de email een link naar de reactie pagina, die hoeft u NIET te noemen';
+                                    if (name === 'Validatie') document.getElementById('div1').innerHTML = '<br> Er verschijnt in de email een link naar de reactie pagina, die hoeft u NIET te noemen';
                                     else document.getElementById('div1').innerHTML = '';
                                 }
                             }
@@ -80,25 +81,28 @@
                         <select class="curved" style="width: 100%;" name="onderwerp" id="onderwerp"
                                 onchange="showfield(this.options[this.selectedIndex].value)">
                             <option disabled selected value> &#45;&#45; Selecteer een optie &#45;&#45;</option>
-                            <option value="Wijziging datum">Wijziging datum</option>
+                            <option <%if(proeverij.name === "Onbevestigd") {%> disabled <%}%> value="Wijziging datum">Wijziging datum</option>
                             <option value="Herinnering">Herinnering</option>
-                            <option value="Informatie">Informatie</option>
-                            <option value="Annulering">Annulering</option>
-                            <option <%if (proeverij.id === "All") {%> disabled <%}%> value="Validatie">Validering</option>
+                            <option <%if(proeverij.name === "Onbevestigd") {%> disabled <%}%> value="Informatie">Informatie</option>
+                            <option <%if(proeverij.name === "Onbevestigd") {%> disabled <%}%> value="Annulering">Annulering</option>
+                            <%if(proeverij.name === "Onbevestigd") {%>
+                            <option value="Herinnering bevestiging">Herinnering bevestiging</option>
+                            <%}%>
+                            <option <%if (proeverij.id === "All") {%> disabled <%}%> <%if(proeverij.name === "Onbevestigd") {%> disabled <%}%> value="Validatie">Validering</option>
                             <option value="Other">Anders *</option>
                         </select>
                         <br>
-                        <div id="div1"></div>
+                        <div id="div1" class="red"></div>
                     </div>
                     <div class="form-group hidden" id="hiddenOther">
                     </div>
                     <div class="form-group">
                         <label>Bericht</label><br>
-                        <small>Type geen 'Beste...' en 'Met vriendelijke groet,' <br>Type wel 'Wij hopen u hiermee voldoende te hebben geïnformeerd'</small>
+                        <small>Typ geen 'Beste...' en 'Met vriendelijke groet,' <br>Typ wel 'Wij hopen u hiermee voldoende te hebben geïnformeerd'</small>
                         <textarea name="message" style="min-width: 100%; max-width: 100%" required
                                   placeholder="Uw bericht"></textarea>
                     </div>
-                    <% if (message.length > 0) { %>
+                    <% if (message.length > 0 && message !== "Onbevestigd") { %>
                     <div class="alert alert-success"><%= message %></div>
                     <% } %>
                     <% if(failure.length > 0) { %>
