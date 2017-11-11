@@ -1,0 +1,52 @@
+<?php
+    if(isset($_POST['imagebase64'])){
+        $data = $_POST['imagebase64'];
+
+        list($type, $data) = explode(';', $data);
+        list(, $data)      = explode(',', $data);
+        $data = base64_decode($data);
+
+        file_put_contents('image64.png', $data);
+    }
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Crop</title>
+    <link href="css/croppie.css" rel="stylesheet" type="text/css">
+    <script src="js/jquery-3.1.1.js"></script>
+    <script type="text/javascript" src="js/croppie.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var basic = $('#upload-demo').croppie({
+                viewport: {width: 250, height: 250},
+                boundary: {width: 300, height: 300},
+                showZoomer: false,
+                url: 'images/wines/wine<%=wine.wine_id%>.<%=wine.imageExt%>'
+            });
+
+            $('.upload-result').on('click', function (ev) {
+                basic.croppie('result', {
+                    type: 'canvas',
+                    size: 'original'
+                }).then(function (resp) {
+                    $('#imagebase64').val(resp);
+                    $('#form').submit();
+                });
+            });
+
+        });
+    </script>
+</head>
+<body>
+
+<form action="/crop" id="form" method="post">
+    <div id="upload-demo"></div>
+    <input type="hidden" id="imagebase64" name="imagebase64">
+    <input type="hidden" id="id" name="id" value="<%=wine.wine_id%>">
+    <a href="#" class="upload-result">Send</a>
+</form>
+</body>
+</html>

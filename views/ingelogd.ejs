@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vingt</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/prettyPhoto.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/jquery.Jcrop.js"></script>
+    <script type="text/javascript">
+        jQuery(function($){
+
+            // The variable jcrop_api will hold a reference to the
+            // Jcrop API once Jcrop is instantiated.
+            var jcrop_api;
+
+            // In this example, since Jcrop may be attached or detached
+            // at the whim of the user, I've wrapped the call into a function
+            initJcrop();
+
+            // The function is pretty simple
+            function initJcrop()//{{{
+            {
+                // Hide any interface elements that require Jcrop
+                // (This is for the local user interface portion.)
+                $('.requiresjcrop').hide();
+
+                // Invoke Jcrop in typical fashion
+                $('#target').Jcrop({
+                    onRelease: releaseCheck
+                },function(){
+
+                    jcrop_api = this;
+                    jcrop_api.animateTo([100,100,400,300]);
+
+                    // Setup and dipslay the interface for "enabled"
+                    $('#can_click,#can_move,#can_size').attr('checked','checked');
+                    $('#ar_lock,#size_lock,#bg_swap').attr('checked',false);
+                    $('.requiresjcrop').show();
+
+                });
+
+            };
+            //}}}
+
+            // Use the API to find cropping dimensions
+            // Then generate a random selection
+            // This function is used by setSelect and animateTo buttons
+            // Mainly for demonstration purposes
+            function getRandom() {
+                var dim = jcrop_api.getBounds();
+                return [
+                    Math.round(Math.random() * dim[0]),
+                    Math.round(Math.random() * dim[1]),
+                    Math.round(Math.random() * dim[0]),
+                    Math.round(Math.random() * dim[1])
+                ];
+            };
+
+            // This function is bound to the onRelease handler...
+            // In certain circumstances (such as if you set minSize
+            // and aspectRatio together), you can inadvertently lose
+            // the selection. This callback re-enables creating selections
+            // in such a case. Although the need to do this is based on a
+            // buggy behavior, it's recommended that you in some way trap
+            // the onRelease callback if you use allowSelect: false
+            function releaseCheck()
+            {
+                jcrop_api.setOptions({ allowSelect: true });
+                $('#can_click').attr('checked',false);
+            };
+
+            // Attach interface buttons
+            // This may appear to be a lot of code but it's simple stuff
+            $('#setSelect').click(function(e) {
+                // Sets a random selection
+                jcrop_api.setSelect(getRandom());
+            });
+            $('#animateTo').click(function(e) {
+                // Animates to a random selection
+                jcrop_api.animateTo(getRandom());
+            });
+            $('#release').click(function(e) {
+                // Release method clears the selection
+                jcrop_api.release();
+            });
+            $('#disable').click(function(e) {
+                // Disable Jcrop instance
+                jcrop_api.disable();
+                // Update the interface to reflect disabled state
+                $('#enable').show();
+                $('.requiresjcrop').hide();
+            });
+            $('#enable').click(function(e) {
+                // Re-enable Jcrop instance
+                jcrop_api.enable();
+                // Update the interface to reflect enabled state
+                $('#enable').hide();
+                $('.requiresjcrop').show();
+            });
+            $('#rehook').click(function(e) {
+                // This button is visible when Jcrop has been destroyed
+                // It performs the re-attachment and updates the UI
+                $('#rehook,#enable').hide();
+                initJcrop();
+                $('#unhook,.requiresjcrop').show();
+                return false;
+            });
+            $('#unhook').click(function(e) {
+                // Destroy Jcrop widget, restore original state
+                jcrop_api.destroy();
+                // Update the interface to reflect un-attached state
+                $('#unhook,#enable,.requiresjcrop').hide();
+                $('#rehook').show();
+                return false;
+            });
+
+            // Hook up the three image-swapping buttons
+            $('#img1').click(function(e) {
+                $(this).addClass('active').closest('.btn-group')
+                    .find('button.active').not(this).removeClass('active');
+
+                jcrop_api.setImage('demo_files/sago.jpg');
+                jcrop_api.setOptions({ bgOpacity: .6 });
+                return false;
+            });
+            $('#img2').click(function(e) {
+                $(this).addClass('active').closest('.btn-group')
+                    .find('button.active').not(this).removeClass('active');
+
+                jcrop_api.setImage('demo_files/pool.jpg');
+                jcrop_api.setOptions({ bgOpacity: .6 });
+                return false;
+            });
+            $('#img3').click(function(e) {
+                $(this).addClass('active').closest('.btn-group')
+                    .find('button.active').not(this).removeClass('active');
+
+                jcrop_api.setImage('demo_files/sago.jpg',function(){
+                    this.setOptions({
+                        bgOpacity: 1,
+                        outerImage: 'demo_files/sagomod.jpg'
+                    });
+                    this.animateTo(getRandom());
+                });
+                return false;
+            });
+
+            // The checkboxes simply set options based on it's checked value
+            // Options are changed by passing a new options object
+
+            // Also, to prevent strange behavior, they are initially checked
+            // This matches the default initial state of Jcrop
+
+            $('#can_click').change(function(e) {
+                jcrop_api.setOptions({ allowSelect: !!this.checked });
+                jcrop_api.focus();
+            });
+            $('#can_move').change(function(e) {
+                jcrop_api.setOptions({ allowMove: !!this.checked });
+                jcrop_api.focus();
+            });
+            $('#can_size').change(function(e) {
+                jcrop_api.setOptions({ allowResize: !!this.checked });
+                jcrop_api.focus();
+            });
+            $('#ar_lock').change(function(e) {
+                jcrop_api.setOptions(this.checked?
+                    { aspectRatio: 4/3 }: { aspectRatio: 0 });
+                jcrop_api.focus();
+            });
+            $('#size_lock').change(function(e) {
+                jcrop_api.setOptions(this.checked? {
+                    minSize: [ 80, 80 ],
+                    maxSize: [ 350, 350 ]
+                }: {
+                    minSize: [ 0, 0 ],
+                    maxSize: [ 0, 0 ]
+                });
+                jcrop_api.focus();
+            });
+
+        });
+
+
+    </script>
+
+</head>
+<body class="homepage">
+<header id="header">
+    <nav class="navbar navbar-fixed-top" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Vingt</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-right">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/start">Vingt</a></li>
+                    <li><a href="/adaptkaart">Kaart</a></li>
+                    <li><a href="/adaptproeverijen">Proeverijen</a></li>
+                    <li><a href="/aanmelders">Aanmelders</a></li>
+                    <li><a href="/crops">Thumbnails</a></li>
+                    <li><a href="/adaptBlog">Blog</a></li>
+                    <li><a href="#"><strike>Contact</strike></a></li>
+                </ul>
+            </div>
+        </div><!--/.container-->
+    </nav><!--/nav-->
+
+</header><!--/header-->
+
+<section id="feature">
+    <div class="container" style="margin-top: 50px">
+        <div class="center wow fadeInDown">
+            <h2>Welkom <%= user %></h2>
+            <p class="lead">Je bent nu ingelogd</p>
+            <%function initArray() {
+                this.length = initArray.arguments.length;
+                for (var i = 0; i < this.length; i++)
+                    this[i+1] = initArray.arguments[i];
+            }%>
+            <% var dagArray = new initArray("zondag","maandag", "dinsdag","woensdag","donderdag","vrijdag","zaterdag");
+
+            var maandArray = new initArray("januari","februari","maart","april","mei","juni","juli", "augustus","september","oktober","november","december");
+
+            var nu = new Date(time);
+            var dagtekst = dagArray[(nu.getDay()+1)];
+            var dag = nu.getDate();
+            var maandtekst = maandArray[(nu.getMonth()+1)];
+            var jaar = nu.getYear();
+            var jaar4 = ((jaar < 1900) ? (jaar + 1900) : (jaar));
+            var uren = nu.getHours();
+            var uren2 = ((uren < 10) ? "0" : "") + uren;
+            var minuten = nu.getMinutes();
+            var minuten2 = ((minuten < 10) ? ":0" : ":") + minuten;
+            var seconden = nu.getSeconds();
+            var seconden2 = ((seconden < 10) ? ":0" : ":") + seconden;
+
+            var tijdweergave = uren2 + minuten2 + seconden2;
+            var datumweergave = dagtekst + " " + dag + " " + maandtekst + " " + jaar4 + " om " + tijdweergave;%>
+            <p class="lead">Er is voor het laatst iets gewijzigd op: <%=datumweergave%></p>
+        </div>
+
+        <div class="row">
+            <div class="features">
+                <div class="col-md-4 col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
+                    <div class="feature-wrap">
+                        <a style="text-decoration: none; color: black" href="/adaptKaart">
+                            <i class="fa fa-glass"></i>
+                            <h3>Wijnen</h3>
+                            <h4>Pas de wijnenkaart aan, verwijder, voeg toe en wijzig</h4>
+                        </a>
+                    </div>
+                </div><!--/.col-md-4-->
+
+                <div class="col-md-4 col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
+                    <div class="feature-wrap">
+                        <a style="text-decoration: none; color: black" href="/adaptProeverijen">
+                            <i class="fa fa-comments"></i>
+                            <h3>Proeverijen</h3>
+                            <h4>Voeg nieuwe proeverijen toe of wijzig/verwijder ze</h4>
+                        </a>
+                    </div>
+                </div><!--/.col-md-4-->
+
+                <div class="col-md-4 col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
+                    <div class="feature-wrap">
+                        <a style="text-decoration: none; color: black" href="/aanmelders">
+                            <i class="fa fa-hand-o-up"></i>
+                            <h3>Aanmelders</h3>
+                            <h4>Mensen melden zich aan voor de proeverijen, hou dit in de gaten</h4>
+                        </a>
+                    </div>
+                </div><!--/.col-md-4-->
+                <div class="col-md-4 col-sm-6 wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
+                    <div class="feature-wrap">
+                        <a style="text-decoration: none; color: black" href="/crops">
+                            <i class="fa fa-picture-o"></i>
+                            <h3>Wijn afbeeldingen</h3>
+                            <h4>Alle wijnen hebben een 'thumbnail' deze kan je hier aanpassen</h4>
+                        </a>
+                    </div>
+                </div><!--/.col-md-4-->
+            </div><!--/.services-->
+        </div><!--/.row-->
+    </div><!--/.container-->
+</section><!--/#feature-->
+
+<section id="bottom">
+    <div class="container wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="widget">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About us</a></li>
+                        <li><a href="#">We are hiring</a></li>
+                        <li><a href="#">Meet the team</a></li>
+                        <li><a href="#">Copyright</a></li>
+                    </ul>
+                </div>
+            </div><!--/.col-md-3-->
+
+            <div class="col-md-3 col-sm-6">
+                <div class="widget">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Faq</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Forum</a></li>
+                        <li><a href="#">Documentation</a></li>
+                    </ul>
+                </div>
+            </div><!--/.col-md-3-->
+
+            <div class="col-md-3 col-sm-6">
+                <div class="widget">
+                    <h3>Developers</h3>
+                    <ul>
+                        <li><a href="#">Web Development</a></li>
+                        <li><a href="#">SEO Marketing</a></li>
+                        <li><a href="#">Theme</a></li>
+                        <li><a href="#">Development</a></li>
+                    </ul>
+                </div>
+            </div><!--/.col-md-3-->
+
+            <div class="col-md-3 col-sm-6">
+                <div class="widget">
+                    <h3>Our Partners</h3>
+                    <ul>
+                        <li><a href="#">Adipisicing Elit</a></li>
+                        <li><a href="#">Eiusmod</a></li>
+                        <li><a href="#">Tempor</a></li>
+                        <li><a href="#">Veniam</a></li>
+                    </ul>
+                </div>
+            </div><!--/.col-md-3-->
+        </div>
+    </div>
+</section><!--/#bottom-->
+
+<div class="top-bar">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="social">
+                    <ul class="social-share">
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                        <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+                        <li><a href="#"><i class="fa fa-skype"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div><!--/.container-->
+</div><!--/.top-bar-->
+
+<footer id="footer" class="midnight-blue">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <p>© 2017 Copyright Vingt.nl </p>
+
+            </div>
+            <div class="col-sm-6">
+                <ul class="pull-right">
+                    <li><a href="#">Vingt</a></li>
+                    <li><a href="#">Kaart</a></li>
+                    <li><a href="#">Proeverijen</a></li>
+                    <li><a href="#">Impressie</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer><!--/#footer-->
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.prettyPhoto.js"></script>
+<script src="js/jquery.isotope.min.js"></script>
+<script src="js/wow.min.js"></script>
+<script src="js/main.js"></script>
+
+<!-- Script for the $JSON -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>

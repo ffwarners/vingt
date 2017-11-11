@@ -11,6 +11,137 @@ module.exports.connect = function () {
     return connection;
 };
 
+module.exports.getUser = function (id, succes) {
+    console.log('user is requested');
+
+    var sqlquery = 'SELECT * FROM users where id = ' + id + ';';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getWines = function (succes) {
+    console.log('Wines are requested');
+
+    var sqlquery = 'SELECT * FROM wines;';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getWineColumns = function (succes) {
+    console.log('WineColumns are requested');
+
+    var sqlquery = 'SHOW COLUMNS FROM wines';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getWijn = function (id, succes) {
+    console.log("Wine with id: " + id + " is requested");
+
+    var sqlquery = "SELECT * FROM wines where wine_id = " + id;
+
+    query(sqlquery, succes);
+};
+
+module.exports.getProeverijen = function (succes) {
+    console.log('Proeverijen are requested');
+
+    var sqlquery = 'SELECT * FROM proeverijen';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getProeverijenID = function (succes) {
+    console.log("Id's of proeverijen are requested");
+
+    var sqlquery = 'SELECT id FROM proeverijen';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getProeverij = function (id, succes) {
+    console.log("Proeverij with id: " + id + " is requested");
+
+    var sqlquery = 'SELECT * FROM proeverijen WHERE id = ' + id;
+
+    query(sqlquery, succes);
+};
+
+module.exports.getAanmelders = function (succes) {
+    console.log("Aanmelders are requested");
+
+    var sqlquery = 'SELECT * FROM aanmelders';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getMaxId = function (succes) {
+    console.log("Max id is requested from wines");
+
+    var sqlquery = "SELECT MAX(wine_id) FROM wines;";
+
+    query(sqlquery, succes);
+};
+
+module.exports.getAanmeldersEmail = function (email, succes) {
+    console.log("Aanmelders are requested with email " + email);
+
+    var sqlquery = 'SELECT * FROM aanmelders WHERE email = "' + email + '"';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getLastChange = function (succes) {
+    console.log("Last change is requested");
+
+    var sqlquery = "SELECT UPDATE_TIME, TABLE_SCHEMA, TABLE_NAME " +
+        "FROM information_schema.tables " +
+        "ORDER BY UPDATE_TIME DESC, TABLE_SCHEMA, TABLE_NAME";
+
+    query(sqlquery, succes);
+};
+
+module.exports.getAanmeldersProeverij = function (id, succes) {
+    console.log("Aanmelders are requested for proeverij " + id);
+
+    var sqlquery = 'SELECT * FROM aanmelders WHERE proeverijID = ' + id;
+
+    query(sqlquery, succes)
+};
+
+module.exports.getAanmeldersOnbevestigd = function (succes) {
+    console.log("Aanmelders are requested who are onbevestigd");
+
+    var sqlquery = 'SELECT * FROM aanmelders WHERE bevestigd = "false"';
+
+    query(sqlquery, succes)
+};
+
+module.exports.getBlog = function (succes) {
+    console.log("Blog is requested where approved = true");
+
+    var sqlquery = 'SELECT * FROM blog WHERE approved = "true" ORDER BY rate DESC;';
+
+    query(sqlquery, succes)
+};
+
+module.exports.getBlogId = function (id, succes) {
+    console.log("Blog is requested with id = true and approved = true");
+
+    var sqlquery = 'SELECT * FROM blog WHERE id = ' + id + ' AND approved = "true"';
+
+    query(sqlquery, succes);
+};
+
+module.exports.getBlogRaw = function (succes) {
+    console.log("Blog is requested");
+
+    var sqlquery = 'SELECT * FROM blog WHERE id > 1 ORDER BY id DESC;';
+
+    query(sqlquery, succes)
+};
+
+
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {
         if (err) {

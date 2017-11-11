@@ -1,6 +1,7 @@
 var config = {};
 
 config.PORT = 3000;
+config.staticPath = __dirname + "/client";
 config.dbData = {
     host: 'localhost',
     port: 3306,
@@ -8,5 +9,25 @@ config.dbData = {
     password: 'Vingt',
     database: 'wines'
 };
+
+config.sessionOptions = {
+    secret: 'hellowhatdoesthismean',
+    resave: true,
+    saveUninitialized: true
+};
+
+config.loginOptions = {
+    successRedirect : '/start',
+    failureRedirect : '/login',
+    failureFlash : true
+};
+
+config.strategyOptions = {
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true
+};
+
+config.delimiter = '+----------+';
 
 module.exports = config;

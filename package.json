@@ -2,9 +2,10 @@
   "name": "vingt",
   "version": "0.0.1",
   "description": "A website for the wine tasting shop of family Warners",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -26,9 +27,20 @@
   },
   "homepage": "https://github.com/ffwarners/vingt",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
+    "connect-flash": "^0.1.1",
+    "ejs": "^2.5.6",
     "express": "^4.15.3",
+    "express-session": "^1.15.3",
+    "formidable": "^1.1.1",
     "ip": "^1.1.5",
-    "mysql": "^2.13.0"
+    "mysql": "^2.13.0",
+    "nodemailer": "^4.0.1",
+    "nodemailer-mailgun-transport": "^1.3.5",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "shorthash": "0.0.2",
+    "validator": "^8.0.0"
   }
 }
