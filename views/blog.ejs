@@ -132,7 +132,7 @@
             <aside class="col-md-4">
                 <div class="widget search">
                     <form role="form">
-                        <input type="text" class="form-control search_box" autocomplete="off" placeholder="Search Here">
+                        <input type="text" disabled class="form-control search_box" autocomplete="off" placeholder="Search Here">
                     </form>
                 </div><!--/.search-->
 
@@ -142,8 +142,8 @@
                     <h3>Recente blogs</h3>
                     <div class="row">
                         <div class="col-sm-12">
-                            <%var max = 3;
-                            if (blog.length<=4) max = blog.length-1;%>
+                            <% var max = 3;
+                            if (blog.length <= 4) max = blog.length - 1; %>
                             <% function contains(a, obj) {
                                 for (var i = 0; i < a.length; i++) {
                                     if (a[i] === obj) {
@@ -152,7 +152,7 @@
                                 }
                                 return false;
                             } %>
-                            <% var array = [max+1] %>
+                            <% var array = [max + 1] %>
                             <% for (var j = 0; j < max; j++) { %>
                             <% var random = Math.floor((Math.random() * blog.length - 1) + 1); %>
                             <% if (random == 0) random++; %>
@@ -161,14 +161,15 @@
                                 if (random == 0) random++;
                             } array.push(random); %>
 
-                            <div class="single_comments pointer" onclick="location.href='/blog-?<%= blog[random].link %>'">
+                            <div class="single_comments pointer"
+                                 onclick="location.href='/blog-?<%= blog[random].link %>'">
                                 <img src="images/blog/avatar3.png" alt=""/>
                                 <% var name3 = blog[random].personName %>
                                 <% name3.length >= 10 ? name3 = name3.substring(0, 10) + "..." : name3; %>
                                 <p><%= blog[random].reaction.substring(0, 75) + "..." %></p>
                                 <div class="entry-meta small muted">
                                     <span>Door <a href="#"><%= name3 %></a></span><span>Bij <a
-                                                href="#"><%=blog[random].proeverijName.substring(0,15) + "..."%></a></span>
+                                                href="#"><%= blog[random].proeverijName.substring(0, 15) + "..." %></a></span>
                                 </div>
                             </div>
                             <% } %>
@@ -185,48 +186,54 @@
         <div class="row">
             <div class="col-md-3 col-sm-6">
                 <div class="widget">
-                    <h3>Company</h3>
+                    <!--TODO: Controleer deze tekst-->
+                    <h3>Winkel</h3>
                     <ul>
-                        <li><a href="#">About us</a></li>
-                        <li><a href="#">We are hiring</a></li>
-                        <li><a href="#">Meet the team</a></li>
-                        <li><a href="#">Copyright</a></li>
+                        <li><a href="/kaart">Kaart</a></li>
+                        <li><a href="/proeverijen">Proeverijen</a></li>
+                        <li><a href="/contact">Locatie</a></li>
+                        <li><a href="/contact">Contact</a></li>
                     </ul>
                 </div>
             </div><!--/.col-md-3-->
 
             <div class="col-md-3 col-sm-6">
                 <div class="widget">
-                    <h3>Support</h3>
+                    <!--TODO: Controleer deze tekst-->
+                    <h3>Contact</h3>
                     <ul>
-                        <li><a href="#">Faq</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Forum</a></li>
-                        <li><a href="#">Documentation</a></li>
+                        <li><a href="/contact">Email</a></li>
+                        <li><a href="/contact">Locatie</a></li>
+                        <li><a href="/contact">Telefoon</a></li>
+                        <li><a href="/contact">Facebook</a></li>
                     </ul>
                 </div>
             </div><!--/.col-md-3-->
 
             <div class="col-md-3 col-sm-6">
                 <div class="widget">
-                    <h3>Developers</h3>
+                    <!--TODO: Controleer deze tekst-->
+                    <h3>Ontwikkelaars</h3>
                     <ul>
-                        <li><a href="#">Web Development</a></li>
-                        <li><a href="#">SEO Marketing</a></li>
-                        <li><a href="#">Theme</a></li>
-                        <li><a href="#">Development</a></li>
+                        <li><a href="/contact">Winkel</a></li>
+                        <li><a href="https://github.com/ffwarners/vingt">Website</a></li>
+                        <li><a href="/contact">Locatie</a></li>
+                        <li><a href="/contact">Import</a></li>
                     </ul>
                 </div>
             </div><!--/.col-md-3-->
 
             <div class="col-md-3 col-sm-6">
                 <div class="widget">
-                    <h3>Our Partners</h3>
+                    <!--TODO: Controleer deze tekst-->
+                    <!--TODO: Voeg partners toe-->
+                    <h3>Onze partners</h3>
                     <ul>
-                        <li><a href="#">Adipisicing Elit</a></li>
-                        <li><a href="#">Eiusmod</a></li>
-                        <li><a href="#">Tempor</a></li>
-                        <li><a href="#">Veniam</a></li>
+                        <!--TODO: Voeg links toe-->
+                        <li><a href="#">Wijnfabriek 1</a></li>
+                        <li><a href="#">TU Delft</a></li>
+                        <li><a href="#">Oneplus</a></li>
+                        <li><a href="#">Apple</a></li>
                     </ul>
                 </div>
             </div><!--/.col-md-3-->
@@ -240,6 +247,7 @@
             <div class="col-lg-12">
                 <div class="social">
                     <ul class="social-share">
+                        <!--TODO: Voeg links toe-->
                         <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                         <li><a href="#"><i class="fa fa-twitter"></i></a></li>
                         <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
@@ -256,23 +264,18 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
-                &copy; Gp Theme. All Rights Reserved.
-                <div class="credits">
-                    <!--
-                        All the links in the footer should remain intact.
-                        You can delete the links only if you purchased the pro version.
-                        Licensing information: https://bootstrapmade.com/license/
-                        Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=Gp
-                    -->
-                    <a href="https://bootstrapmade.com/">Bootstrap Themes</a> by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-                </div>
+                <!--TODO: Controleer deze tekst-->
+                <p>© 2017 Copyright Vingt.nl </p>
+
             </div>
             <div class="col-sm-6">
                 <ul class="pull-right">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Faq</a></li>
-                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Vingt</a></li>
+                    <li><a href="#">Kaart</a></li>
+                    <li><a href="#">Proeverijen</a></li>
+                    <li><a href="#">Impressie</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact</a></li>
                 </ul>
             </div>
         </div>
