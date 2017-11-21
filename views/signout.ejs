@@ -66,7 +66,7 @@
                 <label for="proeverijen"><b class="white">Proeverij *</b></label><br>
                 <select style="min-width: 100px; margin-bottom: 10px" class="curved" id="proeverijen" name="proeverijen">
                     <% proeverijen.forEach(function (proeverij) { %>
-                        <option value="<%=proeverij.id%>"><%=proeverij.name%></option>
+                        <option <% if (proeverij.shown == "false") {%> disabled hidden <%}%> value="<%=proeverij.id%>"><%=proeverij.name%></option>
                     <% }); %>
                 </select><br>
                 <label style="width:100%; text-align: center;" class="white hidden" id="loaderText">Even checken of u
