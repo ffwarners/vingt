@@ -225,7 +225,13 @@ function sendmail(req, res) {
                     }
                 });
             } else {
-                res.render('declined', {person: {name: req.body.name, proeverijName: req.body.proeverij, email: req.body.email}})
+                res.render('declined', {
+                    person: {
+                        name: req.body.name,
+                        proeverijName: req.body.proeverij,
+                        email: req.body.email
+                    }
+                })
             }
         });
     });
@@ -246,7 +252,8 @@ function confirm(req, res) {
             console.log("Aanmelders successfully updated");
             res.render('confirm', {person: query});
         }
-    });}
+    });
+}
 
 // Afmelden proeverij
 function sendSignoutMail(req, res) {
@@ -373,26 +380,38 @@ function reactieRender(req, res) {
 }
 
 function reactie(req, res) {
+    var date = new Date();
+
     dbHandler.getProeverij(req.body.proeverijId, function (rows) {
         var query = "SELECT * FROM aanmelders WHERE id = " + req.body.aanmelderId;
         connection.query(query, function (err, rijen) {
-            var date = new Date();
-            var update = "INSERT INTO blog VALUES(0, '" + req.body.name + "', '" + rows[0].name + "', '" + req.body.message + "', '" + rows[0].date + "', '" + date.toDateString() + "', '" + req.body.rate + "', '" + "false" + "', '" + rows[0].details + "');";
-            connection.query(update, function (err, rowss) {
-                if (err) {
-                    console.error('Error while performing query: ' + err.message);
+            dbHandler.getBlogRawByName(req.body.name, date.toDateString(), rows[0].name, function (rows2) {
+                if (rows2.length > 0) {
                     res.render('reactie', {
                         proeverij: rows[0],
                         message: "",
-                        failure: "Uw bericht is niet verstuurd, probeer het later nog eens..",
+                        failure: "U heeft al een reactie achtergelaten, toch bedankt!",
                         aanmelder: rijen[0]
                     });
                 } else {
-                    res.render('reactie', {
-                        proeverij: rows[0],
-                        message: "Uw bericht is succesvol verstuurd, bedankt voor uw reactie.",
-                        failure: "",
-                        aanmelder: rijen[0]
+                    var update = "INSERT INTO blog VALUES(0, '" + req.body.name + "', '" + rows[0].name + "', '" + req.body.message + "', '" + rows[0].date + "', '" + date.toDateString() + "', '" + req.body.rate + "', '" + "false" + "', '" + rows[0].details + "');";
+                    connection.query(update, function (err, rowss) {
+                        if (err) {
+                            console.error('Error while performing query: ' + err.message);
+                            res.render('reactie', {
+                                proeverij: rows[0],
+                                message: "",
+                                failure: "Uw bericht is niet verstuurd, probeer het later nog eens..",
+                                aanmelder: rijen[0]
+                            });
+                        } else {
+                            res.render('reactie', {
+                                proeverij: rows[0],
+                                message: "Uw bericht is succesvol verstuurd, bedankt voor uw reactie.",
+                                failure: "",
+                                aanmelder: rijen[0]
+                            });
+                        }
                     });
                 }
             });

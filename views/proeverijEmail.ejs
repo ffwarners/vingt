@@ -19,6 +19,42 @@
 
     <script src="../js/jquery.min.js"></script>
     <script src="../js/jquery.Jcrop.js"></script>
+    <style type="text/css">
+
+        button:disabled {
+            cursor: not-allowed;
+            pointer-events: all !important;
+        }
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+            cursor: pointer;
+        }
+
+        .button2 {
+            border-radius: 4px;
+        }
+
+        .button2 {
+            background-color: #008CBA;
+            color: white;
+            border: 2px solid #008CBA;
+        }
+
+        .button2:hover {
+            background-color: white;
+            color: black;
+        }
+    </style>
 
 </head>
 <body class="homepage">
@@ -42,7 +78,7 @@
                     <li><a href="/adaptproeverijen">Proeverijen</a></li>
                     <li class="active"><a href="/aanmelders">Aanmelders</a></li>
                     <li><a href="/crops">Thumbnails</a></li>
-                    <li><a href="#"><strike>Blog</strike></a></li>
+                    <li><a href="/adaptBlog">Blog</a></li>
                     <li><a href="#"><strike>Contact</strike></a></li>
                 </ul>
             </div>
@@ -51,71 +87,211 @@
 
 </header><!--/header-->
 
-<section id="contact-page" class="wow fadeInDown">
-    <div class="container">
-        <div class="center" style="margin-top: 140px;">
-            <h2><%= proeverij.name %></h2>
-            <p class="lead">Stuur alle <strong><%= aanmelders.length %></strong> de aanmelders een mail</p>
-            <p class="lead"><strong>Gegevens: </strong><br> <strong>Datum: </strong><%= proeverij.date %> <br> <strong>Details: </strong> <%= proeverij.details %></p>
-        </div>
-        <div class="row contact-wrap">
-            <div class="col-sm-8 col-sm-offset-2">
-                <form method="post" action="/email" class="contactForm">
-                    <div class="form-group">
-                        <input name="id" value="<%=proeverij.id%>" class="hidden">
-                        <label for="proeverij"><b>Uw gewenste proeverij:</b></label><br>
-                        <input class="curved" style="max-width: 50%; min-width: 200px; cursor:not-allowed;" type="text" name="proeverij" value="<%=proeverij.name%>" readonly required title="proeverij"><br>
-                        <label for="onderwerp"><b>Betreft</b></label><br>
+<div class="row">
+    <div class="col-sm-6">
+        <section id="contact-page" class="wow fadeInDown">
+            <div class="container">
+                <div class="center" style="margin-top: 140px;">
+                    <h2><%= proeverij.name %></h2>
+                    <p class="lead">Stuur alle <strong><%= aanmelders.length %></strong> de aanmelders een mail</p>
+                    <p class="lead"><strong>Gegevens: </strong><br> <strong>Datum: </strong><%= proeverij.date %> <br>
+                        <strong>Details: </strong> <%= proeverij.details %></p>
+                </div>
+                <div class="row contact-wrap">
+                    <div class="col-sm-8 col-sm-offset-2">
+                        <form method="post" action="/email" class="contactForm">
+                            <div class="form-group">
+                                <input name="id" value="<%= proeverij.id %>" class="hidden">
+                                <label for="proeverij"><b>Uw gewenste proeverij:</b></label><br>
+                                <input class="curved" style="max-width: 50%; min-width: 200px; cursor:not-allowed;"
+                                       type="text" name="proeverij" value="<%= proeverij.name %>" readonly required
+                                       title="proeverij"><br>
+                                <label for="onderwerp"><b>Betreft</b></label><br>
 
-                        <script type="text/javascript">
-                            function showfield(name) {
-                                if (name === 'Other') document.getElementById('div1').innerHTML = 'Other: <input type="text" name="other" placeholder="Onderwerp" />';
-                                else if(name === 'Herinnering bevestiging') document.getElementById('div1').innerHTML = '<br> Er verschijnt een knop om de aanmelding te bevestigen in de mail, die hoeft u NIET te noemen';
-                                else {
-                                    if (name === 'Validatie') document.getElementById('div1').innerHTML = '<br> Er verschijnt in de email een link naar de reactie pagina, die hoeft u NIET te noemen';
-                                    else document.getElementById('div1').innerHTML = '';
-                                }
-                            }
-                        </script>
+                                <script type="text/javascript">
+                                    function otherOnderwerp(name) {
+                                        document.getElementById("voorbeeldOnderwerp").innerHTML = "[" + name + "]";
+                                    }
 
-                        <select class="curved" style="width: 100%;" name="onderwerp" id="onderwerp"
-                                onchange="showfield(this.options[this.selectedIndex].value)">
-                            <option disabled selected value> &#45;&#45; Selecteer een optie &#45;&#45;</option>
-                            <option <%if(proeverij.name === "Onbevestigd") {%> disabled <%}%> value="Wijziging datum">Wijziging datum</option>
-                            <option value="Herinnering">Herinnering</option>
-                            <option <%if(proeverij.name === "Onbevestigd") {%> disabled <%}%> value="Informatie">Informatie</option>
-                            <option <%if(proeverij.name === "Onbevestigd") {%> disabled <%}%> value="Annulering">Annulering</option>
-                            <%if(proeverij.name === "Onbevestigd") {%>
-                            <option value="Herinnering bevestiging">Herinnering bevestiging</option>
-                            <%}%>
-                            <option <%if (proeverij.id === "All") {%> disabled <%}%> <%if(proeverij.name === "Onbevestigd") {%> disabled <%}%> value="Validatie">Validering</option>
-                            <option value="Other">Anders *</option>
-                        </select>
-                        <br>
-                        <div id="div1" class="red"></div>
+                                    function showfield(name) {
+                                        document.getElementById("buttonSend").removeAttribute("disabled");
+                                        document.getElementById("buttonSend").style = "";
+                                        var voorbeeldLink = document.getElementById("voorbeeldValidatieLink");
+                                        if (!voorbeeldLink.classList.contains("hidden")) {
+                                            voorbeeldLink.classList.add("hidden");
+                                        }
+                                        document.getElementById("voorbeeldOnderwerp").innerHTML = "[" + name + "]";
+                                        if (name === 'Other') document.getElementById('div1').innerHTML = 'Other: <input onchange="otherOnderwerp(this.value)" onkeydown="otherOnderwerp(this.value)" type="text" name="other" placeholder="Onderwerp" />';
+                                        else if (name === 'Herinnering bevestiging') document.getElementById('div1').innerHTML = '<br> Er verschijnt een knop om de aanmelding te bevestigen in de mail, die hoeft u NIET te noemen';
+                                        else {
+                                            if (name === 'Validatie') {
+                                                document.getElementById('div1').innerHTML = '<br> Er verschijnt in de email een link naar de reactie pagina, die hoeft u NIET te noemen';
+                                                document.getElementById("voorbeeldValidatieLink").classList.remove("hidden");
+                                            } else document.getElementById('div1').innerHTML = '';
+                                        }
+                                    }
+                                    function newBericht(bericht) {
+                                        document.getElementById("voorbeeldBericht").innerHTML = bericht;
+                                    }
+                                    function checkButton() {
+                                        return document.getElementById("onderwerp").value === "default";
+                                    }
+                                </script>
+
+                                <select class="curved" style="width: 100%;" name="onderwerp" id="onderwerp"
+                                        onchange="showfield(this.options[this.selectedIndex].value)">
+                                    <option disabled selected value="default"> &#45;&#45; Selecteer een optie &#45;&#45;</option>
+                                    <option
+                                            <% if(proeverij.name === "Onbevestigd") { %>
+                                            disabled
+                                            <% } %>
+                                            value="Wijziging datum">Wijziging datum
+                                    </option>
+                                    <option value="Herinnering">Herinnering</option>
+                                    <option
+                                            <% if(proeverij.name === "Onbevestigd") { %>
+                                            disabled
+                                            <% } %>
+                                            value="Informatie">Informatie
+                                    </option>
+                                    <option
+                                            <% if(proeverij.name === "Onbevestigd") { %>
+                                            disabled
+                                            <% } %>
+                                            value="Annulering">Annulering
+                                    </option>
+                                    <% if(proeverij.name === "Onbevestigd") { %>
+                                    <option value="Herinnering bevestiging">Herinnering bevestiging</option>
+                                    <% } %>
+                                    <option
+                                            <% if (proeverij.id === "All") { %>
+                                            disabled
+                                            <% } %>
+                                            <% if(proeverij.name === "Onbevestigd") { %>
+                                            disabled
+                                            <% } %>
+                                            value="Validatie">Validering
+                                    </option>
+                                    <option value="Other">Anders *</option>
+                                </select>
+                                <br>
+                                <div id="div1" class="red"></div>
+                            </div>
+                            <div class="form-group hidden" id="hiddenOther">
+                            </div>
+                            <div class="form-group">
+                                <label>Bericht</label><br>
+                                <small>Typ geen 'Beste...' en 'Met vriendelijke groet,' <br>Typ wel 'Wij hopen u hiermee
+                                    voldoende te hebben geïnformeerd'.<br>U kunt geen enters toevoegen via dit template. (Ook niet met &lt;br&gt;)                                </small>
+                                <textarea onchange="newBericht(this.value)" onkeydown="newBericht(this.value)" name="message" style="min-width: 100%; max-width: 100%" required
+                                          placeholder="Uw bericht"></textarea>
+                            </div>
+                            <% if (message.length > 0 && message !== "Onbevestigd") { %>
+                            <div class="alert alert-success"><%= message %></div>
+                            <% } %>
+                            <% if(failure.length > 0) { %>
+                            <div class="alert alert-danger"><%= failure %></div>
+                            <% } %>
+                            <div class="text-center">
+                                <button disabled id="buttonSend" type="submit" class="btn btn-primary btn-lg">Verstuur bericht</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group hidden" id="hiddenOther">
-                    </div>
-                    <div class="form-group">
-                        <label>Bericht</label><br>
-                        <small>Typ geen 'Beste...' en 'Met vriendelijke groet,' <br>Typ wel 'Wij hopen u hiermee voldoende te hebben geïnformeerd'</small>
-                        <textarea name="message" style="min-width: 100%; max-width: 100%" required
-                                  placeholder="Uw bericht"></textarea>
-                    </div>
-                    <% if (message.length > 0 && message !== "Onbevestigd") { %>
-                    <div class="alert alert-success"><%= message %></div>
-                    <% } %>
-                    <% if(failure.length > 0) { %>
-                    <div class="alert alert-danger"><%= failure %></div>
-                    <% } %>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary btn-lg">Verstuur bericht</button>
-                    </div>
-                </form>
-            </div>
-        </div><!--/.row-->
-    </div><!--/.container-->
-</section><!--/#contact-page-->
+                </div><!--/.row-->
+            </div><!--/.container-->
+        </section><!--/#contact-page-->
+    </div>
+    <div class="col-sm-2 pull-right" style="margin-top: 60px;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td style="padding: 10px 0 30px 0;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600"
+                           style="border: 1px solid #cccccc; border-collapse: collapse;">
+                        <tr>
+                            <td align="center" bgcolor="black"
+                                style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
+                                <h1 style="color: yellow">Vingt</h1>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
+                                            <b id="voorbeeldOnderwerp">[Onderwerp]</b> <b> -- <%= proeverij.name %></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+                                            Beste "naam",
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td id="voorbeeldBericht" style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+                                            Uw tekst bericht
+                                        </td>
+                                    </tr>
+                                    <tr id="voorbeeldValidatieLink" class="hidden">
+                                        <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+                                            <a style="cursor: pointer" href="#">
+                                                <button style="width: 100%; cursor: pointer" type="button" class="button button2"><%if (!proeverij.name === "Onbevestigd") {%>Bevestig alsnog uw aanmelding <%} else {%> Laat hier uw reactie achter <%}%></button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+                                            Kunnen wij nog iets anders voor u betekenen? Laat het ons weten via het <a
+                                                    href="/contact">contact</a> formulier.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+                                            Met vriendelijke groet,
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+                                            &mdash; Vingt
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="black" style="padding: 30px 30px 30px 30px;">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;"
+                                            width="75%">
+                                            &reg;2017 Copyright Vingt.nl <br/>
+                                        </td>
+                                        <td align="right" width="25%">
+                                            <table border="0" cellpadding="0" cellspacing="0">
+                                                <tr>
+                                                    <td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+                                                        <a href="http://www.twitter.com/" style="color: #ffffff;">
+                                                            <i class="fa fa-twitter"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
+                                                    <td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
+                                                        <a href="http://www.twitter.com/" style="color: #ffffff;">
+                                                            <i class="fa fa-facebook"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
 
 <section id="bottom">
     <div class="container wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">

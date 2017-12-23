@@ -636,13 +636,15 @@ $('#upload-input').on('change', function () {
 });
 
 function deleteBlog(id) {
-    $.ajax({
-        url: "/deleteBlog?id=" + id,
-        async: false,
-        success: function () {
-            document.getElementById("div" + id).remove();
-        }
-    });
+    if (confirm("Weet je het zeker?")) {
+        $.ajax({
+            url: "/deleteBlog?id=" + id,
+            async: false,
+            success: function () {
+                document.getElementById("div" + id).remove();
+            }
+        });
+    }
 }
 
 function changeApproved(id) {

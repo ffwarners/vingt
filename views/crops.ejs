@@ -61,6 +61,7 @@
                     </div>
 
                     <ul class="portfolio-filter text-center">
+                        <!--TODO: Controleer deze tekst-->
                         <li><a class="btn btn-default active" href="#" data-filter="*">Alle wijnen</a></li>
                         <li><a class="btn btn-default" href="#" data-filter=".under15">Prijs onder €15,-</a></li>
                         <li><a class="btn btn-default" href="#" data-filter=".droog">Droog</a></li>
@@ -71,8 +72,8 @@
                         <div class="portfolio-items">
                             <% wines.forEach(function(wine) { %>
                             <div class="portfolio-item apps col-xs-12 col-sm-4 col-md-3
-                                 <% if (wine['purchase price'] <= 15) { %> under15 <% } %>
-                                 <% if (wine['size'] <= 1.0) { %> small <% } %>
+                                 <% if (wine['aankoop prijs'] <= 15) { %> under15 <% } %>
+                                 <% if (wine['inhoud'] <= 1.0) { %> small <% } %>
                                  <% if (wine['droog'] === 'true') { %> droog <% } %>">
                                 <div class="recent-work-wrap">
                                     <img class="img-responsive" src="images/wines/Small/wine<%= wine.wine_id  %>.jpg"

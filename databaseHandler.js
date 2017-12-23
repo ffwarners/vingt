@@ -141,6 +141,14 @@ module.exports.getBlogRaw = function (succes) {
     query(sqlquery, succes)
 };
 
+module.exports.getBlogRawByName = function (name, date, proeverijName, succes) {
+    console.log("Blog by name is requested");
+
+    var sqlquery = 'SELECT * FROM blog WHERE personName = "' + name + '" AND reactionDate = "' + date + '" AND proeverijName = "' + proeverijName + '"';
+
+    query(sqlquery, succes);
+};
+
 
 function query(query, succes) {
     connection.query(query, function (err, rows, fields) {

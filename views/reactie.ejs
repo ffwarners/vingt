@@ -13,12 +13,13 @@
     <link href="css/prettyPhoto.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/responsive.css" rel="stylesheet">
-    <!-- =======================================================
-        Theme Name: Gp
-        Theme URL: https://bootstrapmade.com/gp-free-multipurpose-html-bootstrap-templat/
-        Author: BootstrapMade
-        Author URL: https://bootstrapmade.com
-    ======================================================= -->
+    <style>
+        button:disabled {
+            cursor: not-allowed;
+            pointer-events: all !important;
+        }
+    </style>
+
 
 </head>
 <body class="homepage">
@@ -53,26 +54,33 @@
 <section id="contact-page" class="wow fadeInDown">
     <div class="container">
         <div class="center" style="margin-top: 140px;">
-            <h2><%=proeverij.name%></h2>
-            <p class="lead">Beste <%=aanmelder.name%>,<br> Laat hier alstublieft uw reactie achter over de door uw bezochte proeverij.<br>Beschrijft u zo gedetailleerd mogelijk wat u vond van de proeverij. Op deze manier kunnen andere hetzelfde ervaren als u al heeft gedaan.<br>  <span>Vingt</span></p>
+            <h2><%= proeverij.name %></h2>
+            <p class="lead">Beste <%= aanmelder.name %>,<br> Laat hier alstublieft uw reactie achter over de door u
+                bezochte proeverij.<br>Beschrijft u zo gedetailleerd mogelijk wat u vond van de proeverij. Op deze
+                manier kunnen anderen hetzelfde ervaren als u al heeft gedaan.<br> Alvast bedankt --<span>Vingt</span>
+            </p>
         </div>
         <div class="row contact-wrap">
             <div class="col-sm-8 col-sm-offset-2">
                 <form method="post" action="/reactie" class="contactForm">
+                    <input type="hidden" value="<?php echo $rand; ?>" name="randcheck"/>
                     <div class="form-group">
                         <label for="name"><b>Uw voor- en achternaam *</b></label>
 
-                        <input type="text" readonly style="cursor:not-allowed;" value="<%=aanmelder.name%>" name="name" id="name" placeholder="Uw naam" required/>
+                        <input type="text" readonly style="cursor:not-allowed;" value="<%= aanmelder.name %>"
+                               name="name" id="name" placeholder="Uw naam" required/>
                     </div>
                     <div class="form-group">
                         <label for="email"><b>Uw email *</b></label>
-                        <input type="email" readonly style="cursor:not-allowed;" value="<%=aanmelder.email%>" name="email" id="email" placeholder="Uw email" required/>
-                        <input type="hidden" name="aanmelderId" value="<%=aanmelder.id%>">
-                        <input type="hidden" name="proeverijId" value="<%=proeverij.id%>">
+                        <input type="email" readonly style="cursor:not-allowed;" value="<%= aanmelder.email %>"
+                               name="email" id="email" placeholder="Uw email" required/>
+                        <input type="hidden" name="aanmelderId" value="<%= aanmelder.id %>">
+                        <input type="hidden" name="proeverijId" value="<%= proeverij.id %>">
                     </div>
                     <div class="form-group">
                         <label for="subject"><b>De proeverij *</b></label>
-                        <input type="text" readonly style="cursor:not-allowed;" value="<%=proeverij.name%>" name="subject" id="subject" placeholder="Onderwerp" required/>
+                        <input type="text" readonly style="cursor:not-allowed;" value="<%= proeverij.name %>"
+                               name="subject" id="subject" placeholder="Onderwerp" required/>
                     </div>
                     <div class="form-group">
                         <label for="message"><b>Uw bericht *</b></label>
@@ -96,7 +104,12 @@
                     <div class="alert alert-danger"><%= failure %></div>
                     <% } %>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary btn-lg">Verstuur bericht</button>
+                        <button
+                                <% if (message.length > 0) { %>
+                                disabled
+                                <% } %>
+                                type="submit" class="btn button btn-primary btn-lg">Verstuur bericht
+                        </button>
                     </div>
                 </form>
             </div>
