@@ -114,7 +114,7 @@ module.exports = function (app, passport, Connection) {
 /****** CUSTOMER *****/
 // Standaard
 function home(req, res) {
-    res.sendFile(__dirname + '/views/home.html');
+    res.sendFile(__dirname + '/views/public/home.html');
 }
 
 function kaart(req, res) {
@@ -122,7 +122,7 @@ function kaart(req, res) {
         rows.forEach(function (rijen) {
             rijen.link = encrypt("id=" + rijen.wine_id);
         });
-        res.render('kaart', {wines: rows});
+        res.render('public/kaart', {wines: rows});
     });
 }
 
@@ -131,16 +131,16 @@ function proeverijen(req, res) {
         rows.forEach(function (row) {
             row.id = sh.unique("id=" + row.id);
         });
-        res.render('proeverijen', {proeverijen: rows});
+        res.render('public/proeverijen', {proeverijen: rows});
     });
 }
 
 function contact(req, res) {
-    res.render('contact', {message: "", failure: ""});
+    res.render('public/contact', {message: "", failure: ""});
 }
 
 function impressie(req, res) {
-    res.sendFile(__dirname + '/views/impressie.html');
+    res.sendFile(__dirname + '/views/public/impressie.html');
 }
 
 function blog(req, res) {
@@ -153,9 +153,9 @@ function blog(req, res) {
             rows.forEach(function (row) {
                 row.link = encrypt("id=" + row.id);
             });
-            res.render('blog', {blog: rows, pagina: page});
+            res.render('public/blog', {blog: rows, pagina: page});
         } else {
-            res.render('404');
+            res.render('public/404');
         }
     });
 }
@@ -178,12 +178,12 @@ function registration(req, res) {
                 break;
             }
         }
-        if (!correctId) res.render('404');
+        if (!correctId) res.render('public/404');
         dbHandler.getProeverij(correctId, function (rows) {
             if (rows[0].shown === "true") {
-                res.render('registration', {proeverij: rows[0]});
+                res.render('public/registration', {proeverij: rows[0]});
             } else {
-                res.render('404');
+                res.render('public/404');
             }
         });
     });
@@ -192,7 +192,7 @@ function registration(req, res) {
 function sendmail(req, res) {
     var id = req.body.id;
     dbHandler.getProeverij(id, function (row) {
-        var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/email.ejs', 'utf8'));
+        var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/emails/email.ejs', 'utf8'));
         var string = "name=" + req.body.name + "&email=" + req.body.email + "&telephone=" + req.body.telephone + "&gender=" + req.body.gender + "&birthdate=" + req.body.birthdate + "&language=" + req.body.language + "&proeverijId=" + row[0].id + "&proeverijName=" + row[0].name;
         var string2 = "SELECT * FROM aanmelders WHERE name = ? AND email = ? AND proeverijName = ? AND proeverijId = ?";
         var values = [req.body.name, req.body.email, req.body.proeverij, req.body.id];
@@ -225,7 +225,7 @@ function sendmail(req, res) {
                     }
                 });
             } else {
-                res.render('declined', {
+                res.render('via_email/declined', {
                     person: {
                         name: req.body.name,
                         proeverijName: req.body.proeverij,
@@ -250,7 +250,7 @@ function confirm(req, res) {
             res.end('Failed to update wines');
         } else {
             console.log("Aanmelders successfully updated");
-            res.render('confirm', {person: query});
+            res.render('via_email/confirm', {person: query});
         }
     });
 }
@@ -264,7 +264,7 @@ function sendSignoutMail(req, res) {
         connection.query("SELECT * FROM aanmelders WHERE email ='" + query.email + "' AND proeverijID = " + query.id, function (err2, rows) {
             rijen = rows;
             rows.forEach(function (aanmelder) {
-                var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/uitschrijven.ejs', 'utf8'));
+                var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/emails/uitschrijven.ejs', 'utf8'));
                 var link = "id=" + aanmelder.id + "&proeverijID=" + aanmelder.proeverijID;
                 link = encrypt(link);
                 var html = compiled({aanmelder: aanmelder, link: link});
@@ -299,8 +299,8 @@ function confirmSignOut(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to delete aanmelder');
             } else {
-                ("Aanmelder successfully deleted");
-                res.render('confirmUitschrijving');
+                console.log("Aanmelder successfully deleted");
+                res.render('via_email/confirmUitschrijving');
             }
         });
     } else {
@@ -310,13 +310,13 @@ function confirmSignOut(req, res) {
 
 function signOut(req, res) {
     dbHandler.getProeverijen(function (rows) {
-        res.render('signout', {proeverijen: rows});
+        res.render('public/signout', {proeverijen: rows});
     });
 }
 
 // Contact verstuurd
 function contactPost(req, res) {
-    var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/contactMail.ejs', 'utf8'));
+    var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/emails/contactMail.ejs', 'utf8'));
 
     var html = compiled({person: req.body});
 
@@ -330,13 +330,13 @@ function contactPost(req, res) {
     }, function (err, info) {
         if (err) {
             console.error(err);
-            res.render('contact', {
+            res.render('public/contact', {
                 message: "",
                 failure: "Uw bericht is niet verstuurd, probeer het later nog eens.."
             })
         }
         else {
-            res.render('contact', {message: 'Uw bericht is succesvol verstuurd', failure: ""})
+            res.render('public/contact', {message: 'Uw bericht is succesvol verstuurd', failure: ""})
         }
     });
 }
@@ -352,9 +352,9 @@ function wijnen(req, res) {
     dbHandler.getWineColumns(function (rows) {
         dbHandler.getWijn(query.id, function (rijen) {
             if (rijen.length > 0) {
-                res.render('wijn', {wine: rijen[0], columns: rows});
+                res.render('public/wijn', {wine: rijen[0], columns: rows});
             } else {
-                res.render('404');
+                res.render('public/404');
             }
         });
     });
@@ -373,7 +373,7 @@ function reactieRender(req, res) {
                 console.error('Error while performing query: ' + err.message);
                 res.end('Failed to select aanmelders');
             } else {
-                res.render('reactie', {proeverij: rijen[0], message: "", failure: "", aanmelder: rows[0]});
+                res.render('via_email/reactie', {proeverij: rijen[0], message: "", failure: "", aanmelder: rows[0]});
             }
         });
     });
@@ -387,7 +387,7 @@ function reactie(req, res) {
         connection.query(query, function (err, rijen) {
             dbHandler.getBlogRawByName(req.body.name, date.toDateString(), rows[0].name, function (rows2) {
                 if (rows2.length > 0) {
-                    res.render('reactie', {
+                    res.render('via_email/reactie', {
                         proeverij: rows[0],
                         message: "",
                         failure: "U heeft al een reactie achtergelaten, toch bedankt!",
@@ -398,14 +398,14 @@ function reactie(req, res) {
                     connection.query(update, function (err, rowss) {
                         if (err) {
                             console.error('Error while performing query: ' + err.message);
-                            res.render('reactie', {
+                            res.render('via_email/reactie', {
                                 proeverij: rows[0],
                                 message: "",
                                 failure: "Uw bericht is niet verstuurd, probeer het later nog eens..",
                                 aanmelder: rijen[0]
                             });
                         } else {
-                            res.render('reactie', {
+                            res.render('via_email/reactie', {
                                 proeverij: rows[0],
                                 message: "Uw bericht is succesvol verstuurd, bedankt voor uw reactie.",
                                 failure: "",
@@ -430,7 +430,7 @@ function blogEnkel(req, res) {
             rijen.forEach(function (row) {
                 row.link = encrypt("id=" + row.id);
             });
-            res.render('blogEnkel', {blog: rows, blogs: rijen})
+            res.render('public/blogEnkel', {blog: rows, blogs: rijen})
         });
     });
 }
@@ -440,7 +440,7 @@ function blogEnkel(req, res) {
 function showStart(req, res) {
     dbHandler.getUser(req.user.id, function (rows) {
         dbHandler.getLastChange(function (rijen) {
-            res.render('ingelogd', {user: rows[0].name, time: rijen[0].UPDATE_TIME})
+            res.render('logged-in/ingelogd', {user: rows[0].name, time: rijen[0].UPDATE_TIME})
         });
 
     });
@@ -449,34 +449,34 @@ function showStart(req, res) {
 function adaptKaart(req, res) {
     dbHandler.getWineColumns(function (columns) {
         dbHandler.getWines(function (rows) {
-            res.render('adaptKaart', {wines: rows, columns: columns});
+            res.render('logged-in/adaptKaart', {wines: rows, columns: columns});
         });
     });
 }
 
 function adaptProeverijen(req, res) {
     dbHandler.getProeverijen(function (rows) {
-        res.render('adaptProeverijen', {proeverijen: rows});
+        res.render('logged-in/adaptProeverijen', {proeverijen: rows});
     });
 }
 
 function aanmelders(req, res) {
     dbHandler.getProeverijen(function (rijen) {
         dbHandler.getAanmelders(function (rows) {
-            res.render('aanmelders', {aanmelders: rows, proeverijen: rijen});
+            res.render('logged-in/aanmelders', {aanmelders: rows, proeverijen: rijen});
         });
     });
 }
 
 function cropShow(req, res) {
     dbHandler.getWines(function (rows) {
-        res.render('crops', {wines: rows});
+        res.render('logged-in/crops', {wines: rows});
     });
 }
 
 function adaptBlog(req, res) {
     dbHandler.getBlogRaw(function (rows) {
-        res.render('adaptBlog', {blog: rows});
+        res.render('logged-in/adaptBlog', {blog: rows});
     });
 }
 
@@ -678,7 +678,7 @@ function crop2(req, res) {
     var query = urlData.query;
     var id = query.id;
     dbHandler.getWijn(id, function (rows) {
-        res.render('crop', {
+        res.render('logged-in/crop', {
                 wine: rows[0], close: ""
             }
         );
@@ -833,7 +833,7 @@ function emailPage(req, res) {
     if (id !== "All") {
         if (id === "Onbevestigd") {
             dbHandler.getAanmeldersOnbevestigd(function (rijen) {
-                res.render('proeverijEmail', {
+                res.render('logged-in/proeverijEmail', {
                     message: "Onbevestigd",
                     failure: "",
                     proeverij: {id: 'Onbevestigd', name: "Onbevestigd", date: '-', details: '-'},
@@ -843,7 +843,7 @@ function emailPage(req, res) {
         } else {
             dbHandler.getProeverij(id, function (row) {
                 dbHandler.getAanmeldersProeverij(id, function (rijen) {
-                    res.render('proeverijEmail', {
+                    res.render('logged-in/proeverijEmail', {
                         message: "",
                         failure: "",
                         proeverij: row[0],
@@ -854,7 +854,7 @@ function emailPage(req, res) {
         }
     } else {
         dbHandler.getAanmelders(function (rows) {
-            res.render('proeverijEmail', {
+            res.render('logged-in/proeverijEmail', {
                 message: "",
                 failure: "",
                 proeverij: {id: 'All', name: "All", date: '-', details: '-'},
@@ -870,7 +870,7 @@ function email(req, res) {
             dbHandler.getAanmeldersOnbevestigd(function (rijen) {
                 rijen.forEach(function (row) {
                     var string = "name=" + row.name + "&email=" + row.email + "&telephone=" + row.telephone + "&gender=" + row.gender + "&birthdate=" + row.birthdate + "&language=" + row.language + "&proeverijId=" + row.proeverijID + "&proeverijName=" + row.proeverijName;
-                    var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/proeverijEmailSend.ejs', 'utf8'));
+                    var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/emails/proeverijEmailSend.ejs', 'utf8'));
                     var link = "";
                     if (req.body.onderwerp === "Other") req.body.onderwerp = req.body.other;
                     if (req.body.onderwerp === "Validatie") link = "reactie?" + encrypt("id=" + req.body.id + "&aanmelderId=" + row.id);
@@ -892,7 +892,7 @@ function email(req, res) {
                     }, function (err, info) {
                         if (err) {
                             console.error(err);
-                            res.render('proeverijEmail', {
+                            res.render('logged-in/proeverijEmail', {
                                 message: "",
                                 failure: "Uw bericht is niet verstuurd, probeer het later nog eens..",
                                 proeverij: rijen[0],
@@ -903,7 +903,7 @@ function email(req, res) {
                         }
                     });
                 });
-                res.render('proeverijEmail', {
+                res.render('logged-in/proeverijEmail', {
                     message: "Uw bericht is succesvol verstuurd",
                     failure: "",
                     proeverij: {id: 'Onbevestigd', name: "Onbevestigd", date: '-', details: '-'},
@@ -914,7 +914,7 @@ function email(req, res) {
             dbHandler.getProeverij(req.body.id, function (rijen) {
                 dbHandler.getAanmeldersProeverij(req.body.id, function (rows) {
                     rows.forEach(function (row) {
-                        var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/proeverijEmailSend.ejs', 'utf8'));
+                        var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/emails/proeverijEmailSend.ejs', 'utf8'));
                         var link = "";
                         if (req.body.onderwerp === "Other") req.body.onderwerp = req.body.other;
                         if (req.body.onderwerp === "Validatie") link = "reactie?" + encrypt("id=" + req.body.id + "&aanmelderId=" + row.id);
@@ -926,6 +926,7 @@ function email(req, res) {
                         });
 
                         nodemailerMailgun.sendMail({
+                            //TODO: Pas deze aan
                             // from: "Vingt wijnhandelaar, <vingt@gmail.com>",
                             // to: '"' + row.name + '" <' + row.email + ">",
                             from: "Steven Lambregts <stevenlambregts@gmail.com>, ",
@@ -935,7 +936,7 @@ function email(req, res) {
                         }, function (err, info) {
                             if (err) {
                                 console.error(err);
-                                res.render('proeverijEmail', {
+                                res.render('logged-in/proeverijEmail', {
                                     message: "",
                                     failure: "Uw bericht is niet verstuurd, probeer het later nog eens..",
                                     proeverij: rijen[0],
@@ -946,7 +947,7 @@ function email(req, res) {
                             }
                         });
                     });
-                    res.render('proeverijEmail', {
+                    res.render('logged-in/proeverijEmail', {
                         message: "Uw bericht is succesvol verstuurd",
                         failure: "",
                         proeverij: rijen[0],
@@ -958,7 +959,7 @@ function email(req, res) {
     } else {
         dbHandler.getAanmelders(function (rows) {
             rows.forEach(function (row) {
-                var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/proeverijEmailSend.ejs', 'utf8'));
+                var compiled = ejs.compile(fs.readFileSync(__dirname + '/views/emails/proeverijEmailSend.ejs', 'utf8'));
                 var link = "";
                 if (req.body.onderwerp === "Other") req.body.onderwerp = req.body.other;
                 if (req.body.onderwerp === "Validatie") link = "reactie?" + encrypt("id=" + req.body.id);
@@ -979,7 +980,7 @@ function email(req, res) {
                 }, function (err, info) {
                     if (err) {
                         console.error(err);
-                        res.render('proeverijEmail', {
+                        res.render('logged-in/proeverijEmail', {
                             message: "",
                             failure: "Uw bericht is niet verstuurd, probeer het later nog eens..",
                             proeverij: rijen[0],
@@ -990,7 +991,7 @@ function email(req, res) {
                     }
                 });
             });
-            res.render('proeverijEmail', {
+            res.render('logged-in/proeverijEmail', {
                 message: "Uw bericht is succesvol verstuurd",
                 failure: "",
                 proeverij: {id: 'All', name: "All", date: '-', details: '-'},
@@ -1059,7 +1060,7 @@ function isLoggedIn(req, res, next) {
 }
 
 function getLogin(req, res) {
-    res.render('login', {message: req.flash('loginMessage')});
+    res.render('public/login', {message: req.flash('loginMessage')});
 }
 
 function postLogin(req, res) {
