@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--The icon on the top of the page, next to the title-->
+    <link rel="shortcut icon" type="image/png" href="../images/man1.jpg"/>
+    <!--The title of the website, shown next to the image shortcut -->
     <title>Vingt</title>
 
     <!-- Bootstrap -->
@@ -79,14 +82,21 @@
         <div class="skill-wrap clearfix">
             <div class="center wow fadeInDown">
                 <h2>Bekijk de <span>aanmelders</span></h2>
-                <p class="lead">Hier kunt u de aanmelders bekijken en een bericht sturen.<br>Ook kunt u de aanmelders verwijderen of wijzigen.</p>
+                <p class="lead">Hier kunt u de aanmelders bekijken en een bericht sturen.<br>Ook kunt u de aanmelders
+                    verwijderen of wijzigen.</p>
                 <div class="table-responsive">
 
                     <% proeverijen.forEach( function (proeverij) { %>
                     <h3 id="<%= proeverij.name %>" class="<%= proeverij.id %> pointer unselectable"
                         onclick="showProeverij(<%= proeverij.id %>)"><%= proeverij.name %>
-                        <small>(<% if(proeverij.shown === "false") {%><strong><%='on'%></strong><%}%>zichtbaar)</small>
-                        &#x25BC;</h3>
+                        <small>(
+                            <% if(proeverij.shown === "false") { %>
+                            <strong><%= 'on' %></strong>
+                            <% } %>
+                            zichtbaar)
+                        </small>
+                        &#x25BC;
+                    </h3>
                     <div id="div<%= proeverij.id %>" class="hidden">
                         <button id="<%= proeverij.name %>" type="button" class="btnExport">Download tabel in Excel
                         </button>

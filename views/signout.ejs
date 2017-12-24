@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--The icon on the top of the page, next to the title-->
+    <link rel="shortcut icon" type="image/png" href="../images/man1.jpg"/>
+    <!--The title of the website, shown next to the image shortcut -->
     <title>Vingt</title>
 
     <!-- Bootstrap -->
@@ -13,12 +16,7 @@
     <link href="css/prettyPhoto.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/responsive.css" rel="stylesheet">
-    <!-- =======================================================
-        Theme Name: Gp
-        Theme URL: https://bootstrapmade.com/gp-free-multipurpose-html-bootstrap-templat/
-        Author: BootstrapMade
-        Author URL: https://bootstrapmade.com
-    ======================================================= -->
+
 </head>
 <body class="homepage">
 <header id="header">
@@ -64,9 +62,14 @@
                 <input id="emailSignOut" class="curved" type="email" placeholder="DonnievandenBeuken@armyspy.com"
                        name="email" required>
                 <label for="proeverijen"><b class="white">Proeverij *</b></label><br>
-                <select style="min-width: 100px; margin-bottom: 10px" class="curved" id="proeverijen" name="proeverijen">
+                <select style="min-width: 100px; margin-bottom: 10px" class="curved" id="proeverijen"
+                        name="proeverijen">
                     <% proeverijen.forEach(function (proeverij) { %>
-                        <option <% if (proeverij.shown == "false") {%> disabled hidden <%}%> value="<%=proeverij.id%>"><%=proeverij.name%></option>
+                    <option
+                            <% if (proeverij.shown == "false") { %>
+                            disabled hidden
+                            <% } %>
+                            value="<%= proeverij.id %>"><%= proeverij.name %></option>
                     <% }); %>
                 </select><br>
                 <label style="width:100%; text-align: center;" class="white hidden" id="loaderText">Even checken of u

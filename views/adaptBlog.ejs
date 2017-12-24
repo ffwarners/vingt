@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--The icon on the top of the page, next to the title-->
+    <link rel="shortcut icon" type="image/png" href="../images/man1.jpg"/>
+    <!--The title of the website, shown next to the image shortcut -->
     <title>Vingt</title>
 
     <!-- Bootstrap -->
@@ -54,19 +57,28 @@
 <section id="blog" class="container" style="margin-top: 140px">
     <div class="center">
         <h2>Blogs</h2>
-        <p class="lead">Controleer hier of er niks op de website komt wat er niet hoort. U kan niks wijzigen alleen uitschakelen en verwijderen</p>
+        <p class="lead">Controleer hier of er niks op de website komt wat er niet hoort. U kan niks wijzigen alleen
+            uitschakelen en verwijderen</p>
     </div>
 
     <div class="blog">
         <div class="row">
             <div class="col-md-12">
                 <% blog.forEach(function(reaction) { %>
-                <div class="blog-item" id="div<%=reaction.id%>">
+                <div class="blog-item" id="div<%= reaction.id %>">
                     <div class="row" style="border: 2px solid red;">
                         <section>
-                            <div class="checkboxThree"><input onchange="changeApproved('<%=reaction.id%>')" type="checkbox" <% if (reaction.approved == "true") { %> checked <% } %> value="1" id="checkboxThreeInput<%=reaction.id%>" name=""/><label for="checkboxThreeInput<%=reaction.id%>"></label></div>
+                            <div class="checkboxThree"><input onchange="changeApproved('<%= reaction.id %>')"
+                                                              type="checkbox"
+                                        <% if (reaction.approved == "true") { %>
+                                                              checked
+                                        <% } %>
+                                                              value="1" id="checkboxThreeInput<%= reaction.id %>"
+                                                              name=""/><label
+                                        for="checkboxThreeInput<%= reaction.id %>"></label></div>
                         </section>
-                        <div onclick="deleteBlog('<%=reaction.id%>')" class="pull-right"><h1 style="cursor: pointer; color: black; margin-right: 40px;">x</h1></div>
+                        <div onclick="deleteBlog('<%= reaction.id %>')" class="pull-right"><h1
+                                    style="cursor: pointer; color: black; margin-right: 40px;">x</h1></div>
                         <div class="col-xs-12 col-sm-10 blog-content">
                             <h4><strong>Aanmelder:</strong> <%= reaction.personName %></h4>
                             <h4><strong>Proeverij naam:</strong> <%= reaction.proeverijName %></h4>
