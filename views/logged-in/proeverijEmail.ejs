@@ -28,6 +28,7 @@
             cursor: not-allowed;
             pointer-events: all !important;
         }
+
         .button {
             background-color: #4CAF50; /* Green */
             border: none;
@@ -123,9 +124,15 @@
                                         if (!voorbeeldLink.classList.contains("hidden")) {
                                             voorbeeldLink.classList.add("hidden");
                                         }
+                                        if (name === 'Herinnering bevestiging') {
+
+                                        }
                                         document.getElementById("voorbeeldOnderwerp").innerHTML = "[" + name + "]";
                                         if (name === 'Other') document.getElementById('div1').innerHTML = 'Other: <input onchange="otherOnderwerp(this.value)" onkeydown="otherOnderwerp(this.value)" type="text" name="other" placeholder="Onderwerp" />';
-                                        else if (name === 'Herinnering bevestiging') document.getElementById('div1').innerHTML = '<br> Er verschijnt een knop om de aanmelding te bevestigen in de mail, die hoeft u NIET te noemen';
+                                        else if (name === 'Herinnering bevestiging') {
+                                            document.getElementById('div1').innerHTML = '<br> Er verschijnt een knop om de aanmelding te bevestigen in de mail, die hoeft u NIET te noemen';
+                                            document.getElementById("voorbeeldValidatieLink").classList.remove("hidden");
+                                        }
                                         else {
                                             if (name === 'Validatie') {
                                                 document.getElementById('div1').innerHTML = '<br> Er verschijnt in de email een link naar de reactie pagina, die hoeft u NIET te noemen';
@@ -133,9 +140,11 @@
                                             } else document.getElementById('div1').innerHTML = '';
                                         }
                                     }
+
                                     function newBericht(bericht) {
                                         document.getElementById("voorbeeldBericht").innerHTML = bericht;
                                     }
+
                                     function checkButton() {
                                         return document.getElementById("onderwerp").value === "default";
                                     }
@@ -143,7 +152,9 @@
 
                                 <select class="curved" style="width: 100%;" name="onderwerp" id="onderwerp"
                                         onchange="showfield(this.options[this.selectedIndex].value)">
-                                    <option disabled selected value="default"> &#45;&#45; Selecteer een optie &#45;&#45;</option>
+                                    <option disabled selected value="default"> &#45;&#45; Selecteer een optie
+                                        &#45;&#45;
+                                    </option>
                                     <option
                                             <% if(proeverij.name === "Onbevestigd") { %>
                                             disabled
@@ -185,8 +196,11 @@
                             <div class="form-group">
                                 <label>Bericht</label><br>
                                 <small>Typ geen 'Beste...' en 'Met vriendelijke groet,' <br>Typ wel 'Wij hopen u hiermee
-                                    voldoende te hebben geïnformeerd'.<br>U kunt geen enters toevoegen via dit template. (Ook niet met &lt;br&gt;)                                </small>
-                                <textarea onchange="newBericht(this.value)" onkeydown="newBericht(this.value)" name="message" style="min-width: 100%; max-width: 100%" required
+                                    voldoende te hebben geïnformeerd'.<br>U kunt geen enters toevoegen via dit template.
+                                    (Ook niet met &lt;br&gt;)
+                                </small>
+                                <textarea onchange="newBericht(this.value)" onkeydown="newBericht(this.value)"
+                                          name="message" style="min-width: 100%; max-width: 100%" required
                                           placeholder="Uw bericht"></textarea>
                             </div>
                             <% if (message.length > 0 && message !== "Onbevestigd") { %>
@@ -196,7 +210,9 @@
                             <div class="alert alert-danger"><%= failure %></div>
                             <% } %>
                             <div class="text-center">
-                                <button disabled id="buttonSend" type="submit" class="btn btn-primary btn-lg">Verstuur bericht</button>
+                                <button disabled id="buttonSend" type="submit" class="btn btn-primary btn-lg">Verstuur
+                                    bericht
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -230,14 +246,22 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td id="voorbeeldBericht" style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
+                                        <td id="voorbeeldBericht"
+                                            style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
                                             Uw tekst bericht
                                         </td>
                                     </tr>
                                     <tr id="voorbeeldValidatieLink" class="hidden">
                                         <td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
                                             <a style="cursor: pointer" href="#">
-                                                <button style="width: 100%; cursor: pointer" type="button" class="button button2"><%if (!proeverij.name === "Onbevestigd") {%>Bevestig alsnog uw aanmelding <%} else {%> Laat hier uw reactie achter <%}%></button>
+                                                <button style="width: 100%; cursor: pointer" type="button"
+                                                        class="button button2">
+                                                    <% if (proeverij.name === "Onbevestigd") { %>
+                                                    Bevestig alsnog uw aanmelding
+                                                    <% } else { %>
+                                                    Laat hier uw reactie achter
+                                                    <% } %>
+                                                </button>
                                             </a>
                                         </td>
                                     </tr>

@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: wines
 -- ------------------------------------------------------
--- Server version	5.7.18-log
+-- Server version	5.7.20-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -34,7 +34,7 @@ CREATE TABLE `aanmelders` (
   `proeverijID` int(11) DEFAULT NULL,
   `bevestigd` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `aanmelders` (
 
 LOCK TABLES `aanmelders` WRITE;
 /*!40000 ALTER TABLE `aanmelders` DISABLE KEYS */;
-INSERT INTO `aanmelders` VALUES (7,'Felix Warners','ffwarners@gmail.com','man','1986-02-16','06-12345678','dutch','Tignanello 2013',16,'true'),(8,'Thijs Nederlof','pnede3@gmail.com','man','1998-05-02','06-87654321','german','Nicolas Catena Zapata 2011',17,'true'),(9,'Jeroen Nelen','jwnelen@gmail.com','man','1997-10-29','06-19283765','french','Grande opening',15,'true'),(13,'Felix Warners','stevenlambregts@home.nl','man','0002-02-22','06123456789','dutch','Nicolas Catena Zapata 2011',17,'true'),(14,'Steven Lambregts','stevenlambregts@gmail.com','man','1998-10-22','683400373','dutch','Grande opening',15,'true'),(15,'Fred van Leer','fredvanleer@gmail.com','man','2000-04-02','06-12345678','dutch','Nicolas Catena Zapata 2011',17,'false');
+INSERT INTO `aanmelders` VALUES (7,'Felix Warners','ffwarners@gmail.com','man','1986-02-16','06-12345678','dutch','Tignanello 2013',16,'true'),(8,'Thijs Nederlof','pnede3@gmail.com','man','1998-05-02','06-87654321','german','Nicolas Catena Zapata 2011',17,'true'),(9,'Jeroen Nelen','jwnelen@gmail.com','man','1997-10-29','06-19283765','french','Grande opening',15,'true'),(13,'Felix Warners','stevenlambregts@home.nl','man','0002-02-22','06123456789','dutch','Nicolas Catena Zapata 2011',17,'true'),(14,'Steven Lambregts','stevenlambregts@gmail.com','man','1998-10-22','683400373','dutch','Grande opening',15,'true'),(15,'Fred van Leer','fredvanleer@gmail.com','man','2000-04-02','06-12345678','dutch','Nicolas Catena Zapata 2011',17,'true'),(16,'Rick de Mooij','rickdeMooij@gmail.com','man','2000-07-20','06-12345678','dutch','Grande opening',15,'false'),(17,'test','test@gmail.com','man','0222-02-22','test','dutch','Grande opening',15,'true'),(18,'Steven Lambregts','stevenlambregts@gmail.com','man','1998-10-22','683400373','dutch','Nicolas Catena Zapata 2011',17,'true'),(19,'Donnie van den beuken','stevenlambregts@gmail.com','man','1998-10-22','683400373','dutch','Grande opening',15,'false');
 /*!40000 ALTER TABLE `aanmelders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,7 +65,7 @@ CREATE TABLE `blog` (
   `approved` text,
   `proeverijBeschrijving` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,16 +193,16 @@ CREATE TABLE `wines` (
   `wine_id` int(11) NOT NULL AUTO_INCREMENT,
   `imageExt` text,
   `Wijnoogst` text,
-  `producent` text,
-  `wijngaard` text,
-  `predikat` text,
-  `naam` text,
-  `smaak` text,
-  `droog` text,
-  `inhoud` text,
-  `aankoop prijs` text,
+  `Producent` text,
+  `Wijngaard` text,
+  `Predikat` text,
+  `Naam` text,
+  `Smaak` text,
+  `Droog` text,
+  `Inhoud` text,
+  `Aankoop prijs` text,
   PRIMARY KEY (`wine_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,7 +211,7 @@ CREATE TABLE `wines` (
 
 LOCK TABLES `wines` WRITE;
 /*!40000 ALTER TABLE `wines` DISABLE KEYS */;
-INSERT INTO `wines` VALUES (1,'jpg','2015','Reinhold Haart','Piesporter Goldtröpfchen','Kabinett','Wijn 1','Riesling','false','0.75','15'),(2,'jpg','2016','Keller','home','','von der Fels','Riesling','true','0.75','10'),(3,'jpg','2001','Test',NULL,NULL,'Wijn 2',NULL,'false','2','230'),(4,'jpg','1950','Steven','',NULL,'Wijn 3','','false','1.5',NULL),(5,'jpg','2004','Achmed','',NULL,'Qijn 4',NULL,'false','3',NULL),(6,'jpg','2017','Malbec','Alamos','Mountain','Alamos Malbec','Bramen, krachtig en licht kruidig','true','0,75CL','€5,99');
+INSERT INTO `wines` VALUES (1,'jpg','2015','Reinhold Haart','Piesporter Goldtröpfchen','Kabinett','Wijn 1','Riesling','false','0.75','15'),(2,'jpg','2016','Keller','home','','von der Fels','Riesling','true','0.75','10'),(3,'jpg','2001','Test',NULL,NULL,'Wijn 2',NULL,'false','2','230'),(4,'jpg','1950','Steven','',NULL,'Wijn 3','','false','1.5',NULL),(5,'jpg','2004','Achmed','',NULL,'Qijn 4',NULL,'false','3',NULL),(6,'jpg','2017','Malbec','Alamos','Mountain','Alamos Malbec','Bramen, krachtig en licht kruidig','true','0,75CL','€5,99'),(7,'png','1998','Thijs','Gaza strook','Adihash','Probability','Ruwig','true','17L','0,01 Bitcoin');
 /*!40000 ALTER TABLE `wines` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -224,4 +224,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-23 11:58:47
+-- Dump completed on 2017-12-24 15:08:10

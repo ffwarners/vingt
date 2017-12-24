@@ -96,6 +96,7 @@ function editWine(item) {
 }
 
 function editWineColumn(item) {
+    console.log(item);
     $.ajax({
         url: "/editWineColumn?old=" + item.id + "&newvalue=" + item.innerHTML,
         async: false,
@@ -116,13 +117,14 @@ function editWineColumn(item) {
 
 function addColumn() {
     var columnName = $("#newColumnName").html();
+    console.log(columnName);
     if (!HasColumn(columnName)) {
         $.ajax({
             url: "/addNewColumnWine?name=" + columnName,
             async: false,
             success: function () {
-                $('<td style="font-weight: bold;" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div class="editableColumn" contenteditable>' + columnName +
-                    '</div></td>').insertBefore('td.add');
+                // noinspection BadExpressionStatementJS
+                $('<td style="font-weight: bold;" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div class="editableColumn" id="' + columnName + '" contenteditable>' + columnName + '</div></td>').insertBefore('td.add');
                 $('<td id="' + columnName + '" data-toggle="tooltip" data-placement="bottom" title="Bewerk..." class="pointer ' + columnName + '"><div class="editable" contenteditable></div></td>').insertBefore('.beneathAdd');
                 columnName = "'" + columnName + "'";
                 $('<td onclick="deleteColumn(' + columnName + ', ' + "this" + ')"><span class="glyphicon">&#xe020;</span></td>').insertBefore('.aboveAdd');
@@ -148,9 +150,11 @@ function HasColumn(text) {
     var bool = false;
     var cells = document.getElementById("wineTable").tHead.rows[1].cells;
     for (var i = 0; i < cells.length - 2; i++) {
+        console.log(cells[i].children[0].innerHTML);
         if (cells[i].children[0].innerHTML === text) {
             bool = true;
         }
+
     }
     return bool;
 }

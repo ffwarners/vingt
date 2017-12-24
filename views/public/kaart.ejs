@@ -72,25 +72,25 @@
                         <div class="portfolio-items">
                             <% wines.forEach(function(wine) { %>
                             <div class="portfolio-item apps col-xs-12 col-sm-4 col-md-3
-                                 <% if (wine['aankoop prijs'] <= 15) { %> under15 <% } %>
-                                 <% if (wine['inhoud'] <= 1.0) { %> small <% } %>
-                                 <% if (wine['droog'] === 'true') { %> droog <% } %>">
+                                 <% if (wine['Aankoop prijs'] <= 15) { %> under15 <% } %>
+                                 <% if (wine['Inhoud'] <= 1.0) { %> small <% } %>
+                                 <% if (wine['Droog'] === 'true') { %> droog <% } %>">
                                 <div class="recent-work-wrap">
-                                    <img class="img-responsive" src="images/wines/Small/wine<%= wine.wine_id  %>.jpg"
+                                    <img class="img-responsive" src="images/wines/Small/wine<%= wine.wine_id %>.jpg"
                                          alt="">
                                     <div class="overlay">
                                         <div class="recent-work-inner">
-                                            <h3><a href="/wijn?<%= wine.link %>"><%=  wine.naam  %></a></h3>
-                                            <p>Geproduceerd door: <%=  wine.producent  %></p>
+                                            <h3><a href="/wijn?<%= wine.link %>"><%= wine.Naam %></a></h3>
+                                            <p>Geproduceerd door: <%= wine.Producent %></p>
                                             <a class="preview"
-                                               href="images/wines/wine<%=  wine.wine_id  %>.<%= wine.imageExt %>"
+                                               href="images/wines/wine<%= wine.wine_id %>.<%= wine.imageExt %>"
                                                rel="prettyPhoto"><i
                                                         class="fa fa-eye"></i> View</a>
                                         </div>
                                     </div>
                                 </div>
                             </div><!--/.portfolio-item-->
-                            <% });%>
+                            <% }); %>
 
                         </div>
                     </div>
@@ -283,13 +283,17 @@
                                 <ul class="tag clearfix">
                                     <li class="btn"><a href="https://github.com/StevenL98">Web</a></li>
                                     <li class="btn"><a href="https://www.tudelft.nl/">TU Delft</a></li>
-                                    <li class="btn"><a href="https://www.tudelft.nl/en/education/programmes/bachelors/ti/bachelor-of-computer-science-and-engineering/">Student</a></li>
+                                    <li class="btn"><a
+                                                href="https://www.tudelft.nl/en/education/programmes/bachelors/ti/bachelor-of-computer-science-and-engineering/">Student</a>
+                                    </li>
                                     <!--<li class="btn"><a href="#"></a></li>-->
                                 </ul>
                                 <ul class="social_icons">
-                                    <li><a href="https://www.facebook.com/slambregts"><i class="fa fa-facebook"></i></a></li>
+                                    <li><a href="https://www.facebook.com/slambregts"><i class="fa fa-facebook"></i></a>
+                                    </li>
                                     <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="https://plus.google.com/u/0/103821211248011624464"><i class="fa fa-google-plus"></i></a></li>
+                                    <li><a href="https://plus.google.com/u/0/103821211248011624464"><i
+                                                    class="fa fa-google-plus"></i></a></li>
                                 </ul>
                             </div>
                         </div><!--/.media -->

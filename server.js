@@ -49,7 +49,7 @@ app.use(function(req, res) {
     console.log('404 not found');
 
     res.status(404);
-    res.render('404', {url: req.url});
+    res.render('public/404', {url: req.url});
 });
 
 // create the server
