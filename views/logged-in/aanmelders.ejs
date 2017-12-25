@@ -89,12 +89,12 @@
                     <% proeverijen.forEach( function (proeverij) { %>
                     <h3 id="<%= proeverij.name %>" class="<%= proeverij.id %> pointer unselectable"
                         onclick="showProeverij(<%= proeverij.id %>)"><%= proeverij.name %>
-                        <small>(
-                            <% if(proeverij.shown === "false") { %>
-                            <strong><%= 'on' %></strong>
-                            <% } %>
-                            zichtbaar)
+                        <small>(<% if(proeverij.shown === "false") { %><strong><%='on'%></strong><% } %>zichtbaar)
                         </small>
+                        <%count = 0;%>
+                        <% aanmelders.forEach(function(aanmelder) { %>
+                        <% if (aanmelder.proeverijID === proeverij.id && aanmelder.bevestigd === "true") { count++ }});%>
+                        <small>(<%=count%>)</small>
                         &#x25BC;
                     </h3>
                     <div id="div<%= proeverij.id %>" class="hidden">
@@ -164,7 +164,7 @@
                 </div>
                 <div class="table-responsive">
 
-                    <h3 class="pointer unselectable red" onclick="showProeverij('All')">Allemaal &#x25BC;</h3>
+                    <h3 class="pointer unselectable red" onclick="showProeverij('All')">Allemaal (<%=aanmelders.length%>)&#x25BC;</h3>
                     <div id="divAll" class="hidden">
                         <button id="All" type="button" class="btnExport">Download tabel in Excel</button>
                         <button id="All" type="button" class="btnSend">Stuur iedereen een E-mail</button>
@@ -239,8 +239,10 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-
-                    <h3 class="pointer unselectable blue" onclick="showProeverij('Onbevestigd')">Onbevestigd
+                    <%var count = 0;%>
+                    <% aanmelders.forEach(function(aanmelder) { %>
+                    <% if (aanmelder.bevestigd === "false") { count++ }}); %>
+                    <h3 class="pointer unselectable blue" onclick="showProeverij('Onbevestigd')">Onbevestigd (<%=count%>)
                         &#x25BC;</h3>
                     <div id="divOnbevestigd" class="hidden">
                         <button id="Onbevestigd" type="button" class="btnExport">Download tabel in Excel</button>

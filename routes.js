@@ -8,10 +8,6 @@ var ejs = require('ejs');
 var formidable = require('formidable');
 var path = require('path');
 
-// var crypto = require('crypto'),
-//     algorithm = 'aes-256-ctr',
-//     password = 'd6F3Efeq';
-
 var dbHandler = require('./databaseHandler');
 var config = require('./config');
 
@@ -45,6 +41,9 @@ module.exports = function (app, passport, Connection) {
     router.get('/contact', contact);
     router.get('/impressie', impressie);
     router.get('/blog?', blog);
+
+    // Specifieke Contact
+    router.get('/contactPre?', contactSpecific);
 
     // Aanmelden proeverij
     router.get('/registration?', registration);
@@ -136,7 +135,12 @@ function proeverijen(req, res) {
 }
 
 function contact(req, res) {
-    res.render('public/contact', {message: "", failure: ""});
+    res.render('public/contact', {message: "", failure: "", bypass: ""});
+}
+
+function contactSpecific(req, res) {
+    var bypass = (req.url).split("?")[1];
+    res.render('public/contact', {message: "", failure: "", bypass: bypass.replace(/%20/g, " ")})
 }
 
 function impressie(req, res) {

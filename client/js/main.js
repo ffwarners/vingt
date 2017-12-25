@@ -415,13 +415,15 @@ function addProeverij() {
 }
 
 function deleteAanmelder(id) {
-    $.ajax({
-        url: "/removeAanmelder?id=" + id,
-        async: false,
-        success: function () {
-            document.getElementById("aanmelder" + id).remove();
-        }
-    });
+    if (confirm("Weet je het heel zeker?")) {
+        $.ajax({
+            url: "/removeAanmelder?id=" + id,
+            async: false,
+            success: function () {
+                document.getElementById("aanmelder" + id).remove();
+            }
+        });
+    }
 }
 
 function showProeverij(id) {
