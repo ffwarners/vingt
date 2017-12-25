@@ -261,6 +261,10 @@
             var tijdweergave = uren2 + minuten2 + seconden2;
             var datumweergave = dagtekst + " " + dag + " " + maandtekst + " " + jaar4 + " om " + tijdweergave;%>
             <p class="lead">Er is voor het laatst iets gewijzigd op: <%=datumweergave%></p>
+            <p class="lead">Dit is er gewijzigd: <%= db %></p>
+            <% if (db == "aanmelders" ) {%>
+            <p class="lead red">Dit betekent dat er een <strong>nieuwe</strong> aanmelder is voor een proeverij</p>
+            <%}%>
         </div>
 
         <div class="row">

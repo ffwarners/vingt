@@ -80,7 +80,9 @@
                                          alt="">
                                     <div class="overlay">
                                         <div class="recent-work-inner">
-                                            <h3><a href="/wijn?<%= wine.link %>"><%= wine.Naam %></a></h3>
+                                            <h3>
+                                                <a href="/wijn?<%= wine.link.content %>+=+<%= wine.link.tag %> "><%= wine.Naam %></a>
+                                            </h3>
                                             <p>Geproduceerd door: <%= wine.Producent %></p>
                                             <a class="preview"
                                                href="images/wines/wine<%= wine.wine_id %>.<%= wine.imageExt %>"

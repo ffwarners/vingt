@@ -96,6 +96,7 @@ module.exports.getLastChange = function (succes) {
 
     var sqlquery = "SELECT UPDATE_TIME, TABLE_SCHEMA, TABLE_NAME " +
         "FROM information_schema.tables " +
+        "WHERE TABLE_NAME != 'innodb_index_stats' AND TABLE_NAME != 'innodb_table_stats' " +
         "ORDER BY UPDATE_TIME DESC, TABLE_SCHEMA, TABLE_NAME";
 
     query(sqlquery, succes);
